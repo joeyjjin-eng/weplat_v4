@@ -20,18 +20,163 @@
      안심
      ============================================================ -->
 <main class="screen" data-screen="ansim" style="background:linear-gradient(158deg,#0D76FF 0%,#3D7BFF 48%,#7C4DFF 100%)">
+<div data-user-view="protected" style="flex:1;display:flex;flex-direction:column">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 21px 0">
     <div style="display:flex;align-items:center;gap:8px"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><div style="font-size:19px;font-weight:700;color:#fff;letter-spacing:-.025em">안심 체크인</div></div>
+    <div style="display:flex;align-items:center;gap:12px;color:rgba(255,255,255,.94)"><div data-checkin-btn="notifications" style="position:relative;display:inline-flex;align-items:center;cursor:pointer"><span class="ms" style="font-size:20px">notifications</span><div data-bell-badge style="position:absolute;top:-1px;right:-1px;width:8px;height:8px;border-radius:50%;background:#FF6B45;box-shadow:0 0 0 1.5px rgba(255,255,255,.5)"></div></div><span class="ms" style="font-size:20px">account_circle</span></div>
+  </div>
+  <!-- 초기 뷰: 원버튼 UI. 카드만 인플레이스로 완료 상태 토글. 도움이 필요해요는 상시. -->
+  <div data-checkin-view="default" style="flex:1;padding:0 18px 18px;display:flex;flex-direction:column;justify-content:center;gap:18px">
+    <div data-checkin-title style="font-size:28px;font-weight:700;color:#fff;letter-spacing:-.035em;text-align:center">지금 괜찮으신가요?</div>
+    <div data-checkin-btn="ok" style="background:#fff;border-radius:28px;padding:48px 20px;display:flex;flex-direction:column;align-items:center;gap:18px;box-shadow:0 20px 44px rgba(5,27,80,.22);cursor:pointer">
+      <div data-checkin-iconwrap style="width:124px;height:124px;border-radius:50%;background:linear-gradient(150deg,#0D76FF,#5F6BFF);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 14px 32px rgba(13,118,255,.34);transition:background .3s ease,box-shadow .3s ease"><span class="ms" data-checkin-icon style="font-size:64px">thumb_up</span></div>
+      <div data-checkin-label style="font-size:31px;font-weight:700;color:#101B33;letter-spacing:-.035em">괜찮아요</div>
+    </div>
+    <div data-checkin-btn="help" style="display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.46);border-radius:22px;padding:24px;color:#fff;font-size:19px;font-weight:700;cursor:pointer"><span class="ms" style="font-size:26px">emergency_home</span>도움이 필요해요</div>
+  </div>
+
+  <!-- 알림 함 -->
+  <div data-checkin-view="notifications" hidden class="noscroll" style="flex:1;padding:14px 18px 18px;display:flex;flex-direction:column;gap:12px;overflow-y:auto">
+    <div style="font-size:26px;font-weight:700;color:#fff;letter-spacing:-.035em;padding:6px 3px">알림</div>
+    <div data-checkin-btn="alert-anomaly" style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;flex:none">
+      <div style="width:40px;height:40px;border-radius:12px;background:rgba(255,183,64,.35);color:#fff;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:22px">monitor_heart</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:15px;font-weight:700;color:#fff">평소와 다른 상태가 감지됐어요</div><div style="font-size:12px;color:rgba(255,255,255,.72)">심박수 이상 · 5분 전</div></div>
+      <span class="ms" style="font-size:20px;color:rgba(255,255,255,.72)">chevron_right</span>
+    </div>
+    <div data-checkin-btn="alert-missed" style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;flex:none">
+      <div style="width:40px;height:40px;border-radius:12px;background:rgba(13,118,255,.30);color:#fff;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:22px">schedule</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:15px;font-weight:700;color:#fff">아침 체크인이 지연됐어요</div><div style="font-size:12px;color:rgba(255,255,255,.72)">재알림 발송 · 오전 9:15</div></div>
+      <span class="ms" style="font-size:20px;color:rgba(255,255,255,.72)">chevron_right</span>
+    </div>
+    <div style="background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;flex:none;opacity:.75">
+      <div style="width:40px;height:40px;border-radius:12px;background:rgba(0,201,167,.30);color:#fff;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms is-filled" style="font-size:22px">check_circle</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:15px;font-weight:700;color:#fff">보호자가 확인했어요</div><div style="font-size:12px;color:rgba(255,255,255,.72)">어제 저녁 체크인 · 오후 8:12</div></div>
+    </div>
+    <div style="flex:1"></div>
+    <div data-checkin-btn="cancel" style="display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.46);border-radius:22px;padding:18px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;flex:none">닫기</div>
+  </div>
+
+  <!-- 재알림 intercept -->
+  <div data-checkin-view="alert-missed" hidden style="flex:1;padding:clamp(12px,3vh,32px) 18px 18px;display:flex;flex-direction:column;justify-content:center;gap:clamp(10px,1.6vh,16px)">
+    <div style="display:flex;justify-content:center">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(100deg,#FFB640,#FF9500);border-radius:999px;padding:10px 20px;color:#fff;font-size:15px;font-weight:700;box-shadow:0 6px 16px rgba(255,149,0,.35)"><span class="ms" style="font-size:20px">notification_important</span>체크인 재알림</div>
+    </div>
+    <div style="font-size:26px;font-weight:700;color:#fff;letter-spacing:-.035em;text-align:center;line-height:1.3">아침 체크인이<br>지연됐어요</div>
+    <div style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:16px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;color:#fff">
+      <div style="display:flex;align-items:center;gap:10px"><span class="ms" style="font-size:20px;color:rgba(255,255,255,.86)">schedule</span><div><div style="font-size:13px;color:rgba(255,255,255,.72)">체크인 알림</div><div style="font-size:14px;font-weight:700">오전 8:00</div></div></div>
+      <div style="width:1px;height:28px;background:rgba(255,255,255,.24)"></div>
+      <div style="display:flex;align-items:center;gap:10px"><span class="ms" style="font-size:20px;color:rgba(255,255,255,.86)">restart_alt</span><div><div style="font-size:13px;color:rgba(255,255,255,.72)">재알림</div><div style="font-size:14px;font-weight:700">오전 9:15</div></div></div>
+    </div>
+    <div data-checkin-btn="alert-ok" style="background:#fff;border-radius:28px;padding:clamp(24px,4vh,40px) 20px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 20px 44px rgba(5,27,80,.22);cursor:pointer">
+      <div style="width:96px;height:96px;border-radius:50%;background:linear-gradient(150deg,#0D76FF,#5F6BFF);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 14px 32px rgba(13,118,255,.34)"><span class="ms" style="font-size:52px">thumb_up</span></div>
+      <div style="font-size:26px;font-weight:700;color:#101B33;letter-spacing:-.035em">괜찮아요</div>
+    </div>
+    <div data-checkin-btn="alert-help" style="display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.46);border-radius:22px;padding:clamp(16px,2.4vh,22px);color:#fff;font-size:17px;font-weight:700;cursor:pointer"><span class="ms" style="font-size:22px">emergency_home</span>도움이 필요해요</div>
+  </div>
+
+  <!-- 워치 이상 intercept -->
+  <div data-checkin-view="alert-anomaly" hidden style="flex:1;padding:clamp(12px,3vh,32px) 18px 18px;display:flex;flex-direction:column;justify-content:center;gap:clamp(10px,1.6vh,16px)">
+    <div style="display:flex;justify-content:center">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(100deg,#FFB640,#FF9500);border-radius:999px;padding:10px 20px;color:#fff;font-size:15px;font-weight:700;box-shadow:0 6px 16px rgba(255,149,0,.35)"><span class="ms" style="font-size:20px">monitor_heart</span>워치 이상신호</div>
+    </div>
+    <div style="font-size:24px;font-weight:700;color:#fff;letter-spacing:-.035em;text-align:center;line-height:1.3">평소와 다른 상태가<br>감지됐어요</div>
+    <div style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:16px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;color:#fff">
+      <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:12px;color:rgba(255,255,255,.72)">평소 심박수</div><div style="font-size:20px;font-weight:700">68<span style="font-size:12px;color:rgba(255,255,255,.72);margin-left:2px">bpm</span></div></div>
+      <span class="ms" style="font-size:20px;color:rgba(255,255,255,.72)">arrow_forward</span>
+      <div style="display:flex;flex-direction:column;gap:2px;text-align:right"><div style="font-size:12px;color:#FFDDAA">현재 심박수</div><div style="font-size:20px;font-weight:700;color:#FFDDAA">83<span style="font-size:12px;margin-left:2px">bpm</span></div></div>
+    </div>
+    <div data-checkin-btn="alert-ok" style="background:#fff;border-radius:28px;padding:clamp(24px,4vh,40px) 20px;display:flex;flex-direction:column;align-items:center;gap:14px;box-shadow:0 20px 44px rgba(5,27,80,.22);cursor:pointer">
+      <div style="width:96px;height:96px;border-radius:50%;background:linear-gradient(150deg,#0D76FF,#5F6BFF);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 14px 32px rgba(13,118,255,.34)"><span class="ms" style="font-size:52px">thumb_up</span></div>
+      <div style="font-size:26px;font-weight:700;color:#101B33;letter-spacing:-.035em">괜찮아요</div>
+    </div>
+    <div data-checkin-btn="alert-help" style="display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.46);border-radius:22px;padding:clamp(16px,2.4vh,22px);color:#fff;font-size:17px;font-weight:700;cursor:pointer"><span class="ms" style="font-size:22px">emergency_home</span>도움이 필요해요</div>
+  </div>
+
+  <!-- 도움 요청 뷰 (화면 전환) -->
+  <div data-checkin-view="help" hidden style="flex:1;padding:0 18px 18px;display:flex;flex-direction:column;justify-content:center;gap:18px">
+    <div style="font-size:28px;font-weight:700;color:#fff;letter-spacing:-.035em;text-align:center">도움을 요청했어요</div>
+    <div style="background:#fff;border-radius:28px;padding:48px 20px;display:flex;flex-direction:column;align-items:center;gap:18px;box-shadow:0 20px 44px rgba(5,27,80,.22)">
+      <div style="width:124px;height:124px;border-radius:50%;background:linear-gradient(150deg,#FF9500,#FF6B45);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 14px 32px rgba(255,149,0,.34)"><span class="ms is-filled" style="font-size:64px">campaign</span></div>
+      <div style="font-size:15px;color:#4B5875;text-align:center;line-height:1.5">보호자에게 알림이 전송됐어요<br>잠시만 기다려 주세요</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <div data-checkin-btn="cancel" style="flex:1;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.46);border-radius:22px;padding:22px;color:#fff;font-size:17px;font-weight:700;text-align:center;cursor:pointer">취소</div>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(100deg,#FF9500,#FF6B45);border:1px solid rgba(255,255,255,.35);border-radius:22px;padding:22px;color:#fff;font-size:17px;font-weight:700;box-shadow:0 6px 14px rgba(255,107,69,.30);cursor:pointer"><span class="ms" style="font-size:20px">call</span>119 연결</div>
+    </div>
+  </div>
+</div>
+
+<!-- 보호자 뷰 -->
+<div data-user-view="guardian" hidden style="flex:1;display:flex;flex-direction:column">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 21px 0">
+    <div style="display:flex;align-items:center;gap:8px"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><div style="font-size:19px;font-weight:700;color:#fff;letter-spacing:-.025em">안심</div></div>
     <div style="display:flex;align-items:center;gap:12px;color:rgba(255,255,255,.94)"><span class="ms" style="font-size:20px">notifications</span><span class="ms" style="font-size:20px">account_circle</span></div>
   </div>
-  <div style="flex:1;padding:0 18px 18px;display:flex;flex-direction:column;justify-content:center;gap:18px">
-    <div style="font-size:28px;font-weight:700;color:#fff;letter-spacing:-.035em;text-align:center">지금 괜찮으신가요?</div>
-    <div style="background:#fff;border-radius:28px;padding:48px 20px;display:flex;flex-direction:column;align-items:center;gap:18px;box-shadow:0 20px 44px rgba(5,27,80,.22)">
-      <div style="width:124px;height:124px;border-radius:50%;background:linear-gradient(150deg,#0D76FF,#5F6BFF);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 14px 32px rgba(13,118,255,.34)"><span class="ms" style="font-size:64px">thumb_up</span></div>
-      <div style="font-size:31px;font-weight:700;color:#101B33;letter-spacing:-.035em">괜찮아요</div>
+  <div class="noscroll" style="flex:1;padding:24px 18px 18px;display:flex;flex-direction:column;gap:12px;overflow-y:auto">
+    <div style="background:#fff;border-radius:24px;padding:20px;display:flex;align-items:center;gap:16px;box-shadow:0 20px 44px rgba(5,27,80,.22)">
+      <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(150deg,#00A98D,#0D76FF);display:flex;align-items:center;justify-content:center;color:#fff;flex:none"><span class="ms is-filled" style="font-size:32px">check_circle</span></div>
+      <div style="flex:1;display:flex;flex-direction:column">
+        <div style="font-size:13px;font-weight:700;color:#8A94A6">오늘 아침 체크인</div>
+        <div style="font-size:19px;font-weight:800;color:#0B1B3A;letter-spacing:-.025em;margin-top:2px">괜찮아요</div>
+        <div style="font-size:13px;color:#5C6880;margin-top:2px">오전 8:12 · 어머니가 응답</div>
+      </div>
+      <div style="background:rgba(0,201,167,.16);color:#00A98D;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;flex:none;align-self:flex-start">완료</div>
     </div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.46);border-radius:22px;padding:24px;color:#fff;font-size:19px;font-weight:700"><span class="ms" style="font-size:26px">emergency_home</span>도움이 필요해요</div>
+    <div style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:18px;padding:14px 16px;display:flex;color:#fff">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span class="ms" style="font-size:20px">favorite</span><div style="font-size:15px;font-weight:700">68</div><div style="font-size:11px;color:rgba(255,255,255,.72)">심박수</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.18);margin:4px 0"></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span class="ms" style="font-size:20px">directions_walk</span><div style="font-size:15px;font-weight:700">정상</div><div style="font-size:11px;color:rgba(255,255,255,.72)">활동량</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.18);margin:4px 0"></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span class="ms" style="font-size:20px">schedule</span><div style="font-size:15px;font-weight:700">12분 전</div><div style="font-size:11px;color:rgba(255,255,255,.72)">움직임</div></div>
+    </div>
+    <div style="font-size:14px;font-weight:700;color:rgba(255,255,255,.86);padding:6px 3px 0">최근 알림</div>
+    <div style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:18px;padding:12px 16px;display:flex;align-items:center;gap:12px;color:#fff">
+      <div style="width:36px;height:36px;border-radius:12px;background:rgba(0,201,167,.30);display:flex;align-items:center;justify-content:center;flex:none"><span class="ms is-filled" style="font-size:20px">check_circle</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:700">아침 체크인 완료</div><div style="font-size:12px;color:rgba(255,255,255,.72)">오늘 오전 8:12</div></div>
+    </div>
+    <div style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:18px;padding:12px 16px;display:flex;align-items:center;gap:12px;color:#fff">
+      <div style="width:36px;height:36px;border-radius:12px;background:rgba(0,201,167,.30);display:flex;align-items:center;justify-content:center;flex:none"><span class="ms is-filled" style="font-size:20px">check_circle</span></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:700">저녁 체크인 완료</div><div style="font-size:12px;color:rgba(255,255,255,.72)">어제 오후 8:03</div></div>
+    </div>
+    <div style="flex:1"></div>
+    <div style="display:flex;gap:8px;flex:none">
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.46);border-radius:22px;padding:16px;color:#fff;font-size:15px;font-weight:700;cursor:pointer"><span class="ms" style="font-size:20px">call</span>어머니 통화</div>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;border-radius:22px;padding:16px;color:#0D76FF;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 8px 18px rgba(13,118,255,.28)"><span class="ms" style="font-size:20px">chat_bubble</span>메시지</div>
+    </div>
   </div>
+</div>
+
+<!-- 미가입자 뷰 -->
+<div data-user-view="unregistered" hidden style="flex:1;display:flex;flex-direction:column;padding:0 18px 18px">
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 3px 0">
+    <img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol">
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:20px;padding:0 3px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:14px;font-weight:700;color:rgba(255,255,255,.86);letter-spacing:.02em">생활 안전 체크인 서비스</div>
+      <div style="font-size:38px;font-weight:700;color:#fff;letter-spacing:-.04em;line-height:1.15">위플랫 체크인<br>시작하기</div>
+      <div style="font-size:15px;color:rgba(255,255,255,.88);line-height:1.5">하루 한 번 안부를 확인하고<br>이상신호를 자녀에게 자동으로 전달해요</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:12px;color:#fff">
+        <div style="width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">thumb_up</span></div>
+        <div style="font-size:15px;font-weight:700">하루 한 번 괜찮아요 체크</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;color:#fff">
+        <div style="width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">watch</span></div>
+        <div style="font-size:15px;font-weight:700">워치로 실시간 이상신호 감지</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;color:#fff">
+        <div style="width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">notifications_active</span></div>
+        <div style="font-size:15px;font-weight:700">보호자에게 자동 알림</div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px;flex:none">
+    <div style="background:#fff;color:#0D76FF;font-size:17px;font-weight:700;border-radius:22px;padding:18px;text-align:center;cursor:pointer;box-shadow:0 8px 18px rgba(13,118,255,.28)">가입하고 시작하기</div>
+    <div style="text-align:center;font-size:13px;color:rgba(255,255,255,.85);padding:6px">이미 계정이 있으신가요? <span style="font-weight:700;text-decoration:underline">로그인</span></div>
+  </div>
+</div>
 </main>
 
 <!-- ============================================================
@@ -39,12 +184,12 @@
      ============================================================ -->
 <main class="screen" data-screen="benefit" hidden style="background:#F4F7FC">
   <header class="screen-header">
-    <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:6px 21px 14px"><div style="display:flex;align-items:center;gap:8px"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><div style="font-size:19px;font-weight:700;color:#101B33;letter-spacing:-.025em">혜택</div></div><div style="border:1px solid #C9D6EA;color:#0D76FF;font-size:12px;font-weight:700;padding:6px 13px;border-radius:999px">로그인</div></div>
-    <div style="position:relative;padding:0 18px 16px">
+    <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:6px 21px clamp(12px,1.8vh,18px)"><div style="display:flex;align-items:center;gap:8px"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><div style="font-size:19px;font-weight:700;color:#101B33;letter-spacing:-.025em">혜택</div></div><div style="border:1px solid #C9D6EA;color:#0D76FF;font-size:12px;font-weight:700;padding:6px 13px;border-radius:999px">로그인</div></div>
+    <div style="position:relative;padding:0 18px clamp(8px,1.2vh,12px)">
       <div style="background:#EAF1FE;border-radius:14px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:13px;font-weight:600;color:#4B5875">이번 달 절감 진단 0 / 2</div><div style="font-size:12px;font-weight:700;color:#0D76FF">로그인하고 저장</div></div>
     </div>
   </header>
-  <div style="flex:1;padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+  <div style="flex:1;padding:clamp(2px,0.4vh,5px) 18px 18px;display:flex;flex-direction:column;gap:clamp(2px,0.5vh,6px);overflow:hidden">
     <div class="noscroll" data-chip-nav="benefit" style="display:flex;justify-content:center;gap:8px;flex:none;overflow-x:auto">
       <button type="button" class="chip is-active" data-target-card="0">절감</button>
       <button type="button" class="chip" data-target-card="1">혜택</button>
@@ -111,18 +256,31 @@
       <div style="background:#EAF1FE;border-radius:14px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:13px;font-weight:600;color:#4B5875">내 보험 점검 0 / 2</div><div style="font-size:12px;font-weight:700;color:#0D76FF">로그인하고 저장</div></div>
     </div>
   </header>
-  <div style="flex:1;padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;overflow:hidden">
+  <div class="noscroll" style="flex:1;padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;overflow-y:auto">
     <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:24px;padding:24px 20px;display:flex;flex-direction:column;gap:14px;flex:none;box-shadow:0 16px 36px rgba(5,27,80,.12)">
       <div style="display:flex;align-items:flex-start;justify-content:space-between"><div style="font-size:13px;font-weight:700;color:#8A94A6">숨은 보험금</div><div style="width:34px;height:34px;border-radius:12px;background:rgba(124,77,255,.14);color:#7C4DFF;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:20px">search_insights</span></div></div>
       <div style="display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center"><div style="font-size:27px;font-weight:700;letter-spacing:-.04em;color:#101B33">미청구보험금 찾기</div><div style="font-size:14px;color:#4B5875;line-height:1.4">홈택스만 연결하면<br>못 받은 보험금을 1분 안에 조회해요</div><div style="background:#F6F2FF;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700;color:#7C4DFF">평균 발견 약 78만원</div></div>
       <div style="background:linear-gradient(100deg,#5F6BFF,#7C4DFF);color:#fff;font-size:16px;font-weight:700;border-radius:999px;padding:15px;text-align:center;box-shadow:0 8px 18px rgba(124,77,255,.28)">내 보험금 조회하기 →</div>
     </div>
-    <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;padding:15px 16px;display:flex;align-items:center;gap:12px;flex:none"><div style="width:36px;height:36px;border-radius:12px;background:rgba(13,118,255,.12);color:#0D76FF;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">receipt_long</span></div><div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:700;letter-spacing:-.02em">보험금 청구하기</div><div style="font-size:12px;color:#5C6880">서류 제출·진행 현황 확인</div></div><span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span></div>
-    <div style="flex:1"></div>
-    <div style="display:flex;align-items:center;flex:none;border-top:1px solid rgba(11,27,58,.10);padding:18px 2px 14px">
-      <div style="display:flex;align-items:center;gap:8px"><span class="ms" style="font-size:18px;color:#8A94A6">directions_car</span><div style="font-size:13px;font-weight:600;color:#4B5875">다이렉트 자동차보험</div></div>
-      <div style="width:1px;height:15px;background:rgba(11,27,58,.12);flex:none;margin:0 22px"></div>
-      <div style="display:flex;align-items:center;gap:8px"><span class="ms" style="font-size:18px;color:#8A94A6">chat_bubble</span><div style="font-size:13px;font-weight:600;color:#4B5875">보험 상담</div></div>
+    <div style="font-size:14px;font-weight:700;color:#54617A;flex:none;margin-top:4px">청구·가입</div>
+    <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;overflow:hidden;flex:none">
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #EEF1F7">
+        <div style="width:36px;height:36px;border-radius:12px;background:rgba(13,118,255,.12);color:#0D76FF;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">receipt_long</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:700;letter-spacing:-.02em">보험금 청구</div><div style="font-size:12px;color:#5C6880">안내부터 서류 제출까지</div></div>
+        <span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 16px">
+        <div style="width:36px;height:36px;border-radius:12px;background:rgba(0,201,167,.16);color:#00A98D;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">fact_check</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:700;letter-spacing:-.02em">내 청구 진행 현황</div><div style="font-size:12px;color:#5C6880">1건 심사 중</div></div>
+        <div style="background:rgba(255,176,32,.20);color:#C98207;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;flex:none">심사중</div>
+      </div>
+    </div>
+    <div style="background:#3D4A66;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:16px;flex:none;box-shadow:0 10px 24px rgba(11,27,58,.14)">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:24px">directions_car</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:-.02em">다이렉트 자동차보험</div><div style="font-size:13px;color:rgba(255,255,255,.72)">7개사 보험료 비교하고 바로 가입</div></div>
+      </div>
+      <div style="background:#fff;color:#3D4A66;font-size:15px;font-weight:700;border-radius:999px;padding:13px 20px;text-align:center">보험료 비교하기</div>
     </div>
   </div>
 </main>
@@ -172,6 +330,26 @@
   <button type="button" class="tab" data-target="more"><span class="ms tab__icon">grid_view</span><span class="tab__label">더보기</span></button>
 </nav>
 
+<!-- 임시 dev 스위처 (안심 탭 뷰 시연용) -->
+<div id="dev-switcher" style="position:fixed;bottom:96px;right:8px;z-index:9999;background:rgba(0,0,0,.78);color:#fff;border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;font-size:11px;font-family:system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35);backdrop-filter:blur(6px)">
+  <div style="display:flex;align-items:center;gap:6px">
+    <span style="opacity:.7;width:36px">사용자</span>
+    <select data-dev-user style="background:#222;color:#fff;border:1px solid #444;padding:3px 6px;border-radius:5px;font-size:11px;cursor:pointer">
+      <option value="protected">대상자</option>
+      <option value="guardian">보호자</option>
+      <option value="unregistered">미가입자</option>
+    </select>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <span style="opacity:.7;width:36px">상태</span>
+    <select data-dev-view style="background:#222;color:#fff;border:1px solid #444;padding:3px 6px;border-radius:5px;font-size:11px;cursor:pointer">
+      <option value="alarm-pending">알람 온</option>
+      <option value="ok">응답완료</option>
+      <option value="alert-missed">미응답</option>
+      <option value="alert-anomaly">워치신호</option>
+    </select>
+  </div>
+</div>
 <script src="assets/js/app.js"></script>
 </body>
 </html>

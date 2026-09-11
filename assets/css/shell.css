@@ -34,6 +34,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webki
    프리뷰(safe-area=0)에서도 GNB가 붙어 보이지 않도록 최소 24px 확보. */
 .screen{flex:1;min-height:0;display:flex;flex-direction:column;padding-top:max(env(safe-area-inset-top),24px);overflow:hidden}
 .screen[hidden]{display:none}
+[hidden]{display:none!important}
 
 /* 화면 파일은 시안 마크업(인라인 스타일) 그대로라 셸과 맞물리는 최소 보정만 여기 둔다 */
 .screen-header{flex:none}
