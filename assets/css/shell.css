@@ -1,0 +1,50 @@
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg-screen);font-family:var(--font);-webkit-font-smoothing:antialiased;color:var(--ink-900);overscroll-behavior:none}
+html,body{height:100%}
+/* 한글은 어절 중간에서 끊지 않는다 — GNB/카드/CTA 어디서든. */
+body{display:flex;flex-direction:column;line-height:var(--lh-body);word-break:keep-all}
+a{color:var(--blue-500);text-decoration:none}
+a:hover{color:#0A5FCC}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+/* 아이콘 4축(FILL/wght/GRAD/opsz)을 명시적으로 고정. 전부 아웃라인·wght 400. */
+.ms{font-family:"Material Symbols Rounded";font-weight:400;line-height:1;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.ms.is-filled{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+/* 브랜드 심볼 — 흰 바탕 기본(파랑 채움). 그라디언트 위에서는 흰색으로. */
+.brand-symbol{display:block;height:22px;width:auto}
+.screen[data-screen="ansim"] .brand-symbol{filter:brightness(0) invert(1)}
+/* 워드마크 락업(심볼+글자) — 큰 표면(더보기 상단, 스플래시)에서만 사용. */
+.brand-logo{display:block;height:26px;width:auto}
+.noscroll{scrollbar-width:none}
+.noscroll::-webkit-scrollbar{display:none}
+
+/* 캐러셀 카드 — 중앙 카드만 원래 크기, 나머지는 축소·반투명. is-centered는 JS가 부여. */
+.carousel-card{transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s ease;transform-origin:center center;will-change:transform;position:relative}
+.carousel-card:not(.is-centered){transform:scale(.88);opacity:.55}
+.carousel-card.is-centered{transform:scale(1);opacity:1}
+
+/* 필터 칩 (카드 네비게이션) */
+.chip{flex:none;background:#fff;border:1px solid rgba(11,27,58,.08);color:var(--ink-500);border-radius:var(--r-pill);padding:9px 18px;font-size:13px;font-weight:600;transition:background .2s ease,color .2s ease,border-color .2s ease}
+.chip.is-active{background:var(--grad-cta);color:#fff;border-color:transparent;font-weight:700}
+
+/* 캐러셀 하단 prev/next 네비 */
+.carousel-nav-btn{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--blue-500);padding:8px 4px}
+.carousel-nav-btn[hidden]{display:none}
+
+/* 화면 컨테이너 — 실기기 풀뷰포트, 상단 safe-area 확보(상태바 뒷영역).
+   프리뷰(safe-area=0)에서도 GNB가 붙어 보이지 않도록 최소 24px 확보. */
+.screen{flex:1;min-height:0;display:flex;flex-direction:column;padding-top:max(env(safe-area-inset-top),24px);overflow:hidden}
+.screen[hidden]{display:none}
+
+/* 화면 파일은 시안 마크업(인라인 스타일) 그대로라 셸과 맞물리는 최소 보정만 여기 둔다 */
+.screen-header{flex:none}
+.screen > div:first-child{flex:none}
+.screen [style*="border-radius:999px"]{white-space:nowrap}
+
+/* 하단 탭바 — safe-area(제스처 바) 대응 */
+.tabbar{flex:none;height:calc(var(--tabbar-h) + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line);display:flex;align-items:flex-start;padding:0 4px calc(6px + env(safe-area-inset-bottom))}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink-400);padding:12px 0 10px}
+.tab__icon{font-size:24px}
+.tab__label{font-size:12px;font-weight:600}
+.tab.is-active{color:var(--blue-500)}
+.tab.is-active .tab__label{font-weight:700}
+.tab:active{opacity:.7}

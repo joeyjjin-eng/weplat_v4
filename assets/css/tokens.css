@@ -1,0 +1,58 @@
+:root{
+  /* Brand */
+  --blue-500:#0D76FF;
+  --blue-400:#3D7BFF;
+  --indigo-500:#5F6BFF;
+  --violet-500:#7C4DFF;
+  --grad-brand:linear-gradient(158deg,#0D76FF 0%,#3D7BFF 48%,#7C4DFF 100%);
+  --grad-cta:linear-gradient(100deg,#0D76FF,#5F6BFF);
+  --grad-cta-violet:linear-gradient(100deg,#5F6BFF,#7C4DFF);
+
+  /* Ink */
+  --ink-900:#0B1B3A;
+  --ink-800:#101B33;
+  --ink-600:#4B5875;
+  --ink-500:#5C6880;
+  --ink-400:#6B7688;
+  --ink-300:#8A94A6;
+
+  /* Surface */
+  --bg-app:#E9EDF4;
+  --bg-screen:#F4F7FC;
+  --surface:#FFFFFF;
+  --line:#E9EDF3;
+  --line-soft:rgba(11,27,58,.08);
+
+  /* Category tints — 통신=amber / 보험=violet / 절감=teal / 그 외=blue */
+  --amber-ink:#C98207;  --amber-tint:rgba(255,176,32,.20);
+  --violet-ink:#7C4DFF; --violet-tint:rgba(124,77,255,.14);
+  --teal-ink:#00A98D;   --teal-tint:rgba(0,201,167,.16);
+  --blue-ink:#0D76FF;   --blue-tint:rgba(13,118,255,.12);
+
+  /* Glass — 그라디언트 위에만. 흰 배경 위에서는 쓰지 않는다. */
+  --glass-fill:rgba(255,255,255,.18);
+  --glass-line:rgba(255,255,255,.46);
+  --glass-tile:rgba(255,255,255,.22);
+  --glass-blur:14px;                    /* opt-in, 기본 미적용 */
+
+  /* On-brand text (그라디언트/유리 위 텍스트) */
+  --on-brand:#FFFFFF;
+  --on-brand-body:rgba(255,255,255,.88);   /* 설명 */
+  --on-brand-label:rgba(255,255,255,.86);  /* 라벨 */
+  --on-brand-icon:rgba(255,255,255,.94);   /* 아이콘 */
+
+  /* Radius */
+  --r-pill:999px; --r-lg:24px; --r-md:18px; --r-sm:14px;
+
+  /* Elevation */
+  --sh-card:0 14px 32px rgba(5,27,80,.10);
+  --sh-hero:0 18px 40px rgba(13,118,255,.28);
+  --sh-phone:0 24px 56px rgba(11,27,58,.18);
+
+  /* Type */
+  --font:"Pretendard Variable","Pretendard",system-ui,sans-serif;
+  --lh-body:1.4;
+
+  /* Layout */
+  --tabbar-h:80px;
+}
