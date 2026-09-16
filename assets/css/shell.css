@@ -32,8 +32,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webki
 .carousel-nav-btn[hidden]{display:none}
 
 /* 화면 컨테이너 — 실기기 풀뷰포트, 상단 safe-area 확보(상태바 뒷영역).
-   프리뷰(safe-area=0)에서도 GNB가 붙어 보이지 않도록 최소 24px 확보. */
-.screen{flex:1;min-height:0;display:flex;flex-direction:column;padding-top:max(env(safe-area-inset-top),24px);overflow:hidden}
+   프리뷰(safe-area=0)에서도 GNB가 붙어 보이지 않도록 최소 22px 확보. */
+.screen{flex:1;min-height:0;display:flex;flex-direction:column;padding-top:max(env(safe-area-inset-top),22px);overflow:hidden}
 .screen[hidden]{display:none}
 [hidden]{display:none!important}
 

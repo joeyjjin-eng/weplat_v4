@@ -85,7 +85,7 @@
 /* ── Intercept 뷰 (재알림/워치신호) — 위계: 라벨 → 타이틀 → 컨텍스트 → CTA → 도움 ─── */
 .ansim-intercept { flex: 1; display: flex; flex-direction: column; position: relative; isolation: isolate; z-index: 1; overflow: hidden; }
 .ansim-intercept > .orb { z-index: 0; }
-.ansim-intercept__body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; padding: 24px 24px 0; position: relative; z-index: 1; }
+.ansim-intercept__body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; padding: 24px 24px 0; position: relative; z-index: 1; }
 .ansim-intercept__head { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .ansim-intercept__label { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,176,32,.14); border: 1px solid rgba(255,149,0,.45); border-radius: 999px; padding: 8px 16px; color: #C98207; font-size: 14px; font-weight: 700; }
 .ansim-intercept__label .ms { font-size: 18px; }
