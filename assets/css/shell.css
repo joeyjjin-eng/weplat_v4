@@ -11,7 +11,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webki
 .ms.is-filled{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
 /* 브랜드 심볼 — 흰 바탕 기본(파랑 채움). 그라디언트 위에서는 흰색으로. */
 .brand-symbol{display:block;height:22px;width:auto}
-.screen[data-screen="ansim"] .brand-symbol{filter:brightness(0) invert(1)}
+/* 안심 탭 미가입자 뷰만 밝은 배경 위 밝은 이미지 대비 확보 위해 남겨둠 (그라디언트 히어로 유지 시) */
+.screen[data-screen="ansim"] [data-user-view="unregistered-legacy"] .brand-symbol{filter:brightness(0) invert(1)}
 /* 워드마크 락업(심볼+글자) — 큰 표면(더보기 상단, 스플래시)에서만 사용. */
 .brand-logo{display:block;height:26px;width:auto}
 .noscroll{scrollbar-width:none}

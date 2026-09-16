@@ -1,3 +1,153 @@
-/* 안심 화면 전용 스타일.
-   화면 마크업은 시안 그대로라 인라인 스타일입니다.
-   반복되는 카드·행·CTA를 여기 클래스로 빼내면서 인라인을 걷어내세요. */
+/* 안심 화면 전용 스타일 — 매일 안부 확인.
+   design_handoff_daily_checkin/prototype.html 를 프로젝트 환경(Pretendard, SPA 셸)으로 재현.
+   컴포넌트 스타일은 여기 클래스로 두고 HTML 은 시맨틱하게 유지. */
+
+/* ── 배경: idle 시간대별 미묘 그라디언트 (수채화 톤) / sent=웜 전환 ─── */
+.screen[data-screen="ansim"] {
+  background: linear-gradient(180deg, #F4F7FC 0%, #E5EDF7 50%, #F4F7FC 100%);
+  transition: background 900ms ease;
+}
+/* 아침: 코랄-블루 */
+.screen[data-screen="ansim"].is-morning {
+  background: linear-gradient(155deg, #FFF0E4 0%, #FFECDD 22%, #EEF1FA 58%, #E7EEF7 100%);
+}
+/* 점심: 그린-블루 */
+.screen[data-screen="ansim"].is-lunch {
+  background: linear-gradient(155deg, #E9F6EE 0%, #E0F1E7 22%, #E9EEF6 58%, #E1EAF5 100%);
+}
+/* 저녁: 퍼플-블루 */
+.screen[data-screen="ansim"].is-evening {
+  background: linear-gradient(155deg, #F0E7F6 0%, #E7D9F1 22%, #E7ECF5 58%, #DDE7F4 100%);
+}
+/* 미가입자 뷰 배경 — 베이지→블루 대각선 그라디언트 (웜 톤 살짝 가미) */
+.screen[data-screen="ansim"] [data-user-view="unregistered"] {
+  background: linear-gradient(160deg, #FFF8F3 0%, #FDF2EA 15%, #F4F7FC 40%, #F4F7FC 100%);
+}
+.screen[data-screen="ansim"].is-sent {
+  background:
+    radial-gradient(circle 60vw at 0% 40%, rgba(255,175,130,.60) 0%, transparent 100%),
+    radial-gradient(circle 60vw at 100% 60%, rgba(148,188,255,.60) 0%, transparent 100%),
+    linear-gradient(135deg, #FFF7EA 0%, #F3F8FF 55%);
+}
+/* sent 상태에서는 스테이지 오브(peach/blue/cream) 숨김 — 메시지 주위 블러셔 안 남게 */
+.screen[data-screen="ansim"].is-sent .ansim-stage .orb {
+  display: none;
+}
+
+/* ── Top row (심볼 + 탭 타이틀 + 알림/계정 아이콘) — 다른 탭 헤더 리듬과 일치 ──── */
+.screen[data-screen="ansim"] .ansim-toprow { display: flex; justify-content: space-between; align-items: center; padding: 10px 30px 0; flex: none; position: relative; z-index: 2; }
+.screen[data-screen="ansim"] .ansim-toprow .brand { display: flex; align-items: center; gap: 8px; }
+.screen[data-screen="ansim"] .ansim-toprow .tabname { font-size: 19px; font-weight: 700; color: #101B33; letter-spacing: -.025em; }
+.screen[data-screen="ansim"] .ansim-toprow .icons { display: flex; gap: 12px; align-items: center; color: #4B5875; }
+.screen[data-screen="ansim"] .ansim-toprow .icons .ms { font-size: 20px; }
+.screen[data-screen="ansim"] .ansim-toprow .bell-wrap { position: relative; display: inline-flex; align-items: center; cursor: pointer; }
+.screen[data-screen="ansim"] .ansim-toprow .bell-badge { position: absolute; top: -1px; right: -1px; width: 8px; height: 8px; border-radius: 50%; background: #FF6B45; box-shadow: 0 0 0 1.5px #FBF6ED; }
+
+/* ── Default view root ─────────────────────────────────────── */
+.ansim-checkin-view { flex: 1; display: flex; flex-direction: column; position: relative; isolation: isolate; min-height: 0; z-index: 1; }
+
+/* head — stage 안 flex 아이템. 텍스트 중앙 정렬 + 버튼 바로 위. 상단 여백은 stage 의 justify-center 로 뷰포트 비율만큼 자동 확보 */
+.ansim-checkin-head { text-align: center; flex: none; }
+.ansim-checkin-head .date { font-size: 13px; letter-spacing: .02em; color: #8A94A6; font-weight: 700; }
+.ansim-checkin-head .headline { font-size: 26px; font-weight: 700; color: #101B33; margin-top: 6px; line-height: 1.28; letter-spacing: -.03em; }
+.ansim-checkin-head .headline b { color: #0D76FF; font-weight: 700; }
+
+/* ── Stage (오브 + head + 메인 버튼/메시지) — head↔OK 그룹 중앙 정렬. gap 도 뷰포트 배율 (clamp) */
+.ansim-stage { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(36px, 5.5vh, 68px); padding: 0 30px; position: relative; z-index: 1; min-height: 0; }
+.ansim-stage > .ansim-checkin-head, .ansim-stage > .ansim-ok, .ansim-stage > .ansim-msg { flex: none; position: relative; z-index: 1; }
+
+/* ── Footer (도움 버튼) — 하단 고정, idle/sent 무관하게 위치 유지 */
+.ansim-checkin-foot { padding: 0 30px 22px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 1; flex: none; }
+
+/* 3중 오브 (호흡 애니메이션) — default 뷰 + intercept 뷰 공통. z-index:0 로 텍스트/버튼 뒤. */
+.screen[data-screen="ansim"] .orb { position: absolute; border-radius: 50%; pointer-events: none; z-index: 0; top: 50%; left: 50%; transform: translate(-50%,-50%); }
+.screen[data-screen="ansim"] .orb-a { width: 240px; height: 240px; filter: blur(40px); animation: ansim-breathe-slow 8s ease-in-out infinite;
+  background: radial-gradient(circle at 34% 30%, rgba(255,201,160,.48) 0%, rgba(255,171,125,.30) 30%, rgba(255,160,130,.14) 52%, rgba(255,240,228,0) 78%); }
+.screen[data-screen="ansim"] .orb-b { width: 220px; height: 220px; filter: blur(38px); animation: ansim-breathe-slow 9.5s ease-in-out infinite reverse;
+  background: radial-gradient(circle at 70% 72%, rgba(13,118,255,.40) 0%, rgba(90,160,255,.22) 42%, rgba(190,220,255,0) 74%); }
+.screen[data-screen="ansim"] .orb-c { width: 160px; height: 160px; filter: blur(24px); animation: ansim-breathe 5.4s ease-in-out infinite;
+  background: radial-gradient(circle at 55% 50%, rgba(255,227,196,.36) 0%, rgba(255,214,176,.18) 58%, rgba(255,255,255,0) 84%); }
+
+/* 메인 "괜찮아요" 프로스티드 글래스 버튼 — 240px, 라벨/서브 확대 */
+.ansim-ok { position: relative; width: 240px; height: 240px; border: 0; border-radius: 50%; cursor: pointer;
+  background: rgba(254,253,249,.72); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  font-family: inherit; box-shadow: 0 22px 52px -14px rgba(120,110,150,.34), inset 0 0 0 1px rgba(255,255,255,.85);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  transition: transform .25s ease, box-shadow .25s ease; padding: 0; }
+.ansim-ok:hover { transform: scale(1.03); box-shadow: 0 26px 60px -14px rgba(120,110,150,.42), inset 0 0 0 1px rgba(255,255,255,.95); }
+.ansim-ok:active { transform: scale(.94); }
+.ansim-ok .big { font-size: 36px; font-weight: 700; color: #101B33; letter-spacing: -.035em; }
+.ansim-ok .sub { font-size: 14px; color: #4B5875; letter-spacing: -.01em; font-weight: 600; }
+/* 재알림/워치신호 인터셉트용 컴팩트 사이즈 (레거시, 지금은 안 씀) */
+.ansim-ok--compact { width: 180px; height: 180px; align-self: center; }
+.ansim-ok--compact .big { font-size: 28px; }
+
+/* ── Intercept 뷰 (재알림/워치신호) — 위계: 라벨 → 타이틀 → 컨텍스트 → CTA → 도움 ─── */
+.ansim-intercept { flex: 1; display: flex; flex-direction: column; position: relative; isolation: isolate; z-index: 1; overflow: hidden; }
+.ansim-intercept > .orb { z-index: 0; }
+.ansim-intercept__body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 32px; padding: 24px 24px 0; position: relative; z-index: 1; }
+.ansim-intercept__head { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.ansim-intercept__label { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,176,32,.14); border: 1px solid rgba(255,149,0,.45); border-radius: 999px; padding: 8px 16px; color: #C98207; font-size: 14px; font-weight: 700; }
+.ansim-intercept__label .ms { font-size: 18px; }
+.ansim-intercept__title { font-size: 28px; font-weight: 700; color: #101B33; letter-spacing: -.035em; text-align: center; line-height: 1.28; }
+.ansim-intercept__context { font-size: 15px; color: #4B5875; font-weight: 500; text-align: center; letter-spacing: -.01em; }
+.ansim-intercept__context b { color: #C98207; font-weight: 700; }
+.ansim-intercept__context span { color: #8A94A6; }
+.ansim-intercept__actions { display: flex; flex-direction: column; align-items: center; gap: 16px; flex: none; }
+
+/* 브랜드 컬러 CTA — 원형 + 파랑-보라 그라디언트 */
+.ansim-cta { width: 220px; height: 220px; border: 0; border-radius: 50%;
+  background: linear-gradient(140deg, #0D76FF 0%, #5F6BFF 45%, #7C4DFF 100%); color: #fff;
+  font-family: inherit; font-size: 32px; font-weight: 700; letter-spacing: -.035em;
+  cursor: pointer; box-shadow: 0 20px 44px rgba(88,80,200,.36), 0 0 0 1px rgba(255,255,255,.10) inset;
+  transition: transform .2s ease, box-shadow .2s ease; padding: 0; }
+.ansim-cta:hover { box-shadow: 0 22px 50px rgba(88,80,200,.42), 0 0 0 1px rgba(255,255,255,.14) inset; }
+.ansim-cta:active { transform: scale(.96); }
+/* 인터셉트 뷰의 도움 버튼은 폭 제한 (원형 CTA와 조화) */
+.ansim-intercept__actions .ansim-help { width: 100%; max-width: 340px; }
+
+/* 전송 완료 메시지 (버튼 자리) — 프로젝트 팔레트/웨이트 정렬 */
+.ansim-msg { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
+  animation: ansim-rise-in .9s .5s cubic-bezier(.2,.8,.2,1) both; padding: 0 24px; }
+.ansim-msg .eyebrow { font-size: 14px; letter-spacing: .04em; color: #4B5875; font-weight: 700; }
+.ansim-msg .title { font-size: 28px; font-weight: 700; color: #101B33; letter-spacing: -.03em; line-height: 1.3; }
+.ansim-msg .body { font-size: 15px; color: #101B33; line-height: 1.4; font-weight: 500; }
+
+/* ── Paint bleed (전송 시 배경 워시) ─────────────────────────
+   protected 뷰 전체를 덮음(헤더 포함). 그라디언트 끝은 배경색(#fefdf9)의 알파 0 — transparent 쓰면 회색 링. */
+.ansim-bleed { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.ansim-bleed .bleed { position: absolute; top: 50%; left: 50%; }
+.ansim-bleed .bleed-warm { width: 560px; height: 560px; margin: -280px 0 0 -280px;
+  border-radius: 48% 52% 44% 56% / 52% 46% 54% 48%; filter: blur(58px);
+  background: radial-gradient(circle at 46% 44%, rgba(255,155,110,.72) 0%, rgba(255,175,130,.48) 38%, rgba(255,210,180,.18) 62%, rgba(255,252,247,0) 80%);
+  animation: ansim-bleed 2.6s cubic-bezier(.16,.8,.24,1) forwards; }
+.ansim-bleed .bleed-cool { width: 560px; height: 560px; margin: -280px 0 0 -280px;
+  border-radius: 56% 44% 58% 42% / 44% 56% 42% 58%; filter: blur(64px);
+  background: radial-gradient(circle at 60% 58%, rgba(13,118,255,.62) 0%, rgba(90,160,255,.36) 42%, rgba(190,220,255,.12) 66%, rgba(255,252,247,0) 82%);
+  animation: ansim-bleed-soft 3.2s cubic-bezier(.16,.8,.24,1) forwards; }
+
+/* 도움 요청 버튼 — 프로스티드 화이트 + 코랄 보더/텍스트. 워시 위에서 명확히 분리되도록. */
+.ansim-help { width: 100%; max-width: 340px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 17px 0;
+  border: 1px solid rgba(255,107,69,.40); border-radius: 22px; background: rgba(255,255,255,.78); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  color: #DC4E30; font-size: 16px; font-weight: 700;
+  letter-spacing: -.02em; cursor: pointer; font-family: inherit; box-shadow: 0 8px 20px rgba(160,60,40,.10);
+  transition: background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease; }
+.ansim-help:hover { background: rgba(255,255,255,.92); }
+.ansim-help:active { transform: scale(.99); }
+.ansim-help .ms { font-size: 22px; }
+/* 2단 확인 armed 상태 — 프로젝트 앰버 톤 */
+.ansim-help.is-armed { background: rgba(255,176,32,.18); border-color: #FFB640; color: #C98207; box-shadow: 0 6px 18px rgba(255,149,0,.16); font-size: 14px; }
+.ansim-help.is-armed .ms { font-size: 20px; }
+
+/* ── Motion ──────────────────────────────────────────────── */
+@keyframes ansim-breathe      { 0%,100% { transform: scale(1);    opacity: .92; } 50% { transform: scale(1.09);            opacity: 1;  } }
+@keyframes ansim-breathe-slow { 0%,100% { transform: scale(1.02) rotate(0);      } 50% { transform: scale(1.14) rotate(8deg);            } }
+@keyframes ansim-bleed        { 0%      { transform: scale(.22) rotate(0); opacity: 0; } 22% { opacity: 1;   } 70% { opacity: .35; } 100% { transform: scale(2)   rotate(26deg);  opacity: 0; } }
+@keyframes ansim-bleed-soft   { 0%      { transform: scale(.32) rotate(0); opacity: 0; } 28% { opacity: .95; } 70% { opacity: .30; } 100% { transform: scale(2.4) rotate(-20deg); opacity: 0; } }
+@keyframes ansim-rise-in      { 0% { opacity: 0; transform: translateY(14px); } 100% { opacity: 1; transform: translateY(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .screen[data-screen="ansim"] .orb { animation: none; }
+  .ansim-bleed .bleed { animation-duration: .01s; }
+  .ansim-msg { animation: none; }
+}

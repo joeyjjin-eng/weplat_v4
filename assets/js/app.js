@@ -116,73 +116,100 @@
   // 초기 렌더 후 한 번 호출
   requestAnimationFrame(updateCarousels);
 
-  // 안심 탭 체크인
-  //   - 괜찮아요 클릭: 카드 내부(아이콘·색·텍스트)만 인플레이스 토글. 도움이 필요해요는 상시.
-  //   - 도움이 필요해요 클릭: 같은 자리에서 "다시 한 번 눌러주세요"로 바뀜 → 다시 누르면 뷰 전환.
-  //     오조작 방지. 5초 안에 재클릭 없으면 원상복구.
+  // 안심 탭 체크인 (design_handoff_daily_checkin)
+  //   - 괜찮아요 클릭: 헤드라인 스왑 + 메시지 라이즈인 + 페인트 블리드 워시 + 스트릭 +1
+  //   - 도움이 필요해요 클릭: 같은 자리에서 arm(2단 확인) → 5초 안 재클릭시 도움 뷰로 전환
+  //   - 다시 보내기: idle 상태로 복귀 (블리드 숨김)
   var checkinViews = document.querySelectorAll('[data-checkin-view]');
-  var checkinIconwrap = document.querySelector('[data-checkin-iconwrap]');
-  var checkinIcon = document.querySelector('[data-checkin-icon]');
-  var checkinLabel = document.querySelector('[data-checkin-label]');
-  var checkinTitle = document.querySelector('[data-checkin-title]');
-  var helpBtn = document.querySelector('[data-checkin-btn="help"]');
+  var helpBtn = document.querySelector('[data-checkin-view="default"] [data-checkin-btn="help"]');
   var checkedIn = false;
   var helpConfirming = false;
   var helpTimer = null;
+
+  // 시간대별 질문·답변 세트. dev 스위처로 전환하거나 실제 배포 시 서버 시간 기반으로 선택.
+  var TIME_CONTENT = {
+    morning: { question: '아침 컨디션<br>어떠세요?',   answer: '좋아요' },
+    lunch:   { question: '점심은 드셨어요?',           answer: '잘 먹었어요' },
+    evening: { question: '오늘 하루<br>어떠셨어요?',   answer: '잘 지냈어요' }
+  };
+  var currentTime = 'morning';
+
+  function setTimeOfDay(time) {
+    if (!TIME_CONTENT[time]) return;
+    currentTime = time;
+    // 배경 클래스 토글 — idle 시간대별 수채화 톤
+    var mainScreen = document.querySelector('.screen[data-screen="ansim"]');
+    if (mainScreen) {
+      mainScreen.classList.remove('is-morning', 'is-lunch', 'is-evening');
+      mainScreen.classList.add('is-' + time);
+    }
+    var bigLabel = document.querySelector('.ansim-ok .big');
+    if (bigLabel) bigLabel.textContent = TIME_CONTENT[time].answer;
+    // idle 상태일 때만 헤드라인 시간대 질문으로 갱신 (sent 상태는 그대로 유지)
+    if (!checkedIn) {
+      var headline = document.querySelector('[data-checkin-headline]');
+      if (headline) headline.innerHTML = TIME_CONTENT[time].question;
+    }
+  }
 
   function setCheckinView(view) {
     checkinViews.forEach(function (v) {
       v.hidden = v.getAttribute('data-checkin-view') !== view;
     });
+    // 블리드는 default 뷰 + sent 상태일 때만 노출. 다른 뷰 열면 감춰서 웜 워시가 새어나가지 않게.
+    var bleed = document.querySelector('[data-checkin-bleed]');
+    if (bleed) bleed.hidden = !(view === 'default' && checkedIn);
   }
   function setCheckedIn(done) {
     checkedIn = done;
-    var okCard = document.querySelector('[data-checkin-view="default"] [data-checkin-btn="ok"]');
+    var okBtn = document.querySelector('[data-checkin-view="default"] [data-checkin-btn="ok"]');
+    var msg = document.querySelector('[data-checkin-msg]');
+    var head = document.querySelector('.ansim-checkin-head');
+    var headline = document.querySelector('[data-checkin-headline]');
+    var bleed = document.querySelector('[data-checkin-bleed]');
+    var mainScreen = document.querySelector('.screen[data-screen="ansim"]');
     if (done) {
-      // 흰 카드 그대로, 아이콘과 글자만 옅게
-      checkinIconwrap.style.background = 'linear-gradient(150deg,#00A98D,#0D76FF)';
-      checkinIconwrap.style.boxShadow = '0 14px 32px rgba(0,169,141,.34)';
-      checkinIconwrap.style.opacity = '.35';
-      checkinIcon.textContent = 'check_circle';
-      checkinIcon.classList.add('is-filled');
-      checkinLabel.textContent = '완료';
-      checkinLabel.style.opacity = '.4';
-      checkinTitle.textContent = '오늘도 확인됐어요';
-      if (okCard) {
-        okCard.style.background = '#fff';
-        okCard.style.border = 'none';
-        okCard.style.boxShadow = '0 20px 44px rgba(5,27,80,.22)';
-        okCard.style.cursor = 'default';
+      if (okBtn) okBtn.hidden = true;
+      if (msg) msg.hidden = false;
+      if (head) head.hidden = true;
+      if (mainScreen) mainScreen.classList.add('is-sent');
+      // 페인트 블리드 리플레이 (매번 처음부터)
+      if (bleed) {
+        bleed.hidden = true;
+        void bleed.offsetWidth;
+        bleed.hidden = false;
+        Array.prototype.forEach.call(bleed.children, function (c) {
+          c.style.animation = 'none';
+          void c.offsetWidth;
+          c.style.animation = '';
+        });
+      }
+      if (msg) {
+        msg.style.animation = 'none';
+        void msg.offsetWidth;
+        msg.style.animation = '';
       }
     } else {
-      checkinIconwrap.style.background = 'linear-gradient(150deg,#0D76FF,#5F6BFF)';
-      checkinIconwrap.style.boxShadow = '0 14px 32px rgba(13,118,255,.34)';
-      checkinIconwrap.style.opacity = '1';
-      checkinIcon.textContent = 'thumb_up';
-      checkinIcon.classList.remove('is-filled');
-      checkinLabel.textContent = '괜찮아요';
-      checkinLabel.style.opacity = '1';
-      checkinTitle.textContent = '지금 괜찮으신가요?';
-      if (okCard) {
-        okCard.style.background = '#fff';
-        okCard.style.border = 'none';
-        okCard.style.boxShadow = '0 20px 44px rgba(5,27,80,.22)';
-        okCard.style.cursor = 'pointer';
-      }
+      if (okBtn) okBtn.hidden = false;
+      if (msg) msg.hidden = true;
+      if (head) head.hidden = false;
+      if (mainScreen) mainScreen.classList.remove('is-sent');
+      if (headline) headline.innerHTML = TIME_CONTENT[currentTime].question;
+      if (bleed) bleed.hidden = true;
     }
   }
   function resetHelpBtn() {
     helpConfirming = false;
     if (helpTimer) { clearTimeout(helpTimer); helpTimer = null; }
-    helpBtn.innerHTML = '<span class="ms" style="font-size:26px">emergency_home</span>도움이 필요해요';
-    helpBtn.style.background = 'rgba(255,255,255,.18)';
-    helpBtn.style.borderColor = 'rgba(255,255,255,.46)';
+    if (!helpBtn) return;
+    helpBtn.classList.remove('is-armed');
+    helpBtn.innerHTML = '<span class="ms">emergency_home</span>도움이 필요해요';
   }
   function armHelpBtn() {
     helpConfirming = true;
-    helpBtn.innerHTML = '<span class="ms" style="font-size:26px">emergency_home</span>한번 더 누르면 보호자에게 도움을 요청합니다';
-    helpBtn.style.background = 'rgba(255,183,64,.30)';
-    helpBtn.style.borderColor = 'rgba(255,206,120,.7)';
+    if (!helpBtn) return;
+    helpBtn.classList.add('is-armed');
+    helpBtn.innerHTML = '<span class="ms">emergency_home</span>한번 더 누르면 보호자에게 도움을 요청합니다';
     helpTimer = setTimeout(resetHelpBtn, 5000);
   }
 
@@ -190,7 +217,7 @@
     el.addEventListener('click', function () {
       var action = el.getAttribute('data-checkin-btn');
       if (action === 'ok') {
-        setCheckedIn(!checkedIn);
+        setCheckedIn(true);
       } else if (action === 'help') {
         if (helpConfirming) { resetHelpBtn(); setCheckinView('help'); }
         else armHelpBtn();
@@ -212,10 +239,25 @@
     });
   });
 
-  // dev 스위처 — 안심 탭 시연용 사용자·화면 전환
+  // dev 스위처 — 안심 탭 시연용 사용자·화면·시간대 전환
   var userViews = document.querySelectorAll('[data-user-view]');
   var devUser = document.querySelector('[data-dev-user]');
   var devView = document.querySelector('[data-dev-view]');
+  var devTime = document.querySelector('[data-dev-time]');
+  // 스위처 토글 (최소화/확장)
+  var devToggle = document.querySelector('[data-dev-toggle]');
+  var devBody = document.querySelector('[data-dev-body]');
+  var devIcon = document.querySelector('[data-dev-icon]');
+  if (devToggle && devBody) devToggle.addEventListener('click', function () {
+    var wasHidden = devBody.hidden;
+    devBody.hidden = !wasHidden;
+    if (devIcon) devIcon.textContent = wasHidden ? '−' : '+';
+  });
+  if (devTime) devTime.addEventListener('change', function () {
+    setTimeOfDay(devTime.value);
+  });
+  // 초기 시간대 적용 (스위처 기본값과 동기화)
+  setTimeOfDay(devTime ? devTime.value : 'morning');
   function setUserView(name) {
     userViews.forEach(function (v) {
       v.hidden = v.getAttribute('data-user-view') !== name;
@@ -223,6 +265,9 @@
   }
   if (devUser) devUser.addEventListener('change', function () {
     setUserView(devUser.value);
+    // 사용자 뷰 전환 시 블리드는 무조건 리셋 (보호자/미가입자 뷰에 웜 워시 새어나가지 않게)
+    var bleed = document.querySelector('[data-checkin-bleed]');
+    if (bleed) bleed.hidden = true;
     // 대상자로 돌아올 때는 안심 탭도 기본 화면으로 복귀
     if (devUser.value === 'protected') {
       setCheckinView('default');
