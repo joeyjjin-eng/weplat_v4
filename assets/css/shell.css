@@ -48,8 +48,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webki
 .tab__icon{font-size:24px}
 .tab__label{font-size:13px;font-weight:600}
 
-/* dev 스위처는 안심 탭에서만 노출 (안심 상태 시연용) */
-body:not([data-tab="ansim"]) #dev-switcher{display:none}
+/* dev 스위처는 안심 탭에서만 노출 (안심 상태 시연용).
+   #dev-switcher 인라인 display:flex 이겨야 해서 !important. */
+body:not([data-tab="ansim"]) #dev-switcher{display:none!important}
 .tab.is-active{color:var(--blue-500)}
 .tab.is-active .tab__label{font-weight:700}
 .tab:active{opacity:.7}
