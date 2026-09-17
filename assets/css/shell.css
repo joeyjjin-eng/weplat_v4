@@ -46,7 +46,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webki
 .tabbar{flex:none;height:calc(var(--tabbar-h) + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line);display:flex;align-items:flex-start;padding:0 4px calc(6px + env(safe-area-inset-bottom))}
 .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink-400);padding:12px 0 10px}
 .tab__icon{font-size:24px}
-.tab__label{font-size:12px;font-weight:600}
+.tab__label{font-size:13px;font-weight:600}
+
+/* dev 스위처는 안심 탭에서만 노출 (안심 상태 시연용) */
+body:not([data-tab="ansim"]) #dev-switcher{display:none}
 .tab.is-active{color:var(--blue-500)}
 .tab.is-active .tab__label{font-weight:700}
 .tab:active{opacity:.7}
