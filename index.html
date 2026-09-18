@@ -309,15 +309,15 @@
     </div>
     <div style="font-size:14px;font-weight:700;color:#54617A;flex:none;margin-top:4px">청구·가입</div>
     <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;overflow:hidden;flex:none">
-      <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #EEF1F7">
+      <div data-file-start style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #EEF1F7;cursor:pointer">
         <div style="width:36px;height:36px;border-radius:12px;background:rgba(13,118,255,.12);color:#0D76FF;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">receipt_long</span></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:700;letter-spacing:-.02em">보험금 청구</div><div style="font-size:13px;color:#5C6880">안내부터 서류 제출까지</div></div>
         <span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;padding:14px 16px">
+      <div data-history-start style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer">
         <div style="width:36px;height:36px;border-radius:12px;background:rgba(0,201,167,.16);color:#00A98D;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">fact_check</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:700;letter-spacing:-.02em">내 청구 진행 현황</div><div style="font-size:13px;color:#5C6880">1건 심사 중</div></div>
-        <div style="background:rgba(255,176,32,.20);color:#C98207;font-size:13px;font-weight:700;padding:5px 10px;border-radius:999px;flex:none">심사중</div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:700;letter-spacing:-.02em">내 청구 진행 현황</div><div style="font-size:13px;color:#5C6880" data-history-summary>1건 접수 · 3건 완료</div></div>
+        <span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span>
       </div>
     </div>
     <div style="background:#3D4A66;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:16px;flex:none;box-shadow:0 10px 24px rgba(11,27,58,.14)">
@@ -403,30 +403,36 @@
 
     <div class="claim-flow__body claim-result-body" data-claim-view="result" hidden>
       <div class="claim-filters">
-        <div class="claim-filter-row">
-          <div class="claim-filter-row__label"><span class="ms">event</span>년도</div>
-          <div class="claim-filter-chips" data-result-year>
-            <button type="button" class="claim-chip" data-year="2025">2025</button>
-            <button type="button" class="claim-chip" data-year="2024">2024</button>
-            <button type="button" class="claim-chip" data-year="2023">2023</button>
-            <button type="button" class="claim-chip is-picked" data-year="2022">2022</button>
-            <button type="button" class="claim-chip" data-year="2021">2021</button>
+        <div class="claim-filter">
+          <div class="claim-filter__label">년도</div>
+          <div class="claim-seg" data-result-year>
+            <button type="button" class="claim-seg__item" data-year="2025">2025</button>
+            <button type="button" class="claim-seg__item" data-year="2024">2024</button>
+            <button type="button" class="claim-seg__item" data-year="2023">2023</button>
+            <button type="button" class="claim-seg__item is-picked" data-year="2022">2022</button>
+            <button type="button" class="claim-seg__item" data-year="2021">2021</button>
           </div>
         </div>
-        <div class="claim-filter-row">
-          <div class="claim-filter-row__label"><span class="ms">shield</span>세대</div>
-          <div class="claim-filter-chips" data-result-gen>
-            <button type="button" class="claim-chip" data-gen="1">1세대</button>
-            <button type="button" class="claim-chip is-picked" data-gen="2">2세대</button>
-            <button type="button" class="claim-chip" data-gen="3">3세대</button>
-            <button type="button" class="claim-chip" data-gen="4">4세대</button>
+        <div class="claim-filter">
+          <div class="claim-filter__label">세대
+            <button type="button" class="info-btn" data-info-toggle="gen" aria-label="세대 설명"><span class="ms">help</span></button>
+          </div>
+          <div class="claim-seg" data-result-gen>
+            <button type="button" class="claim-seg__item" data-gen="1">1세대</button>
+            <button type="button" class="claim-seg__item is-picked" data-gen="2">2세대</button>
+            <button type="button" class="claim-seg__item" data-gen="3">3세대</button>
+            <button type="button" class="claim-seg__item" data-gen="4">4세대</button>
           </div>
         </div>
-        <div class="claim-filter-desc" data-result-gen-desc>표준화 실손 · 2009.10~2017.3 · 자기부담 10~20%</div>
+        <div class="info-tip" data-info-tip="gen" hidden>실손보험 세대별 자기부담률이 달라 <b>추정 청구 실익</b>이 달라집니다.</div>
+        <div class="claim-filter-desc">
+          <div class="gen-desc__title" data-result-gen-title>표준화 실손 · 2009.10~2017.3</div>
+          <div class="gen-desc__body" data-result-gen-body>급여·비급여 자기부담 10~20% 수준입니다.</div>
+        </div>
       </div>
 
       <div class="claim-result__title">
-        <div class="claim-result__title-main">미청구보험금 계산 결과</div>
+        <div class="claim-result__title-main">받을 수 있는 보험금</div>
         <div class="claim-result__title-sub" data-result-context>2022년 · 2세대 실손보험 기준</div>
       </div>
 
@@ -437,18 +443,33 @@
 
       <div class="claim-calc">
         <div class="calc-card">
-          <div class="calc-card__label">의료비</div>
-          <div class="calc-card__amount"><span data-result-total>1,122,370</span><small>원</small></div>
+          <div class="calc-card__head">
+            <div class="calc-card__label">의료비
+              <button type="button" class="info-btn" data-info-toggle="medical" aria-label="의료비 설명"><span class="ms">help</span></button>
+            </div>
+            <div class="calc-card__amount"><span data-result-total>1,122,370</span><small>원</small></div>
+          </div>
+          <div class="calc-card__tip" data-info-tip="medical" hidden>의료비는 <b>사고년도도 기준</b>이며, 본인 건만 집계합니다. (부양가족 제외)</div>
         </div>
         <div class="calc-op">−</div>
         <div class="calc-card">
-          <div class="calc-card__label">받은 실손보험금</div>
-          <div class="calc-card__amount"><span data-result-received>648,770</span><small>원</small></div>
+          <div class="calc-card__head">
+            <div class="calc-card__label">받은 실손보험금
+              <button type="button" class="info-btn" data-info-toggle="received" aria-label="받은 실손보험금 설명"><span class="ms">help</span></button>
+            </div>
+            <div class="calc-card__amount"><span data-result-received>648,770</span><small>원</small></div>
+          </div>
+          <div class="calc-card__tip" data-info-tip="received" hidden>받은 실손보험금은 <b>수령일 기준</b>이며, 의료비와 동일하게 본인 건만 집계합니다.</div>
         </div>
         <div class="calc-op">=</div>
         <div class="calc-card calc-card--total">
-          <div class="calc-card__label">놓친 보험금</div>
-          <div class="calc-card__amount"><span data-result-missed>473,600</span><small>원</small></div>
+          <div class="calc-card__head">
+            <div class="calc-card__label">놓친 보험금
+              <button type="button" class="info-btn" data-info-toggle="missed" aria-label="놓친 보험금 설명"><span class="ms">help</span></button>
+            </div>
+            <div class="calc-card__amount"><span data-result-missed>473,600</span><small>원</small></div>
+          </div>
+          <div class="calc-card__tip" data-info-tip="missed" hidden>놓친 보험금은 가입하신 실손의 <b>자기부담금이 미공제</b>된 상태입니다.</div>
         </div>
       </div>
 
@@ -471,6 +492,352 @@
       </div>
       <div data-claim-footer="result" hidden>
         <button type="button" class="claim-submit" data-claim-result-done>청구 방법 안내받기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       보험금 청구 (file-flow) — 다단계 폼 오버레이
+       ============================================================ -->
+  <section data-file-flow class="file-flow" hidden aria-label="보험금 청구">
+    <div class="file-flow__topbar">
+      <button type="button" data-file-back class="file-icon-btn" aria-label="이전으로"><span class="ms">arrow_back</span></button>
+      <div class="file-flow__title"><strong>보험금 청구</strong></div>
+      <button type="button" data-file-close class="file-icon-btn" aria-label="닫기"><span class="ms">close</span></button>
+    </div>
+    <div class="file-flow__progress"><div class="file-flow__progress-bar" data-file-progress></div></div>
+
+    <div class="file-flow__body">
+      <!-- 1. 보험사 선택 -->
+      <div class="file-view" data-file-view="carrier">
+        <h2 class="file-view__title">보험금을 청구할<br>보험사를 선택해 주세요</h2>
+        <div class="file-view__memo"></div>
+        <div class="file-section">
+          <div class="file-section__label">손해보험</div>
+          <div class="file-carrier-grid">
+            <button type="button" class="file-carrier" data-carrier="현대해상"><img class="file-carrier__logo" src="assets/icn_blogo_hd_s.png" alt=""><span class="file-carrier__name">현대해상</span></button>
+            <button type="button" class="file-carrier" data-carrier="삼성화재"><img class="file-carrier__logo" src="assets/icn_blogo_ss_s.png" alt=""><span class="file-carrier__name">삼성화재</span></button>
+            <button type="button" class="file-carrier" data-carrier="메리츠화재"><img class="file-carrier__logo" src="assets/icn_blogo_mz_s.png" alt=""><span class="file-carrier__name">메리츠화재</span></button>
+            <button type="button" class="file-carrier" data-carrier="DB손해보험"><img class="file-carrier__logo" src="assets/icn_blogo_db_s.png" alt=""><span class="file-carrier__name">DB손해</span></button>
+            <button type="button" class="file-carrier" data-carrier="KB손해보험"><img class="file-carrier__logo" src="assets/icn_blogo_kb_s.png" alt=""><span class="file-carrier__name">KB손해</span></button>
+            <button type="button" class="file-carrier" data-carrier="롯데손해보험"><img class="file-carrier__logo" src="assets/icn_blogo_lt_s.png" alt=""><span class="file-carrier__name">롯데손해</span></button>
+            <button type="button" class="file-carrier" data-carrier="한화손해보험"><img class="file-carrier__logo" src="assets/icn_blogo_hh_s.png" alt=""><span class="file-carrier__name">한화손해</span></button>
+            <button type="button" class="file-carrier" data-carrier="NH농협손해"><img class="file-carrier__logo" src="assets/icn_blogo_nh_s.png" alt=""><span class="file-carrier__name">NH농협</span></button>
+            <button type="button" class="file-carrier" data-carrier="흥국화재"><img class="file-carrier__logo" src="assets/icn_blogo_hk_s.png" alt=""><span class="file-carrier__name">흥국화재</span></button>
+            <button type="button" class="file-carrier" data-carrier="AIG손해"><img class="file-carrier__logo" src="assets/icn_blogo_aig_s.png" alt=""><span class="file-carrier__name">AIG손해</span></button>
+            <button type="button" class="file-carrier" data-carrier="하나손해보험"><img class="file-carrier__logo" src="assets/icn_blogo_hnsh_s.png" alt=""><span class="file-carrier__name">하나손해</span></button>
+            <button type="button" class="file-carrier" data-carrier="라이나손해보험"><img class="file-carrier__logo" src="assets/icn_blogo_lina_s.png" alt=""><span class="file-carrier__name">라이나손보</span></button>
+            <button type="button" class="file-carrier" data-carrier="예별손해보험"><img class="file-carrier__logo" src="assets/icn_blogo_yb_s.png" alt=""><span class="file-carrier__name">예별손보</span></button>
+          </div>
+        </div>
+        <div class="file-section">
+          <div class="file-section__label">생명보험</div>
+          <div class="file-carrier-grid">
+            <button type="button" class="file-carrier" data-carrier="KB생명"><img class="file-carrier__logo" src="assets/icn_blogo_kb_s.png" alt=""><span class="file-carrier__name">KB생명</span></button>
+            <button type="button" class="file-carrier" data-carrier="DB생명"><img class="file-carrier__logo" src="assets/icn_blogo_db_s.png" alt=""><span class="file-carrier__name">DB생명</span></button>
+            <button type="button" class="file-carrier" data-carrier="NH농협생명"><img class="file-carrier__logo" src="assets/icn_blogo_nh_s.png" alt=""><span class="file-carrier__name">NH농협</span></button>
+            <button type="button" class="file-carrier" data-carrier="라이나생명"><img class="file-carrier__logo" src="assets/icn_blogo_lina_s.png" alt=""><span class="file-carrier__name">라이나</span></button>
+            <button type="button" class="file-carrier" data-carrier="AIA생명"><img class="file-carrier__logo" src="assets/icn_blogo_aia_s.png" alt=""><span class="file-carrier__name">AIA</span></button>
+            <button type="button" class="file-carrier" data-carrier="ABL생명"><img class="file-carrier__logo" src="assets/icn_logo_abl_s.png" alt=""><span class="file-carrier__name">ABL</span></button>
+            <button type="button" class="file-carrier" data-carrier="처브라이프"><img class="file-carrier__logo" src="assets/icn_blogo_cb_s.png" alt=""><span class="file-carrier__name">처브라이프</span></button>
+            <button type="button" class="file-carrier" data-carrier="IM라이프"><img class="file-carrier__logo" src="assets/icn_blogo_iml_s.png" alt=""><span class="file-carrier__name">IM라이프</span></button>
+            <button type="button" class="file-carrier" data-carrier="카디프생명"><img class="file-carrier__logo" src="assets/icn_blogo_cardif_s.png" alt=""><span class="file-carrier__name">카디프</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 피보험자 -->
+      <div class="file-view" data-file-view="insured" hidden>
+        <h2 class="file-view__title">진료받은 분의<br>정보를 입력해 주세요</h2>
+        <div class="file-form">
+          <div class="file-field">
+            <div class="file-field__label">나와의 관계</div>
+            <div class="file-chips" data-file-relation>
+              <button type="button" class="file-chip is-picked" data-relation="본인">본인</button>
+              <button type="button" class="file-chip" data-relation="자녀">자녀</button>
+            </div>
+            <div class="file-field__memo" data-file-relation-memo hidden>만 19세 미만 자녀만 청구 가능해요</div>
+          </div>
+          <div class="file-field">
+            <div class="file-field__label">이름</div>
+            <input type="text" class="file-input" data-file-insured-name placeholder="예: 홍길동" autocomplete="name">
+          </div>
+          <div class="file-field">
+            <div class="file-field__label">주민등록번호</div>
+            <div class="file-ssn">
+              <input type="text" class="file-input" data-file-insured-ssn-front placeholder="앞 6자리" maxlength="6" inputmode="numeric">
+              <span class="file-ssn__dash">－</span>
+              <input type="password" class="file-input" data-file-insured-ssn-back placeholder="뒷 7자리" maxlength="7" inputmode="numeric">
+            </div>
+            <div class="file-field__warn" data-file-minor-warn hidden>만 19세 미만 자녀만 청구 가능해요. 성인 자녀는 본인이 직접 청구해야 해요</div>
+          </div>
+          <div class="file-field">
+            <div class="file-field__label">휴대폰번호</div>
+            <input type="tel" class="file-input" data-file-insured-phone placeholder="숫자만 11자리" inputmode="numeric" maxlength="11" autocomplete="tel">
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. 수익자 -->
+      <div class="file-view" data-file-view="beneficiary" hidden>
+        <h2 class="file-view__title">수익자 정보를<br>확인해 주세요</h2>
+        <div class="file-view__memo" data-file-beneficiary-memo>보험금을 받을 분의 정보예요</div>
+        <div class="file-form">
+          <div class="file-field">
+            <div class="file-field__label">이름</div>
+            <input type="text" class="file-input" data-file-beneficiary-name placeholder="예: 홍길동" autocomplete="name">
+          </div>
+          <div class="file-field">
+            <div class="file-field__label">주민등록번호</div>
+            <div class="file-ssn">
+              <input type="text" class="file-input" data-file-beneficiary-ssn-front placeholder="앞 6자리" maxlength="6" inputmode="numeric">
+              <span class="file-ssn__dash">－</span>
+              <input type="password" class="file-input" data-file-beneficiary-ssn-back placeholder="뒷 7자리" maxlength="7" inputmode="numeric">
+            </div>
+          </div>
+          <div class="file-field">
+            <div class="file-field__label">휴대폰번호</div>
+            <input type="tel" class="file-input" data-file-beneficiary-phone placeholder="숫자만 11자리" inputmode="numeric" maxlength="11" autocomplete="tel">
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 사고사항 -->
+      <div class="file-view" data-file-view="accident" hidden>
+        <h2 class="file-view__title">아프기 시작한 날짜</h2>
+        <div class="file-form">
+          <div class="file-field">
+            <div class="file-field__label">청구유형</div>
+            <div class="file-radio-cards" data-file-accident-type>
+              <button type="button" class="file-radio-card is-picked" data-accident-type="질병">
+                <div class="file-radio-card__title">질병</div>
+                <div class="file-radio-card__sub">몸이 아팠어요</div>
+              </button>
+              <button type="button" class="file-radio-card" data-accident-type="상해">
+                <div class="file-radio-card__title">상해</div>
+                <div class="file-radio-card__sub">사고로 다쳤어요</div>
+              </button>
+            </div>
+          </div>
+          <div class="file-field">
+            <div class="file-field__label" data-accident-date-label>치료받은 날짜</div>
+            <input type="date" class="file-input" data-file-accident-date>
+          </div>
+          <div class="file-field">
+            <div class="file-field__label">증상</div>
+            <textarea class="file-input file-textarea" data-file-accident-symptoms
+              data-ph-illness="예) 감기몸살, 어깨통증, 어지러움"
+              data-ph-injury="예) 넘어짐, 골절"
+              placeholder="예) 감기몸살, 어깨통증, 어지러움" rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. 보험금 받을 계좌 -->
+      <div class="file-view" data-file-view="bank" hidden>
+        <h2 class="file-view__title">보험금 받을<br>계좌를 알려주세요</h2>
+        <div class="file-form">
+          <div class="file-field">
+            <div class="file-field__label">은행</div>
+            <select class="file-input" data-file-bank-name>
+              <option value="">은행 선택</option>
+              <option>KB국민은행</option>
+              <option>신한은행</option>
+              <option>우리은행</option>
+              <option>하나은행</option>
+              <option>NH농협은행</option>
+              <option>IBK기업은행</option>
+              <option>카카오뱅크</option>
+              <option>토스뱅크</option>
+              <option>케이뱅크</option>
+              <option>SC제일은행</option>
+              <option>부산은행</option>
+              <option>경남은행</option>
+              <option>대구은행</option>
+              <option>광주은행</option>
+              <option>전북은행</option>
+              <option>제주은행</option>
+              <option>수협은행</option>
+              <option>새마을금고</option>
+              <option>우체국</option>
+            </select>
+          </div>
+          <div class="file-field">
+            <div class="file-field__label">계좌번호</div>
+            <input type="text" class="file-input" data-file-bank-account placeholder="'-' 없이 입력" inputmode="numeric">
+          </div>
+          <div class="file-field">
+            <div class="file-field__label">예금주 <span class="file-field__hint">수익자와 동일</span></div>
+            <input type="text" class="file-input" data-file-bank-holder readonly>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. 피보험자 서명 -->
+      <div class="file-view" data-file-view="sign-insured" hidden>
+        <h2 class="file-view__title" data-sign-insured-title>피보험자 서명을<br>해주세요</h2>
+        <div class="file-view__memo" data-sign-insured-memo>아래 영역에 손가락으로 서명해 주세요</div>
+        <div class="file-sign">
+          <canvas data-file-sign-insured class="file-sign__canvas"></canvas>
+          <button type="button" class="file-sign__clear" data-file-sign-clear="insured">
+            <span class="ms">refresh</span>지우기
+          </button>
+        </div>
+      </div>
+
+      <!-- 7. 수익자 서명 (관계=자녀일 때만) -->
+      <div class="file-view" data-file-view="sign-beneficiary" hidden>
+        <h2 class="file-view__title">수익자 서명을<br>해주세요</h2>
+        <div class="file-view__memo">보험금을 받는 분(=나)의 서명이에요</div>
+        <div class="file-sign">
+          <canvas data-file-sign-beneficiary class="file-sign__canvas"></canvas>
+          <button type="button" class="file-sign__clear" data-file-sign-clear="beneficiary">
+            <span class="ms">refresh</span>지우기
+          </button>
+        </div>
+      </div>
+
+      <!-- 8. 법정대리인 서명 (관계=자녀일 때만) -->
+      <div class="file-view" data-file-view="sign-guardian" hidden>
+        <h2 class="file-view__title">법정대리인 서명을<br>해주세요</h2>
+        <div class="file-view__memo">미성년 자녀 청구는 법정대리인(부모)님 서명이 추가로 필요해요</div>
+        <div class="file-sign">
+          <canvas data-file-sign-guardian class="file-sign__canvas"></canvas>
+          <button type="button" class="file-sign__clear" data-file-sign-clear="guardian">
+            <span class="ms">refresh</span>지우기
+          </button>
+        </div>
+      </div>
+
+      <!-- 8. 사진 첨부 -->
+      <div class="file-view" data-file-view="photos" hidden>
+        <h2 class="file-view__title">서류 사진을<br>첨부해 주세요</h2>
+        <div class="file-view__memo">진단서·영수증 등, 최대 10장 (<span data-file-photo-count>0</span>/10)</div>
+        <div class="file-photos" data-file-photos>
+          <button type="button" class="file-photo-add" data-file-photo-add>
+            <span class="ms">add_photo_alternate</span>
+            <span>사진 추가</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 9. 검토 -->
+      <div class="file-view" data-file-view="review" hidden>
+        <h2 class="file-view__title">정보가 정확한지<br>확인해 주세요</h2>
+        <div class="file-review">
+          <!-- 청구할 보험사 -->
+          <div class="review-section">
+            <div class="review-section__label">청구할 보험사 <span data-review-carrier-count></span></div>
+            <div class="review-carrier-list" data-review-carrier-list></div>
+          </div>
+
+          <!-- 인적사항 -->
+          <div class="review-section">
+            <div class="review-section__label">인적사항</div>
+            <div class="review-person">
+              <div class="review-person__row">
+                <div class="review-person__k">피보험자</div>
+                <div class="review-person__v">
+                  <div class="review-person__name" data-review-insured-name>—</div>
+                  <div class="review-person__sub" data-review-insured-ssn>—</div>
+                </div>
+              </div>
+              <div class="review-person__divider"></div>
+              <div class="review-person__row">
+                <div class="review-person__k">수익자</div>
+                <div class="review-person__v">
+                  <div class="review-person__name" data-review-beneficiary-name>—</div>
+                  <div class="review-person__sub" data-review-beneficiary-phone>—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 사고사항 -->
+          <div class="review-section">
+            <div class="review-section__label">사고사항</div>
+            <div class="review-kv">
+              <div class="review-kv__row">
+                <div class="review-kv__k">사고유형</div>
+                <div class="review-kv__v" data-review-accident-type>—</div>
+              </div>
+              <div class="review-kv__row">
+                <div class="review-kv__k" data-review-accident-date-label>발병일</div>
+                <div class="review-kv__v" data-review-accident-date>—</div>
+              </div>
+              <div class="review-kv__row">
+                <div class="review-kv__k">증상</div>
+                <div class="review-kv__v" data-review-symptoms>—</div>
+              </div>
+              <div class="review-kv__row">
+                <div class="review-kv__k">수령계좌</div>
+                <div class="review-kv__v">
+                  <div data-review-bank-name>—</div>
+                  <div class="review-kv__sub" data-review-bank-account>—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 서명 -->
+          <div class="review-section">
+            <div class="review-section__label">서명</div>
+            <ul class="review-signs">
+              <li data-review-sign-insured hidden><span class="ms">check_circle</span><span data-review-sign-insured-label>피보험자 서명 완료</span></li>
+              <li data-review-sign-beneficiary hidden><span class="ms">check_circle</span>수익자 서명 완료</li>
+              <li data-review-sign-guardian hidden><span class="ms">check_circle</span>법정대리인 서명 완료</li>
+              <li class="review-signs__empty" data-review-signs-empty hidden><span class="ms">radio_button_unchecked</span>서명이 없어요</li>
+            </ul>
+          </div>
+
+          <!-- 첨부서류 -->
+          <div class="review-section">
+            <div class="review-section__label">첨부서류 <span data-review-photo-count-label></span></div>
+            <div class="review-photos" data-review-photo-grid></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 완료 -->
+      <div class="file-view" data-file-view="done" hidden>
+        <div class="file-done">
+          <div class="file-done__icon"><span class="ms is-filled">check_circle</span></div>
+          <div class="file-done__title">청구가 접수됐어요</div>
+          <div class="file-done__memo">담당자가 검토 후 결과를 안내드릴게요</div>
+          <div class="file-done__note">보통 영업일 기준 3~5일 안에 처리돼요</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="file-flow__footer">
+      <button type="button" class="file-submit" data-file-next disabled>다음</button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       청구내역 (history-flow) — 리스트 + 상세
+       ============================================================ -->
+  <section data-history-flow class="history-flow" hidden aria-label="청구내역">
+    <div class="history-flow__topbar">
+      <button type="button" data-history-back class="file-icon-btn" aria-label="이전으로"><span class="ms">arrow_back</span></button>
+      <div class="history-flow__title"><strong data-history-title>청구내역</strong></div>
+      <button type="button" data-history-close class="file-icon-btn" aria-label="닫기"><span class="ms">close</span></button>
+    </div>
+
+    <div class="history-flow__body">
+      <!-- 리스트 뷰 -->
+      <div data-history-view="list">
+        <div class="history-list" data-history-list></div>
+        <div class="history-empty" data-history-empty hidden>
+          <span class="ms">inbox</span>
+          <div class="history-empty__title">아직 청구내역이 없어요</div>
+          <div class="history-empty__memo">보험금 청구를 하면 여기에 표시돼요</div>
+        </div>
+      </div>
+
+      <!-- 상세 뷰 -->
+      <div data-history-view="detail" hidden>
+        <div class="history-detail" data-history-detail></div>
       </div>
     </div>
   </section>

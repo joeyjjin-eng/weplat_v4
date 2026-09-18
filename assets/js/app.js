@@ -1540,10 +1540,10 @@
 
     // 결과 화면 — 조회년도 / 실손보험 세대 단일 선택 + 금액 재계산
     var CLAIM_GEN_DESC = {
-      '1': '개인 실손 · 2009.9 이전 · 표준약관 이전',
-      '2': '표준화 실손 · 2009.10~2017.3 · 자기부담 10~20%',
-      '3': '착한 실손 · 2017.4~2021.6 · 급여/비급여 분리',
-      '4': '신 실손 · 2021.7~ · 급여/비급여 완전 분리'
+      '1': { title: '구 실손 · ~2009.9',            body: '자기부담이 거의 없어 보장 범위가 가장 큽니다.' },
+      '2': { title: '표준화 실손 · 2009.10~2017.3', body: '급여·비급여 자기부담 10~20% 수준입니다.' },
+      '3': { title: '착한실손 · 2017.4~2021.6',      body: '급여 10%·비급여 20% + 특약 구조입니다.' },
+      '4': { title: '4세대 실손 · 2021.7~',          body: '급여 20%·비급여 30%로 자기부담이 가장 큽니다.' }
     };
     // 년도별 의료비/받은 실손 목업 데이터
     var CLAIM_YEAR_DATA = {
@@ -1559,15 +1559,16 @@
     var claimResultYearRow = claimFlow.querySelector('[data-result-year]');
     var claimResultGenRow = claimFlow.querySelector('[data-result-gen]');
     var claimResultContext = claimFlow.querySelector('[data-result-context]');
-    var claimResultGenDesc = claimFlow.querySelector('[data-result-gen-desc]');
+    var claimResultGenTitle = claimFlow.querySelector('[data-result-gen-title]');
+    var claimResultGenBody = claimFlow.querySelector('[data-result-gen-body]');
     var claimResultTotal = claimFlow.querySelector('[data-result-total]');
     var claimResultReceived = claimFlow.querySelector('[data-result-received]');
     var claimResultMissed = claimFlow.querySelector('[data-result-missed]');
 
     function claimFmt(n) { return Math.max(0, Math.round(n)).toLocaleString('ko-KR'); }
     function claimResultRefresh() {
-      var y = claimResultYearRow && claimResultYearRow.querySelector('.claim-chip.is-picked');
-      var g = claimResultGenRow && claimResultGenRow.querySelector('.claim-chip.is-picked');
+      var y = claimResultYearRow && claimResultYearRow.querySelector('.claim-seg__item.is-picked');
+      var g = claimResultGenRow && claimResultGenRow.querySelector('.claim-seg__item.is-picked');
       var yearVal = y ? y.dataset.year : '2022';
       var genVal = g ? g.dataset.gen : '2';
       var data = CLAIM_YEAR_DATA[yearVal] || CLAIM_YEAR_DATA['2022'];
@@ -1580,14 +1581,16 @@
       if (claimResultReceived) claimResultReceived.textContent = claimFmt(data.received);
       if (claimResultMissed) claimResultMissed.textContent = claimFmt(missed);
       if (claimResultContext) claimResultContext.textContent = yearVal + '년 · ' + genVal + '세대 실손보험 기준';
-      if (claimResultGenDesc) claimResultGenDesc.textContent = CLAIM_GEN_DESC[genVal] || '';
+      var desc = CLAIM_GEN_DESC[genVal];
+      if (claimResultGenTitle) claimResultGenTitle.textContent = desc ? desc.title : '';
+      if (claimResultGenBody) claimResultGenBody.textContent = desc ? desc.body : '';
     }
     function claimResultBindSingle(row) {
       if (!row) return;
-      var chips = row.querySelectorAll('.claim-chip');
-      chips.forEach(function (c) {
+      var items = row.querySelectorAll('.claim-seg__item');
+      items.forEach(function (c) {
         c.addEventListener('click', function () {
-          chips.forEach(function (o) { o.classList.remove('is-picked'); });
+          items.forEach(function (o) { o.classList.remove('is-picked'); });
           c.classList.add('is-picked');
           claimResultRefresh();
         });
@@ -1595,6 +1598,28 @@
     }
     claimResultBindSingle(claimResultYearRow);
     claimResultBindSingle(claimResultGenRow);
+
+    // ? 인포 툴팁 — 클릭 토글, 다른 툴팁 자동 닫힘, 바깥 탭 시 전체 닫힘
+    var infoBtns = claimFlow.querySelectorAll('[data-info-toggle]');
+    var infoTips = claimFlow.querySelectorAll('[data-info-tip]');
+    function closeAllTips() {
+      infoTips.forEach(function (t) { t.hidden = true; });
+    }
+    infoBtns.forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var key = btn.dataset.infoToggle;
+        var tip = claimFlow.querySelector('[data-info-tip="' + key + '"]');
+        if (!tip) return;
+        var willOpen = tip.hidden;
+        closeAllTips();
+        tip.hidden = !willOpen;
+      });
+    });
+    claimFlow.addEventListener('click', function (e) {
+      if (e.target.closest('[data-info-toggle]') || e.target.closest('[data-info-tip]')) return;
+      closeAllTips();
+    });
 
     // 연도 칩 — 개별 토글 + '전체' 는 나머지 5개 일괄 on/off
     // ⚠ 폼 뷰 내로만 스코프 제한 — 결과 뷰의 칩과 충돌 방지
@@ -1629,6 +1654,719 @@
         b.classList.add('is-picked');
       });
     });
+  }
+
+  // 보험사별 고객센터 번호 (가라 — 실서비스 연결 시 API/카탈로그로 교체)
+  //   file-flow · history-flow 공용이라 IIFE 스코프에 배치
+  var CARRIER_PHONES = {
+    '현대해상':'1588-5656','삼성화재':'1588-5114','메리츠화재':'1566-7711',
+    'DB손해보험':'1588-0100','KB손해보험':'1544-0114','롯데손해보험':'1588-3344',
+    '한화손해보험':'1566-8000','NH농협손해':'1644-9000','흥국화재':'1688-1688',
+    'AIG손해':'1544-2792','하나손해보험':'1566-3000','라이나손해보험':'1588-0058',
+    '예별손해보험':'1588-1234',
+    'KB생명':'1588-9922','DB생명':'1588-3131','NH농협생명':'1544-4000',
+    '라이나생명':'1588-0058','AIA생명':'1588-9898','ABL생명':'1588-6363',
+    '처브라이프':'1544-1957','IM라이프':'1588-4770','카디프생명':'1544-8080'
+  };
+
+  // ─────────────────────────────────────────────────────────────
+  // 보험 탭 — 보험금 청구 (file-flow) 다단계 폼
+  //   보험사 → 피보험자 → 수익자 → 사고+계좌 → 서명 → 사진 → 검토 → 완료
+  // ─────────────────────────────────────────────────────────────
+  var fileFlow = document.querySelector('[data-file-flow]');
+  var fileStart = document.querySelector('[data-file-start]');
+  if (fileFlow && fileStart) {
+    var FILE_STEPS = ['carrier','insured','beneficiary','accident','bank','sign-insured','sign-beneficiary','sign-guardian','photos','review'];
+    var PHOTO_MAX = 10;
+    // 로그인한 사용자 프로필 (mock) — 관계=본인일 때 피보험자 자동, 관계=자녀일 때 수익자/법정대리인 자동
+    var FILE_ME = { name:'홍길동', ssnFront:'900101', phone:'01012345678' };
+    // 서명 상태 — 관계=본인: insured 만 · 관계=자녀: 3개 다 필요
+    var fileState = { step: 0, signs: { insured:false, beneficiary:false, guardian:false } };
+
+    var fileBack = fileFlow.querySelector('[data-file-back]');
+    var fileCloseBtn = fileFlow.querySelector('[data-file-close]');
+    var fileNextBtn = fileFlow.querySelector('[data-file-next]');
+    var fileProgress = fileFlow.querySelector('[data-file-progress]');
+    var fileBody = fileFlow.querySelector('.file-flow__body');
+    var filePhotoAdd = fileFlow.querySelector('[data-file-photo-add]');
+    var filePhotos = fileFlow.querySelector('[data-file-photos]');
+    var filePhotoCount = fileFlow.querySelector('[data-file-photo-count]');
+
+    function fileGetRelation() {
+      var el = fileFlow.querySelector('[data-file-relation] .file-chip.is-picked');
+      return el ? el.dataset.relation : '본인';
+    }
+    function fileIsSelf() { return fileGetRelation() === '본인'; }
+    // 관계=본인 → 수익자/법정대리인 서명 스텝 skip
+    function fileEffectiveSteps() {
+      return FILE_STEPS.filter(function (s) {
+        if (fileIsSelf() && (s === 'sign-beneficiary' || s === 'sign-guardian')) return false;
+        return true;
+      });
+    }
+    function fileCurName() { return FILE_STEPS[fileState.step]; }
+
+    function fileShowStep() {
+      var name = fileCurName();
+      fileFlow.querySelectorAll('[data-file-view]').forEach(function (v) {
+        v.hidden = v.dataset.fileView !== name;
+      });
+      var eff = fileEffectiveSteps();
+      var idx = eff.indexOf(name);
+      var pct = ((idx + 1) / eff.length) * 100;
+      if (fileProgress) fileProgress.style.width = pct + '%';
+      if (fileNextBtn) {
+        fileNextBtn.textContent = (name === 'review') ? '청구 완료하기' : '다음';
+        delete fileNextBtn.dataset.done;
+      }
+      fileValidate();
+      if (fileBody) fileBody.scrollTop = 0;
+      if (name === 'insured') fileApplyRelation();
+      if (name === 'beneficiary') fileAutoFillBeneficiary();
+      if (name === 'bank') fileSyncBankHolder();
+      if (name === 'sign-insured') { fileApplySignInsuredTitle(); fileInitSign('insured'); }
+      if (name === 'sign-beneficiary') fileInitSign('beneficiary');
+      if (name === 'sign-guardian') fileInitSign('guardian');
+      if (name === 'review') filePopulateReview();
+    }
+
+    var FILE_SKIP_VALIDATE = true; // 데모 모드 — 필드 입력 없이 '다음' 항상 활성 (검토 화면 확인용)
+    function fileValidate() {
+      if (!fileNextBtn) return;
+      if (FILE_SKIP_VALIDATE) { fileNextBtn.disabled = false; return; }
+      var name = fileCurName();
+      var ok = false;
+      if (name === 'carrier') {
+        ok = !!fileFlow.querySelector('.file-carrier.is-picked');
+      } else if (name === 'insured') {
+        var n = fileFlow.querySelector('[data-file-insured-name]');
+        var sf = fileFlow.querySelector('[data-file-insured-ssn-front]');
+        var sb = fileFlow.querySelector('[data-file-insured-ssn-back]');
+        var p = fileFlow.querySelector('[data-file-insured-phone]');
+        ok = n.value.trim() && sf.value.length === 6 && sb.value.length === 7 && p.value.trim();
+      } else if (name === 'beneficiary') {
+        // 자동 채움된 상태만 통과 (수익자 정보는 항상 자동 채워짐)
+        ok = true;
+      } else if (name === 'accident') {
+        var d = fileFlow.querySelector('[data-file-accident-date]');
+        var s = fileFlow.querySelector('[data-file-accident-symptoms]');
+        ok = !!d.value && !!s.value.trim();
+      } else if (name === 'bank') {
+        var bkn = fileFlow.querySelector('[data-file-bank-name]');
+        var bka = fileFlow.querySelector('[data-file-bank-account]');
+        ok = bkn.value && bka.value.trim();
+      } else if (name === 'sign-insured') {
+        ok = fileState.signs.insured;
+      } else if (name === 'sign-beneficiary') {
+        ok = fileState.signs.beneficiary;
+      } else if (name === 'sign-guardian') {
+        ok = fileState.signs.guardian;
+      } else if (name === 'photos') {
+        ok = fileFlow.querySelectorAll('.file-photo-item').length > 0;
+      } else if (name === 'review') {
+        ok = true;
+      }
+      fileNextBtn.disabled = !ok;
+    }
+
+    function fileGoNext() {
+      var name = fileCurName();
+      if (name === 'review') {
+        if (window.confirm('보험금 청구를 완료하시겠습니까?')) fileShowDone();
+        return;
+      }
+      var next = fileState.step + 1;
+      while (next < FILE_STEPS.length && fileIsSelf() &&
+             (FILE_STEPS[next] === 'sign-beneficiary' || FILE_STEPS[next] === 'sign-guardian')) next++;
+      fileState.step = next;
+      fileShowStep();
+    }
+    function fileGoBack() {
+      if (fileState.step === 0) { fileClose_(); return; }
+      var prev = fileState.step - 1;
+      while (prev >= 0 && fileIsSelf() &&
+             (FILE_STEPS[prev] === 'sign-beneficiary' || FILE_STEPS[prev] === 'sign-guardian')) prev--;
+      fileState.step = Math.max(0, prev);
+      fileShowStep();
+    }
+
+    // 보험사 다중 선택 (여러 보험사에 동시 청구 가능)
+    fileFlow.querySelectorAll('.file-carrier').forEach(function (c) {
+      c.addEventListener('click', function () {
+        c.classList.toggle('is-picked');
+        fileValidate();
+      });
+    });
+
+    // 폼 필드 change → validate
+    fileFlow.querySelectorAll('.file-input').forEach(function (el) {
+      el.addEventListener('input', fileValidate);
+      el.addEventListener('change', fileValidate);
+    });
+
+    // 관계 chip — 관계에 따라 피보험자 자동채움/잠금 (본인 → 내 정보 잠금, 자녀 → 직접 입력)
+    function fileApplyRelation() {
+      var rel = fileGetRelation();
+      var nEl = fileFlow.querySelector('[data-file-insured-name]');
+      var sfEl = fileFlow.querySelector('[data-file-insured-ssn-front]');
+      var sbEl = fileFlow.querySelector('[data-file-insured-ssn-back]');
+      var pEl = fileFlow.querySelector('[data-file-insured-phone]');
+      if (rel === '본인') {
+        if (nEl) { nEl.value = FILE_ME.name; nEl.readOnly = true; }
+        if (sfEl) { sfEl.value = FILE_ME.ssnFront; sfEl.readOnly = true; }
+        if (sbEl) { sbEl.readOnly = false; }
+        if (pEl) { pEl.value = FILE_ME.phone; pEl.readOnly = true; }
+      } else {
+        // 자녀 — 사용자가 자녀 정보 직접 입력
+        if (nEl) { if (nEl.readOnly) { nEl.value = ''; } nEl.readOnly = false; }
+        if (sfEl) { if (sfEl.readOnly) { sfEl.value = ''; } sfEl.readOnly = false; }
+        if (sbEl) { sbEl.readOnly = false; }
+        if (pEl) { if (pEl.readOnly) { pEl.value = ''; } pEl.readOnly = false; }
+      }
+    }
+
+    // 피보험자 서명 스텝 — 관계에 따라 타이틀/메모 문구 조정
+    function fileApplySignInsuredTitle() {
+      var rel = fileGetRelation();
+      var title = fileFlow.querySelector('[data-sign-insured-title]');
+      var memo = fileFlow.querySelector('[data-sign-insured-memo]');
+      if (rel === '자녀') {
+        if (title) title.innerHTML = '피보험자 서명을<br>해주세요';
+        if (memo) memo.textContent = '진료받은 자녀 본인의 서명이에요';
+      } else {
+        if (title) title.innerHTML = '본인 서명을<br>해주세요';
+        if (memo) memo.textContent = '아래 영역에 손가락으로 서명해 주세요';
+      }
+    }
+    fileFlow.querySelectorAll('[data-file-relation] .file-chip').forEach(function (c) {
+      c.addEventListener('click', function () {
+        fileFlow.querySelectorAll('[data-file-relation] .file-chip').forEach(function (o) { o.classList.remove('is-picked'); });
+        c.classList.add('is-picked');
+        fileApplyRelation();
+        fileCheckMinor();
+        fileValidate();
+      });
+    });
+
+    // 자녀 미성년자 체크 (주민번호 앞자리로 출생연도 계산 → 만 나이 < 19 여부)
+    function fileCheckMinor() {
+      var rel = fileGetRelation();
+      var relMemo = fileFlow.querySelector('[data-file-relation-memo]');
+      var warn = fileFlow.querySelector('[data-file-minor-warn]');
+      if (relMemo) relMemo.hidden = (rel !== '자녀');
+      if (!warn) return;
+      if (rel !== '자녀') { warn.hidden = true; return; }
+      var ssn = fileFlow.querySelector('[data-file-insured-ssn-front]');
+      if (!ssn || ssn.value.length !== 6) { warn.hidden = true; return; }
+      var yy = parseInt(ssn.value.slice(0, 2), 10);
+      var mm = parseInt(ssn.value.slice(2, 4), 10);
+      var dd = parseInt(ssn.value.slice(4, 6), 10);
+      var year = yy <= 25 ? 2000 + yy : 1900 + yy;
+      var today = new Date();
+      var age = today.getFullYear() - year;
+      if (today.getMonth() + 1 < mm || (today.getMonth() + 1 === mm && today.getDate() < dd)) age--;
+      warn.hidden = age < 19;
+    }
+    var minorSsnEl = fileFlow.querySelector('[data-file-insured-ssn-front]');
+    if (minorSsnEl) minorSsnEl.addEventListener('input', fileCheckMinor);
+
+    // 수익자 자동 채움 (수익자 스텝 진입 시 호출)
+    //   관계=본인 → 수익자=피보험자(본인) 정보 그대로 (readonly)
+    //   관계=자녀 → 수익자=로그인 사용자 (법정대리인=부모) (readonly)
+    function fileAutoFillBeneficiary() {
+      var rel = fileGetRelation();
+      var src = (rel === '본인')
+        ? {
+            name: fileFlow.querySelector('[data-file-insured-name]').value,
+            ssnFront: fileFlow.querySelector('[data-file-insured-ssn-front]').value,
+            ssnBack: fileFlow.querySelector('[data-file-insured-ssn-back]').value,
+            phone: fileFlow.querySelector('[data-file-insured-phone]').value
+          }
+        : { name: FILE_ME.name, ssnFront: FILE_ME.ssnFront, ssnBack: '', phone: FILE_ME.phone };
+      // 이름·주민번호앞·전화 는 자동 채움 + 잠금 · 주민번호 뒷자리는 항상 사용자가 직접 입력
+      var lockedMap = { 'name':src.name, 'ssn-front':src.ssnFront, 'phone':src.phone };
+      Object.keys(lockedMap).forEach(function (k) {
+        var el = fileFlow.querySelector('[data-file-beneficiary-' + k + ']');
+        if (el) { el.value = lockedMap[k]; el.readOnly = true; }
+      });
+      var sbBenEl = fileFlow.querySelector('[data-file-beneficiary-ssn-back]');
+      if (sbBenEl) {
+        // 관계=본인 & 피보험자 뒷자리를 이미 입력해뒀다면 그 값 그대로 옮기고 (편의), 아니면 빈 상태
+        sbBenEl.value = src.ssnBack || sbBenEl.value || '';
+        sbBenEl.readOnly = false;
+      }
+      // 수익자 안내문 — 관계별 맥락 설명
+      var memo = fileFlow.querySelector('[data-file-beneficiary-memo]');
+      if (memo) memo.textContent = (rel === '본인')
+        ? '피보험자 본인이 보험금을 받아요'
+        : '법정대리인(나)이 자녀 대신 보험금을 받아요';
+    }
+
+    // 예금주 = 수익자 이름 (자동 동기화, readonly)
+    function fileSyncBankHolder() {
+      var bnEl = fileFlow.querySelector('[data-file-beneficiary-name]');
+      var bhEl = fileFlow.querySelector('[data-file-bank-holder]');
+      if (bhEl) bhEl.value = bnEl ? bnEl.value : '';
+    }
+    var bnInp = fileFlow.querySelector('[data-file-beneficiary-name]');
+    if (bnInp) bnInp.addEventListener('input', fileSyncBankHolder);
+
+    // 입력 필터 — 이름 (한글/영문/공백만), 주민번호/전화번호 (숫자만)
+    function fileFilterLetters(el) {
+      el.addEventListener('input', function () {
+        el.value = el.value.replace(/[^\p{L}\s·]/gu, '');
+      });
+    }
+    function fileFilterDigits(el) {
+      el.addEventListener('input', function () {
+        el.value = el.value.replace(/\D/g, '');
+      });
+    }
+    ['[data-file-insured-name]','[data-file-beneficiary-name]'].forEach(function (sel) {
+      var el = fileFlow.querySelector(sel); if (el) fileFilterLetters(el);
+    });
+    [
+      '[data-file-insured-ssn-front]','[data-file-insured-ssn-back]','[data-file-insured-phone]',
+      '[data-file-beneficiary-ssn-front]','[data-file-beneficiary-ssn-back]','[data-file-beneficiary-phone]',
+      '[data-file-bank-account]'
+    ].forEach(function (sel) {
+      var el = fileFlow.querySelector(sel); if (el) fileFilterDigits(el);
+    });
+
+    // 사고 유형 라디오 카드 + 유형별 라벨/플레이스홀더 자동 변경
+    function fileUpdateAccidentUI() {
+      var picked = fileFlow.querySelector('[data-file-accident-type] .file-radio-card.is-picked');
+      var type = picked ? picked.dataset.accidentType : '질병';
+      var dateLabel = fileFlow.querySelector('[data-accident-date-label]');
+      var symptoms = fileFlow.querySelector('[data-file-accident-symptoms]');
+      if (dateLabel) dateLabel.textContent = (type === '질병') ? '치료받은 날짜' : '사고 난 날짜';
+      if (symptoms) {
+        var ph = (type === '질병') ? symptoms.dataset.phIllness : symptoms.dataset.phInjury;
+        if (ph) symptoms.placeholder = ph;
+      }
+    }
+    fileFlow.querySelectorAll('[data-file-accident-type] .file-radio-card').forEach(function (b) {
+      b.addEventListener('click', function () {
+        fileFlow.querySelectorAll('[data-file-accident-type] .file-radio-card').forEach(function (o) { o.classList.remove('is-picked'); });
+        b.classList.add('is-picked');
+        fileUpdateAccidentUI();
+        fileValidate();
+      });
+    });
+    // 증상 textarea 도 validate 대상에 포함
+    var symptomsEl = fileFlow.querySelector('[data-file-accident-symptoms]');
+    if (symptomsEl) {
+      symptomsEl.addEventListener('input', fileValidate);
+    }
+
+    // 서명 캔버스 (3 종류: insured / beneficiary / guardian)
+    function fileInitSign(which) {
+      var canvas = fileFlow.querySelector('[data-file-sign-' + which + ']');
+      if (!canvas || canvas.dataset.inited === '1') return;
+      canvas.dataset.inited = '1';
+      var rect = canvas.getBoundingClientRect();
+      var dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      var ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+      ctx.strokeStyle = '#101B33';
+      ctx.lineWidth = 2.2;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      var drawing = false, lx = 0, ly = 0;
+      function pos(e) {
+        var r = canvas.getBoundingClientRect();
+        var t = e.touches ? e.touches[0] : e;
+        return { x: t.clientX - r.left, y: t.clientY - r.top };
+      }
+      function start(e) { e.preventDefault(); drawing = true; var p = pos(e); lx = p.x; ly = p.y; }
+      function move(e) {
+        if (!drawing) return;
+        e.preventDefault();
+        var p = pos(e);
+        ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(p.x, p.y); ctx.stroke();
+        lx = p.x; ly = p.y;
+        if (!fileState.signs[which]) {
+          fileState.signs[which] = true;
+          fileValidate();
+        }
+      }
+      function end() { drawing = false; }
+      canvas.addEventListener('mousedown', start);
+      canvas.addEventListener('mousemove', move);
+      canvas.addEventListener('mouseup', end);
+      canvas.addEventListener('mouseleave', end);
+      canvas.addEventListener('touchstart', start, { passive: false });
+      canvas.addEventListener('touchmove', move, { passive: false });
+      canvas.addEventListener('touchend', end);
+    }
+    fileFlow.querySelectorAll('[data-file-sign-clear]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var which = b.dataset.fileSignClear;
+        var canvas = fileFlow.querySelector('[data-file-sign-' + which + ']');
+        if (canvas) {
+          var ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        fileState.signs[which] = false;
+        fileValidate();
+      });
+    });
+
+    // 사진 첨부 — mock 타일 add/remove
+    function fileUpdatePhotoCount() {
+      var n = filePhotos.querySelectorAll('.file-photo-item').length;
+      if (filePhotoCount) filePhotoCount.textContent = n;
+      if (filePhotoAdd) filePhotoAdd.style.display = n >= PHOTO_MAX ? 'none' : '';
+    }
+    if (filePhotoAdd) {
+      filePhotoAdd.addEventListener('click', function () {
+        var n = filePhotos.querySelectorAll('.file-photo-item').length;
+        if (n >= PHOTO_MAX) return;
+        var tile = document.createElement('div');
+        tile.className = 'file-photo-item';
+        tile.innerHTML = '<div class="file-photo-item__icon"><span class="ms">image</span></div>' +
+          '<button type="button" class="file-photo-item__remove" aria-label="삭제"><span class="ms">close</span></button>';
+        filePhotos.insertBefore(tile, filePhotoAdd);
+        tile.querySelector('.file-photo-item__remove').addEventListener('click', function () {
+          tile.remove();
+          fileUpdatePhotoCount();
+          fileValidate();
+        });
+        fileUpdatePhotoCount();
+        fileValidate();
+      });
+    }
+
+    // 검토 채우기 — 영수증 스타일 섹션
+    function filePopulateReview() {
+      var v = function (sel) { var el = fileFlow.querySelector(sel); return el ? el.value.trim() : ''; };
+      var set = function (attr, val) {
+        var el = fileFlow.querySelector('[data-review-' + attr + ']');
+        if (el) el.textContent = val || '—';
+      };
+
+      // 보험사 (다중) — 리스트로 렌더
+      var pickedCarriers = fileFlow.querySelectorAll('.file-carrier.is-picked');
+      var list = fileFlow.querySelector('[data-review-carrier-list]');
+      var cntLbl2 = fileFlow.querySelector('[data-review-carrier-count]');
+      if (cntLbl2) cntLbl2.textContent = pickedCarriers.length > 1 ? pickedCarriers.length + '곳' : '';
+      if (list) {
+        list.innerHTML = '';
+        if (pickedCarriers.length === 0) {
+          var empty = document.createElement('div');
+          empty.className = 'review-photos-empty';
+          empty.textContent = '선택한 보험사가 없어요';
+          list.appendChild(empty);
+        } else {
+          pickedCarriers.forEach(function (cEl) {
+            var cName = cEl.dataset.carrier;
+            var cLogo = cEl.querySelector('.file-carrier__logo').src;
+            var cPhone = CARRIER_PHONES[cName] || '1588-0000';
+            var card = document.createElement('div');
+            card.className = 'review-carrier-card';
+            card.innerHTML =
+              '<img class="review-carrier-card__logo" src="' + cLogo + '" alt="">' +
+              '<div class="review-carrier-card__name">' + cName + '</div>' +
+              '<div class="review-carrier-card__phone">' + cPhone + '</div>';
+            list.appendChild(card);
+          });
+        }
+      }
+
+      // 인적사항 — 피보험자/수익자 각각 이름·주민번호·전화
+      var inN = v('[data-file-insured-name]');
+      var inSf = v('[data-file-insured-ssn-front]');
+      var beN = v('[data-file-beneficiary-name]');
+      var beSf = v('[data-file-beneficiary-ssn-front]');
+      var bePhone = v('[data-file-beneficiary-phone]');
+      set('insured-name', inN);
+      set('insured-ssn', inSf ? (inSf + '-*******') : '');
+      set('beneficiary-name', beN);
+      set('beneficiary-phone', (beSf ? beSf + '-******* · ' : '') + bePhone);
+
+      // 사고사항
+      var accEl = fileFlow.querySelector('[data-file-accident-type] .file-radio-card.is-picked');
+      var accT = accEl ? accEl.dataset.accidentType : '';
+      var accD = v('[data-file-accident-date]');
+      var accS = v('[data-file-accident-symptoms]');
+      set('accident-type', accT);
+      set('accident-date', accD);
+      set('symptoms', accS);
+      var dateLabel = fileFlow.querySelector('[data-review-accident-date-label]');
+      if (dateLabel) dateLabel.textContent = (accT === '상해') ? '사고일' : '발병일';
+
+      // 수령계좌
+      var bkN = v('[data-file-bank-name]');
+      var bkA = v('[data-file-bank-account]');
+      var bkH = v('[data-file-bank-holder]');
+      var bkLine1 = bkN ? (bkN + (bkH ? '(' + bkH + ')' : '')) : '';
+      set('bank-name', bkLine1);
+      set('bank-account', bkA);
+
+      // 서명 표시 (관계=본인 → 피보험자만, 관계=자녀 → 3개)
+      var isSelf = fileIsSelf();
+      var siEl = fileFlow.querySelector('[data-review-sign-insured]');
+      var siLabel = fileFlow.querySelector('[data-review-sign-insured-label]');
+      var sbEl = fileFlow.querySelector('[data-review-sign-beneficiary]');
+      var sgEl = fileFlow.querySelector('[data-review-sign-guardian]');
+      var seEl = fileFlow.querySelector('[data-review-signs-empty]');
+      var siOn = fileState.signs.insured;
+      var sbOn = !isSelf && fileState.signs.beneficiary;
+      var sgOn = !isSelf && fileState.signs.guardian;
+      if (siLabel) siLabel.textContent = (isSelf ? '본인' : '피보험자') + ' 서명 완료';
+      if (siEl) siEl.hidden = !siOn;
+      if (sbEl) sbEl.hidden = !sbOn;
+      if (sgEl) sgEl.hidden = !sgOn;
+      if (seEl) seEl.hidden = siOn || sbOn || sgOn;
+
+      // 첨부 썸네일
+      var photos = fileFlow.querySelectorAll('.file-photo-item');
+      var phN = photos.length;
+      var cntLbl = fileFlow.querySelector('[data-review-photo-count-label]');
+      if (cntLbl) cntLbl.textContent = phN > 0 ? phN + '장' : '';
+      var grid = fileFlow.querySelector('[data-review-photo-grid]');
+      if (grid) {
+        grid.innerHTML = '';
+        if (phN === 0) {
+          var empty = document.createElement('div');
+          empty.className = 'review-photos-empty';
+          empty.textContent = '첨부된 서류가 없어요';
+          grid.appendChild(empty);
+        } else {
+          for (var i = 0; i < phN; i++) {
+            var thumb = document.createElement('div');
+            thumb.className = 'review-photo-thumb';
+            thumb.innerHTML = '<span class="ms">description</span>';
+            grid.appendChild(thumb);
+          }
+        }
+      }
+    }
+
+    function fileShowDone() {
+      fileFlow.querySelectorAll('[data-file-view]').forEach(function (v) {
+        v.hidden = v.dataset.fileView !== 'done';
+      });
+      if (fileProgress) fileProgress.style.width = '100%';
+      if (fileNextBtn) {
+        fileNextBtn.textContent = '확인';
+        fileNextBtn.disabled = false;
+        fileNextBtn.dataset.done = '1';
+      }
+    }
+
+    function fileReset() {
+      fileState.step = 0;
+      fileState.signs = { insured:false, beneficiary:false, guardian:false };
+      fileFlow.querySelectorAll('.file-carrier').forEach(function (c) { c.classList.remove('is-picked'); });
+      fileFlow.querySelectorAll('.file-input').forEach(function (i) {
+        if (i.tagName === 'SELECT') i.selectedIndex = 0;
+        else i.value = '';
+        i.disabled = false;
+        i.readOnly = false;
+      });
+      // 관계 기본값 본인
+      fileFlow.querySelectorAll('[data-file-relation] .file-chip').forEach(function (c) {
+        c.classList.toggle('is-picked', c.dataset.relation === '본인');
+      });
+      // 예금주 readonly 복구
+      var bh = fileFlow.querySelector('[data-file-bank-holder]');
+      if (bh) bh.readOnly = true;
+      // 관계 적용 + 미성년 경고 리셋
+      fileApplyRelation();
+      var relMemo = fileFlow.querySelector('[data-file-relation-memo]');
+      if (relMemo) relMemo.hidden = true;
+      var minorWarn = fileFlow.querySelector('[data-file-minor-warn]');
+      if (minorWarn) minorWarn.hidden = true;
+      fileFlow.querySelectorAll('[data-file-accident-type] .file-radio-card').forEach(function (b) {
+        b.classList.toggle('is-picked', b.dataset.accidentType === '질병');
+      });
+      var sym = fileFlow.querySelector('[data-file-accident-symptoms]');
+      if (sym) sym.value = '';
+      fileUpdateAccidentUI();
+      fileFlow.querySelectorAll('.file-sign__canvas').forEach(function (c) {
+        var sctx = c.getContext('2d');
+        sctx.clearRect(0, 0, c.width, c.height);
+        delete c.dataset.inited;
+      });
+      filePhotos.querySelectorAll('.file-photo-item').forEach(function (t) { t.remove(); });
+      fileUpdatePhotoCount();
+    }
+    function fileOpen() {
+      fileReset();
+      fileFlow.hidden = false;
+      fileShowStep();
+    }
+    function fileClose_() { fileFlow.hidden = true; }
+
+    fileStart.addEventListener('click', fileOpen);
+    if (fileBack) fileBack.addEventListener('click', fileGoBack);
+    if (fileCloseBtn) fileCloseBtn.addEventListener('click', fileClose_);
+    if (fileNextBtn) {
+      fileNextBtn.addEventListener('click', function () {
+        if (fileNextBtn.dataset.done === '1') { fileClose_(); return; }
+        fileGoNext();
+      });
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 보험 탭 — 청구내역 (history-flow) 리스트 + 상세
+  //   상태: 청구서접수 / 청구완료 / 보류
+  // ─────────────────────────────────────────────────────────────
+  var historyFlow = document.querySelector('[data-history-flow]');
+  var historyStart = document.querySelector('[data-history-start]');
+  if (historyFlow && historyStart) {
+    // Mock 데이터 — 실서비스 연결 시 API 로 교체
+    var HISTORY_DATA = [
+      { id:1, date:'2025.09.15', carrier:'현대해상', logoFile:'hd', insured:'홍길동', ssn:'900101', accType:'질병', accDate:'2025.09.10', symptom:'감기몸살, 인후통', bank:'카카오뱅크', account:'321432112345', status:'received' },
+      { id:2, date:'2025.09.08', carrier:'삼성화재', logoFile:'ss', insured:'홍길동', ssn:'900101', accType:'질병', accDate:'2025.09.01', symptom:'어깨통증, 물리치료', bank:'신한은행', account:'110234567890', status:'done' },
+      { id:3, date:'2025.08.28', carrier:'DB손해보험', logoFile:'db', insured:'홍길동', ssn:'900101', accType:'상해', accDate:'2025.08.20', symptom:'넘어짐, 무릎 타박', bank:'KB국민은행', account:'004501234567', status:'hold' },
+      { id:4, date:'2025.08.14', carrier:'롯데손해보험', logoFile:'lt', insured:'홍길동', ssn:'900101', accType:'질병', accDate:'2025.08.10', symptom:'감기, 기침', bank:'카카오뱅크', account:'321432112345', status:'done' },
+      { id:5, date:'2025.07.30', carrier:'AIA생명', logoFile:'aia', insured:'홍길동', ssn:'900101', accType:'질병', accDate:'2025.07.22', symptom:'허리통증, 도수치료', bank:'신한은행', account:'110234567890', status:'done' }
+    ];
+    var HISTORY_STATUS = {
+      received: { label:'청구서접수', cls:'received' },
+      done:     { label:'청구완료',   cls:'done' },
+      hold:     { label:'보류',        cls:'hold' }
+    };
+
+    var historyBack = historyFlow.querySelector('[data-history-back]');
+    var historyCloseBtn = historyFlow.querySelector('[data-history-close]');
+    var historyTitle = historyFlow.querySelector('[data-history-title]');
+    var historyList = historyFlow.querySelector('[data-history-list]');
+    var historyEmpty = historyFlow.querySelector('[data-history-empty]');
+    var historyDetailEl = historyFlow.querySelector('[data-history-detail]');
+    var historyViewList = historyFlow.querySelector('[data-history-view="list"]');
+    var historyViewDetail = historyFlow.querySelector('[data-history-view="detail"]');
+    var historySummary = document.querySelector('[data-history-summary]');
+
+    function historyEscape(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+      });
+    }
+
+    function historyRenderList() {
+      if (!historyList) return;
+      historyList.innerHTML = '';
+      if (HISTORY_DATA.length === 0) {
+        if (historyEmpty) historyEmpty.hidden = false;
+        return;
+      }
+      if (historyEmpty) historyEmpty.hidden = true;
+      HISTORY_DATA.forEach(function (item) {
+        var st = HISTORY_STATUS[item.status] || HISTORY_STATUS.received;
+        var el = document.createElement('div');
+        el.className = 'history-item';
+        el.dataset.historyId = item.id;
+        el.innerHTML =
+          '<div class="history-item__head">' +
+            '<div class="history-item__date">' + historyEscape(item.date) + '</div>' +
+            '<div class="history-status history-status--' + st.cls + '">' + st.label + '</div>' +
+          '</div>' +
+          '<div class="history-item__body">' +
+            '<img class="history-item__logo" src="assets/icn_blogo_' + item.logoFile + '_s.png" alt="">' +
+            '<div class="history-item__info">' +
+              '<div class="history-item__carrier">' + historyEscape(item.carrier) + '</div>' +
+              '<div class="history-item__meta">' + historyEscape(item.accType) + ' · ' + historyEscape(item.symptom) + '</div>' +
+            '</div>' +
+            '<span class="ms history-item__chev">chevron_right</span>' +
+          '</div>';
+        el.addEventListener('click', function () { historyShowDetail(item.id); });
+        historyList.appendChild(el);
+      });
+    }
+
+    function historyShowDetail(id) {
+      var item = HISTORY_DATA.filter(function (i) { return i.id === id; })[0];
+      if (!item || !historyDetailEl) return;
+      var st = HISTORY_STATUS[item.status] || HISTORY_STATUS.received;
+      var carrierPhone = CARRIER_PHONES[item.carrier] || '1588-0000';
+      historyDetailEl.innerHTML =
+        '<div class="history-detail-header">' +
+          '<div class="history-detail-header__row"><span class="history-detail-header__k">신청일</span><span class="history-detail-header__v">' + historyEscape(item.date) + '</span></div>' +
+          '<div class="history-detail-header__row"><span class="history-detail-header__k">신청상태</span><span class="history-status history-status--' + st.cls + '">' + st.label + '</span></div>' +
+        '</div>' +
+        '<div class="review-section">' +
+          '<div class="review-section__label">청구할 보험사</div>' +
+          '<div class="review-carrier-card">' +
+            '<img class="review-carrier-card__logo" src="assets/icn_blogo_' + item.logoFile + '_s.png" alt="">' +
+            '<div class="review-carrier-card__name">' + historyEscape(item.carrier) + '</div>' +
+            '<div class="review-carrier-card__phone">' + carrierPhone + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="review-section">' +
+          '<div class="review-section__label">인적사항</div>' +
+          '<div class="review-person">' +
+            '<div class="review-person__row"><div class="review-person__k">피보험자</div><div class="review-person__v">' +
+              '<div class="review-person__name">' + historyEscape(item.insured) + '</div>' +
+              '<div class="review-person__sub">' + historyEscape(item.ssn) + '-*******</div>' +
+            '</div></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="review-section">' +
+          '<div class="review-section__label">사고사항</div>' +
+          '<div class="review-kv">' +
+            '<div class="review-kv__row"><div class="review-kv__k">사고유형</div><div class="review-kv__v">' + historyEscape(item.accType) + '</div></div>' +
+            '<div class="review-kv__row"><div class="review-kv__k">' + (item.accType === '상해' ? '사고일' : '발병일') + '</div><div class="review-kv__v">' + historyEscape(item.accDate) + '</div></div>' +
+            '<div class="review-kv__row"><div class="review-kv__k">증상</div><div class="review-kv__v">' + historyEscape(item.symptom) + '</div></div>' +
+            '<div class="review-kv__row"><div class="review-kv__k">수령계좌</div><div class="review-kv__v">' +
+              '<div>' + historyEscape(item.bank) + '(' + historyEscape(item.insured) + ')</div>' +
+              '<div class="review-kv__sub">' + historyEscape(item.account) + '</div>' +
+            '</div></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="review-section">' +
+          '<div class="review-section__label">첨부서류</div>' +
+          '<div class="review-photos">' +
+            '<div class="review-photo-thumb"><span class="ms">description</span></div>' +
+            '<div class="review-photo-thumb"><span class="ms">description</span></div>' +
+          '</div>' +
+        '</div>';
+
+      historyViewList.hidden = true;
+      historyViewDetail.hidden = false;
+      if (historyTitle) historyTitle.textContent = '청구 상세';
+    }
+
+    function historyBackToList() {
+      historyViewDetail.hidden = true;
+      historyViewList.hidden = false;
+      if (historyTitle) historyTitle.textContent = '청구내역';
+    }
+
+    function historyOpen() {
+      historyRenderList();
+      historyBackToList();
+      historyFlow.hidden = false;
+    }
+    function historyClose() { historyFlow.hidden = true; }
+
+    // 요약 라인 갱신 (홈 진입 CTA 서브텍스트)
+    function historyUpdateSummary() {
+      if (!historySummary) return;
+      var received = HISTORY_DATA.filter(function (i) { return i.status === 'received'; }).length;
+      var done = HISTORY_DATA.filter(function (i) { return i.status === 'done'; }).length;
+      var hold = HISTORY_DATA.filter(function (i) { return i.status === 'hold'; }).length;
+      var parts = [];
+      if (received) parts.push(received + '건 접수');
+      if (hold) parts.push(hold + '건 보류');
+      if (done) parts.push(done + '건 완료');
+      historySummary.textContent = parts.length ? parts.join(' · ') : '청구내역이 없어요';
+    }
+    historyUpdateSummary();
+
+    historyStart.addEventListener('click', historyOpen);
+    if (historyCloseBtn) historyCloseBtn.addEventListener('click', historyClose);
+    if (historyBack) {
+      historyBack.addEventListener('click', function () {
+        if (!historyViewDetail.hidden) historyBackToList();
+        else historyClose();
+      });
+    }
   }
 
   // Android 하드웨어 백 버튼 — 이전 탭으로. 마지막 탭이면 앱 종료(네이티브에 위임).
