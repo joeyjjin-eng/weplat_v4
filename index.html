@@ -304,8 +304,8 @@
   <div class="noscroll" style="flex:1;padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;overflow-y:auto">
     <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:24px;padding:24px 20px;display:flex;flex-direction:column;gap:14px;flex:none;box-shadow:0 16px 36px rgba(5,27,80,.12)">
       <div style="display:flex;align-items:flex-start;justify-content:space-between"><div style="font-size:13px;font-weight:700;color:#8A94A6">숨은 보험금</div><div style="width:34px;height:34px;border-radius:12px;background:rgba(124,77,255,.14);color:#7C4DFF;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:20px">search_insights</span></div></div>
-      <div style="display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center"><div style="font-size:27px;font-weight:700;letter-spacing:-.04em;color:#101B33">미청구보험금 찾기</div><div style="font-size:14px;color:#4B5875;line-height:1.4">홈택스만 연결하면<br>못 받은 보험금을 1분 안에 조회해요</div><div style="background:#F6F2FF;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700;color:#7C4DFF">평균 발견 약 78만원</div></div>
-      <div style="background:linear-gradient(100deg,#5F6BFF,#7C4DFF);color:#fff;font-size:16px;font-weight:700;border-radius:999px;padding:15px;text-align:center;box-shadow:0 8px 18px rgba(124,77,255,.28)">내 보험금 조회하기 →</div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center"><div style="font-size:27px;font-weight:700;letter-spacing:-.04em;color:#101B33">놓친 보험금 찾기</div><div style="font-size:14px;color:#4B5875;line-height:1.4">청구하지 않은 병원비가<br>얼마나 있는지 확인해 보세요</div><div style="background:#F6F2FF;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700;color:#7C4DFF">소요시간 1분 · 평균 발견 약 78만원</div></div>
+      <div data-claim-start style="background:linear-gradient(100deg,#5F6BFF,#7C4DFF);color:#fff;font-size:16px;font-weight:700;border-radius:999px;padding:15px;text-align:center;box-shadow:0 8px 18px rgba(124,77,255,.28);cursor:pointer">내 보험금 조회하기 →</div>
     </div>
     <div style="font-size:14px;font-weight:700;color:#54617A;flex:none;margin-top:4px">청구·가입</div>
     <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;overflow:hidden;flex:none">
@@ -328,6 +328,152 @@
       <div style="background:#fff;color:#3D4A66;font-size:15px;font-weight:700;border-radius:999px;padding:13px 20px;text-align:center">보험료 비교하기</div>
     </div>
   </div>
+
+  <section data-claim-flow class="claim-flow" hidden aria-label="놓친 보험금 찾기">
+    <div class="claim-flow__topbar">
+      <button type="button" data-claim-back class="claim-icon-btn" aria-label="이전으로"><span class="ms">arrow_back</span></button>
+      <div class="claim-flow__title"><strong>놓친 보험금 찾기</strong></div>
+      <button type="button" data-claim-close class="claim-icon-btn" aria-label="닫기"><span class="ms">close</span></button>
+    </div>
+    <div class="claim-flow__body" data-claim-view="form">
+      <div class="claim-banner">
+        <img src="assets/kakaotalk.svg" alt="카카오톡" class="claim-banner__icon">
+        <div><b>미청구보험금 조회를 위해</b><br>카카오톡 간편인증을 진행합니다</div>
+      </div>
+
+      <div class="claim-field">
+        <div class="claim-field__label">조회 연도 <span>최근 5년 · 복수 선택</span></div>
+        <div class="claim-chips">
+          <button type="button" class="claim-chip" data-year="all">전체</button>
+          <button type="button" class="claim-chip is-picked" data-year="2025">2025</button>
+          <button type="button" class="claim-chip" data-year="2024">2024</button>
+          <button type="button" class="claim-chip" data-year="2023">2023</button>
+          <button type="button" class="claim-chip" data-year="2022">2022</button>
+          <button type="button" class="claim-chip" data-year="2021">2021</button>
+        </div>
+      </div>
+
+      <div class="claim-field">
+        <div class="claim-field__label">이름</div>
+        <input type="text" class="claim-input" data-claim-name placeholder="예: 홍길동" autocomplete="name">
+      </div>
+
+      <div class="claim-field">
+        <div class="claim-field__label">주민등록번호</div>
+        <div class="claim-ssn">
+          <input type="text" class="claim-input" data-claim-ssn placeholder="앞 6자리" maxlength="6" inputmode="numeric">
+          <span class="claim-ssn__dash">－</span>
+          <input type="password" class="claim-input" placeholder="뒷 7자리" maxlength="7" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="claim-field">
+        <div class="claim-field__label">통신사</div>
+        <div class="claim-carriers">
+          <button type="button" class="claim-carrier">SKT</button>
+          <button type="button" class="claim-carrier">KT</button>
+          <button type="button" class="claim-carrier">LGU+</button>
+          <button type="button" class="claim-carrier">SK알뜰</button>
+          <button type="button" class="claim-carrier">KT알뜰</button>
+          <button type="button" class="claim-carrier">LG알뜰</button>
+        </div>
+      </div>
+
+      <div class="claim-field">
+        <div class="claim-field__label">휴대폰번호</div>
+        <input type="tel" class="claim-input" data-claim-phone placeholder="예: 010-1234-5678" inputmode="tel" autocomplete="tel">
+      </div>
+    </div>
+
+    <div class="claim-flow__body claim-verify-body" data-claim-view="verify" hidden>
+      <div class="claim-verify">
+        <img src="assets/kakaotalk.svg" alt="카카오톡" class="claim-verify__icon">
+        <div class="claim-verify__title">카카오톡에서 인증을 진행해 주세요</div>
+        <div class="claim-verify__memo">고객님 휴대폰의 카카오톡 알림을 확인하고<br>인증을 완료한 후 아래 버튼을 눌러 주세요</div>
+      </div>
+
+      <div class="claim-summary">
+        <div class="claim-summary__avatar" data-claim-avatar>홍</div>
+        <div class="claim-summary__body">
+          <div class="claim-summary__name" data-claim-sum-name>홍길동</div>
+          <div class="claim-summary__meta" data-claim-sum-meta>1990.10.04 · SKT · 010-1234-5678</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="claim-flow__body claim-result-body" data-claim-view="result" hidden>
+      <div class="claim-filters">
+        <div class="claim-filter-row">
+          <div class="claim-filter-row__label"><span class="ms">event</span>년도</div>
+          <div class="claim-filter-chips" data-result-year>
+            <button type="button" class="claim-chip" data-year="2025">2025</button>
+            <button type="button" class="claim-chip" data-year="2024">2024</button>
+            <button type="button" class="claim-chip" data-year="2023">2023</button>
+            <button type="button" class="claim-chip is-picked" data-year="2022">2022</button>
+            <button type="button" class="claim-chip" data-year="2021">2021</button>
+          </div>
+        </div>
+        <div class="claim-filter-row">
+          <div class="claim-filter-row__label"><span class="ms">shield</span>세대</div>
+          <div class="claim-filter-chips" data-result-gen>
+            <button type="button" class="claim-chip" data-gen="1">1세대</button>
+            <button type="button" class="claim-chip is-picked" data-gen="2">2세대</button>
+            <button type="button" class="claim-chip" data-gen="3">3세대</button>
+            <button type="button" class="claim-chip" data-gen="4">4세대</button>
+          </div>
+        </div>
+        <div class="claim-filter-desc" data-result-gen-desc>표준화 실손 · 2009.10~2017.3 · 자기부담 10~20%</div>
+      </div>
+
+      <div class="claim-result__title">
+        <div class="claim-result__title-main">미청구보험금 계산 결과</div>
+        <div class="claim-result__title-sub" data-result-context>2022년 · 2세대 실손보험 기준</div>
+      </div>
+
+      <div class="claim-result__beta">
+        <span class="beta-badge">BETA</span>
+        <div>계산된 금액은 <b>참고용</b>이에요. 실제 지급 금액과 차이가 있을 수 있어요</div>
+      </div>
+
+      <div class="claim-calc">
+        <div class="calc-card">
+          <div class="calc-card__label">의료비</div>
+          <div class="calc-card__amount"><span data-result-total>1,122,370</span><small>원</small></div>
+        </div>
+        <div class="calc-op">−</div>
+        <div class="calc-card">
+          <div class="calc-card__label">받은 실손보험금</div>
+          <div class="calc-card__amount"><span data-result-received>648,770</span><small>원</small></div>
+        </div>
+        <div class="calc-op">=</div>
+        <div class="calc-card calc-card--total">
+          <div class="calc-card__label">놓친 보험금</div>
+          <div class="calc-card__amount"><span data-result-missed>473,600</span><small>원</small></div>
+        </div>
+      </div>
+
+      <ul class="claim-result__notes">
+        <li>연말정산 간소화에서 자녀가 조회 대상에 포함돼 있으면 자녀 내역까지 함께 조회돼요</li>
+        <li>비급여 미용진료 항목은 약관상 보상이 어려워요</li>
+        <li>실제 청구 시 심사 과정에서 상세 내역이 조정될 수 있어요</li>
+      </ul>
+    </div>
+
+    <div class="claim-flow__footer">
+      <div data-claim-footer="form">
+        <button type="button" class="claim-submit" data-claim-submit>카카오톡으로 인증하기</button>
+      </div>
+      <div data-claim-footer="verify" class="claim-actions" hidden>
+        <button type="button" class="claim-back-btn" data-claim-verify-back>이전</button>
+        <button type="button" class="claim-submit" data-claim-verify-done>
+          <span class="ms">check</span>인증 완료
+        </button>
+      </div>
+      <div data-claim-footer="result" hidden>
+        <button type="button" class="claim-submit" data-claim-result-done>청구 방법 안내받기</button>
+      </div>
+    </div>
+  </section>
 </main>
 
 <!-- ============================================================

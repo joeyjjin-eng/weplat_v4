@@ -643,7 +643,7 @@
 .plan-result .result-hero{
   padding:20px 22px 18px;border-radius:22px;
   background:linear-gradient(158deg,#5F6BFF 0%,#7C4DFF 100%);
-  color:#fff;box-shadow:0 16px 36px rgba(124,77,255,.28);
+  color:#fff;box-shadow:0 6px 16px rgba(124,77,255,.14);
   display:flex;flex-direction:column;gap:4px;position:relative;overflow:hidden;
 }
 .plan-result .result-hero::before{
@@ -673,10 +673,11 @@
 }
 .plan-card__logo{
   width:44px;height:44px;border-radius:12px;flex:none;
-  background:#F4F7FC;color:var(--ink-800);
+  background:#F4F7FC;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;letter-spacing:-.02em;
+  overflow:hidden;
 }
+.plan-card__logo img{width:auto;height:auto;max-width:62%;max-height:58%;object-fit:contain;display:block}
 .plan-card__title{
   flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;
 }
@@ -733,10 +734,11 @@
 }
 .plan-alt__logo{
   width:36px;height:36px;border-radius:11px;flex:none;
-  background:#F4F7FC;color:var(--ink-800);
+  background:#F4F7FC;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;
+  overflow:hidden;
 }
+.plan-alt__logo img{width:auto;height:auto;max-width:62%;max-height:58%;object-fit:contain;display:block}
 .plan-alt__body{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
 .plan-alt__name{
   font-size:15px;font-weight:700;color:var(--ink-800);letter-spacing:-.015em;
@@ -774,3 +776,56 @@
   display:inline-block;margin-top:8px;
   font-size:13px;color:var(--ink-400);font-weight:500;
 }
+
+/* ── 신청 폼 화면 (요약 + 이름/전번) ─────────────────────── */
+.plan-form-view{
+  display:flex;flex-direction:column;gap:14px;
+  animation:sav-rise .4s cubic-bezier(.2,.8,.2,1);
+}
+.plan-mini{
+  background:#fff;border-radius:16px;
+  padding:14px 16px;
+  box-shadow:0 6px 16px rgba(5,27,80,.05);
+  display:flex;align-items:center;gap:12px;
+}
+.plan-mini__logo{
+  width:40px;height:40px;border-radius:12px;flex:none;
+  background:#F4F7FC;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.plan-mini__logo img{width:auto;height:auto;max-width:62%;max-height:58%;object-fit:contain;display:block}
+.plan-mini__body{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.plan-mini__carrier{font-size:13px;font-weight:600;color:var(--ink-500);letter-spacing:-.01em}
+.plan-mini__name{font-size:15px;font-weight:700;color:var(--ink-800);letter-spacing:-.015em}
+.plan-mini__price{
+  flex:none;text-align:right;
+  font-size:15px;font-weight:700;color:var(--ink-800);letter-spacing:-.02em;
+}
+.plan-mini__price small{font-size:13px;color:var(--ink-500);font-weight:500;display:block}
+
+.plan-form-panel{
+  background:#fff;border-radius:20px;
+  padding:18px 20px;
+  box-shadow:0 8px 24px rgba(5,27,80,.06);
+  display:flex;flex-direction:column;gap:14px;
+}
+.plan-form-panel .panel-section{display:flex;flex-direction:column;gap:10px}
+.plan-form-panel .panel-divider{
+  height:1px;background:rgba(11,27,58,.08);margin:2px -20px;
+}
+.plan-form-panel .section-title{
+  font-size:14px;font-weight:700;color:var(--ink-500);letter-spacing:-.01em;
+}
+.plan-form-panel .section-sub{
+  font-size:13px;color:var(--ink-500);line-height:1.5;margin-top:-4px;
+}
+.plan-form-panel .summary-list{
+  list-style:none;padding:0;margin:0;
+  display:flex;flex-direction:column;gap:8px;
+}
+.plan-form-panel .summary-list li{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  font-size:15px;line-height:1.4;
+}
+.plan-form-panel .summary-list li span{color:var(--ink-500);font-weight:600}
+.plan-form-panel .summary-list li b{color:var(--ink-800);font-weight:700;letter-spacing:-.015em;text-align:right}

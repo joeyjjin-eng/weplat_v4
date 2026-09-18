@@ -1269,7 +1269,7 @@
       }).join('');
       var altsHTML = alts.map(function (r) {
         return '<div class="plan-alt">' +
-          '<div class="plan-alt__logo">' + planEscape(r.plan.logo) + '</div>' +
+          '<div class="plan-alt__logo"><img src="assets/' + planEscape(r.plan.logo) + '.svg" alt="' + planEscape(r.plan.carrier) + '"></div>' +
           '<div class="plan-alt__body">' +
             '<div class="plan-alt__name">' + planEscape(r.plan.name) + '</div>' +
             '<div class="plan-alt__meta">' + planEscape(r.plan.carrier) + ' · 매치율 ' + r.match + '%</div>' +
@@ -1286,7 +1286,7 @@
           '</div>' +
           '<div class="plan-card">' +
             '<div class="plan-card__head">' +
-              '<div class="plan-card__logo">' + planEscape(top.plan.logo) + '</div>' +
+              '<div class="plan-card__logo"><img src="assets/' + planEscape(top.plan.logo) + '.svg" alt="' + planEscape(top.plan.carrier) + '"></div>' +
               '<div class="plan-card__title">' +
                 '<div class="plan-card__carrier">' + planEscape(top.plan.carrier) + '</div>' +
                 '<div class="plan-card__name">' + planEscape(top.plan.name) + '</div>' +
@@ -1311,15 +1311,96 @@
         '<button type="button" data-plan-consult class="plan-submit-btn">' +
           '이 요금제로 상담 받기 <span class="ms">arrow_forward</span>' +
         '</button>';
-      planFooter.querySelector('[data-plan-consult]').addEventListener('click', planRenderDone);
+      planFooter.querySelector('[data-plan-consult]').addEventListener('click', planRenderForm);
     }
 
-    function planRenderDone() {
+    // 요약 + 이름/전번 입력 폼 화면 — 결과 화면에서 CTA 누르면 여기로 넘어옴.
+    var PLAN_SUMMARY_LABELS = {
+      tv: 'TV', internet: '인터넷', mobile: '휴대폰',
+      family: '가구원', priority: '중요한 점'
+    };
+    function planRenderForm() {
+      var results = planRecommend(planAnswers);
+      var top = results[0];
+
+      var summaryRows = PLAN_CATEGORIES.map(function (cat) {
+        var pickedVal = planAnswers[cat.key];
+        var pickedOpt = cat.options.filter(function (o) { return o.value === pickedVal; })[0];
+        if (!pickedOpt) return '';
+        return '<li><span>' + planEscape(PLAN_SUMMARY_LABELS[cat.key] || cat.key) + '</span>' +
+               '<b>' + planEscape(pickedOpt.label) + '</b></li>';
+      }).join('');
+
+      planBody.innerHTML =
+        '<div class="plan-form-view">' +
+          '<div class="plan-mini">' +
+            '<div class="plan-mini__logo"><img src="assets/' + planEscape(top.plan.logo) + '.svg" alt="' + planEscape(top.plan.carrier) + '"></div>' +
+            '<div class="plan-mini__body">' +
+              '<div class="plan-mini__carrier">' + planEscape(top.plan.carrier) + '</div>' +
+              '<div class="plan-mini__name">' + planEscape(top.plan.name) + '</div>' +
+            '</div>' +
+            '<div class="plan-mini__price">' + top.plan.monthly.toLocaleString('ko-KR') + '<small>원 / 월</small></div>' +
+          '</div>' +
+          '<div class="plan-form-panel">' +
+            '<div class="panel-section">' +
+              '<div class="section-title">내가 답한 내용</div>' +
+              '<ul class="summary-list">' + summaryRows + '</ul>' +
+            '</div>' +
+            '<div class="panel-divider"></div>' +
+            '<div class="panel-section">' +
+              '<div class="section-title">신청자 정보</div>' +
+              '<div class="section-sub">담당자가 연락드릴 때 사용해요</div>' +
+              '<label class="plan-field"><span>이름</span>' +
+              '<input type="text" data-plan-name placeholder="예: 김영희" autocomplete="name"></label>' +
+              '<label class="plan-field"><span>휴대폰 번호</span>' +
+              '<input type="tel" data-plan-phone placeholder="010-1234-5678" inputmode="tel" autocomplete="tel"></label>' +
+              '<div class="plan-consent">' +
+                '<label class="consent-check">' +
+                  '<input type="checkbox" data-plan-consent>' +
+                  '<span class="consent-box"><span class="ms">check</span></span>' +
+                  '<span>개인정보 수집·이용 동의 <em>(필수)</em></span>' +
+                '</label>' +
+                '<button type="button" data-plan-consent-view class="consent-view">원문 보기</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      planFooter.innerHTML =
+        '<button type="button" data-plan-submit class="plan-submit-btn" disabled>신청하기</button>';
+
+      var nameInput = planBody.querySelector('[data-plan-name]');
+      var phoneInput = planBody.querySelector('[data-plan-phone]');
+      var consentInput = planBody.querySelector('[data-plan-consent]');
+      var consentView = planBody.querySelector('[data-plan-consent-view]');
+      var submitBtn = planFooter.querySelector('[data-plan-submit]');
+      function refresh() {
+        submitBtn.disabled = !(
+          nameInput.value.trim() &&
+          phoneInput.value.trim() &&
+          consentInput.checked
+        );
+      }
+      nameInput.addEventListener('input', refresh);
+      phoneInput.addEventListener('input', refresh);
+      consentInput.addEventListener('change', refresh);
+      consentView.addEventListener('click', function () {
+        var url = consentView.dataset.url;
+        if (url) window.open(url, '_blank', 'noopener');
+      });
+      submitBtn.addEventListener('click', function () {
+        if (submitBtn.disabled) return;
+        planRenderDone(nameInput.value.trim());
+      });
+    }
+
+    function planRenderDone(name) {
+      var who = name ? planEscape(name) + '님' : '고객님';
       planBody.innerHTML =
         '<div class="plan-done">' +
           '<div class="done-icon"><span class="ms is-filled">check_circle</span></div>' +
-          '<div class="done-title">상담 신청이 접수됐어요</div>' +
-          '<div class="done-memo">위플랫 담당자가 곧 연락드려서<br>이 요금제로 옮길 수 있는지 안내해드릴게요.<br>' +
+          '<div class="done-title">신청이 접수됐어요</div>' +
+          '<div class="done-memo"><b>' + who + '</b>께 위플랫 담당자가 곧 연락드려서<br>이 요금제로 옮길 수 있는지 안내해드릴게요.<br>' +
           '<small>보통 영업일 기준 1~2일 안에 연락드려요</small></div>' +
         '</div>';
       planFooter.innerHTML =
@@ -1343,6 +1424,8 @@
     function planGoBack() {
       // done → 닫기
       if (planBody.querySelector('.plan-done')) { planClose_(); return; }
+      // form → 결과 화면으로 복귀
+      if (planBody.querySelector('.plan-form-view')) { planRenderResult(); return; }
       // result → 마지막 스텝 질문으로
       if (planBody.querySelector('.plan-result')) {
         planStep = PLAN_CATEGORIES.length - 1;
@@ -1358,6 +1441,194 @@
     if (planStart) planStart.addEventListener('click', planOpen);
     if (planBack) planBack.addEventListener('click', planGoBack);
     if (planClose) planClose.addEventListener('click', planClose_);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 보험 탭 — 놓친 보험금 찾기 (조회 폼 오버레이)
+  //   보험 탭 히어로 CTA 누르면 카카오톡 간편인증용 조회 폼이 열림.
+  // ─────────────────────────────────────────────────────────────
+  var claimFlow = document.querySelector('[data-claim-flow]');
+  var claimStart = document.querySelector('[data-claim-start]');
+  if (claimFlow && claimStart) {
+    var claimBack = claimFlow.querySelector('[data-claim-back]');
+    var claimCloseEl = claimFlow.querySelector('[data-claim-close]');
+    var claimSubmit = claimFlow.querySelector('[data-claim-submit]');
+    var claimVerifyDone = claimFlow.querySelector('[data-claim-verify-done]');
+    var claimVerifyBack = claimFlow.querySelector('[data-claim-verify-back]');
+    var claimResultDone = claimFlow.querySelector('[data-claim-result-done]');
+    var claimViewForm = claimFlow.querySelector('[data-claim-view="form"]');
+    var claimViewVerify = claimFlow.querySelector('[data-claim-view="verify"]');
+    var claimViewResult = claimFlow.querySelector('[data-claim-view="result"]');
+    var claimFooterForm = claimFlow.querySelector('[data-claim-footer="form"]');
+    var claimFooterVerify = claimFlow.querySelector('[data-claim-footer="verify"]');
+    var claimFooterResult = claimFlow.querySelector('[data-claim-footer="result"]');
+    var claimNameInput = claimFlow.querySelector('[data-claim-name]');
+    var claimSsnInput = claimFlow.querySelector('[data-claim-ssn]');
+    var claimPhoneInput = claimFlow.querySelector('[data-claim-phone]');
+    var claimSumName = claimFlow.querySelector('[data-claim-sum-name]');
+    var claimSumMeta = claimFlow.querySelector('[data-claim-sum-meta]');
+    var claimAvatar = claimFlow.querySelector('[data-claim-avatar]');
+
+    function claimFormatBirth(ssn6) {
+      if (!ssn6 || ssn6.length < 6) return '';
+      var yy = ssn6.slice(0, 2);
+      var mm = ssn6.slice(2, 4);
+      var dd = ssn6.slice(4, 6);
+      var century = parseInt(yy, 10) <= 25 ? '20' : '19';
+      return century + yy + '.' + mm + '.' + dd;
+    }
+    function claimFillSummary() {
+      var name = (claimNameInput && claimNameInput.value.trim()) || '홍길동';
+      var ssn = (claimSsnInput && claimSsnInput.value.trim()) || '';
+      var birth = claimFormatBirth(ssn) || '1990.10.04';
+      var pickedCarrier = claimFlow.querySelector('.claim-carrier.is-picked');
+      var carrier = pickedCarrier ? pickedCarrier.textContent.trim() : 'SKT';
+      var phone = (claimPhoneInput && claimPhoneInput.value.trim()) || '010-1234-5678';
+      if (claimSumName) claimSumName.textContent = name;
+      if (claimAvatar) claimAvatar.textContent = name.charAt(0);
+      if (claimSumMeta) claimSumMeta.textContent = birth + ' · ' + carrier + ' · ' + phone;
+    }
+    function claimShowView(view) {
+      var isForm = view === 'form';
+      var isVerify = view === 'verify';
+      var isResult = view === 'result';
+      if (claimViewForm) claimViewForm.hidden = !isForm;
+      if (claimViewVerify) claimViewVerify.hidden = !isVerify;
+      if (claimViewResult) claimViewResult.hidden = !isResult;
+      if (claimFooterForm) claimFooterForm.hidden = !isForm;
+      if (claimFooterVerify) claimFooterVerify.hidden = !isVerify;
+      if (claimFooterResult) claimFooterResult.hidden = !isResult;
+    }
+    function claimOpen() {
+      claimShowView('form');
+      claimFlow.hidden = false;
+    }
+    function claimClose_() {
+      claimFlow.hidden = true;
+      claimShowView('form');
+    }
+    function claimTopbarBack() {
+      // result 뷰 = 인증까지 끝난 상태 → 그냥 닫기
+      if (claimViewResult && !claimViewResult.hidden) { claimClose_(); return; }
+      // verify 뷰면 폼으로
+      if (claimViewVerify && !claimViewVerify.hidden) { claimShowView('form'); return; }
+      claimClose_();
+    }
+    claimStart.addEventListener('click', claimOpen);
+    if (claimBack) claimBack.addEventListener('click', claimTopbarBack);
+    if (claimCloseEl) claimCloseEl.addEventListener('click', claimClose_);
+
+    // 카카오톡으로 인증하기 → 요약 채우고 verify 뷰로 전환
+    if (claimSubmit) {
+      claimSubmit.addEventListener('click', function () {
+        claimFillSummary();
+        claimShowView('verify');
+      });
+    }
+    // 이전 → 폼 뷰 복귀
+    if (claimVerifyBack) {
+      claimVerifyBack.addEventListener('click', function () { claimShowView('form'); });
+    }
+    // 인증 완료 → 조회 결과 뷰로 전환
+    if (claimVerifyDone) {
+      claimVerifyDone.addEventListener('click', function () { claimShowView('result'); });
+    }
+    // 결과 화면 CTA → 오버레이 닫기 (mock)
+    if (claimResultDone) {
+      claimResultDone.addEventListener('click', claimClose_);
+    }
+
+    // 결과 화면 — 조회년도 / 실손보험 세대 단일 선택 + 금액 재계산
+    var CLAIM_GEN_DESC = {
+      '1': '개인 실손 · 2009.9 이전 · 표준약관 이전',
+      '2': '표준화 실손 · 2009.10~2017.3 · 자기부담 10~20%',
+      '3': '착한 실손 · 2017.4~2021.6 · 급여/비급여 분리',
+      '4': '신 실손 · 2021.7~ · 급여/비급여 완전 분리'
+    };
+    // 년도별 의료비/받은 실손 목업 데이터
+    var CLAIM_YEAR_DATA = {
+      '2025': { total: 1580000, received: 892400 },
+      '2024': { total: 1230500, received: 720100 },
+      '2023': { total:  940200, received: 512600 },
+      '2022': { total: 1122370, received: 648770 },
+      '2021': { total:  782800, received: 418500 }
+    };
+    // 세대별 청구 가능 계수 (2세대 기준 100%, 상위/하위 세대는 커버율 차이 반영)
+    var CLAIM_GEN_FACTOR = { '1': 1.10, '2': 1.00, '3': 0.88, '4': 0.75 };
+
+    var claimResultYearRow = claimFlow.querySelector('[data-result-year]');
+    var claimResultGenRow = claimFlow.querySelector('[data-result-gen]');
+    var claimResultContext = claimFlow.querySelector('[data-result-context]');
+    var claimResultGenDesc = claimFlow.querySelector('[data-result-gen-desc]');
+    var claimResultTotal = claimFlow.querySelector('[data-result-total]');
+    var claimResultReceived = claimFlow.querySelector('[data-result-received]');
+    var claimResultMissed = claimFlow.querySelector('[data-result-missed]');
+
+    function claimFmt(n) { return Math.max(0, Math.round(n)).toLocaleString('ko-KR'); }
+    function claimResultRefresh() {
+      var y = claimResultYearRow && claimResultYearRow.querySelector('.claim-chip.is-picked');
+      var g = claimResultGenRow && claimResultGenRow.querySelector('.claim-chip.is-picked');
+      var yearVal = y ? y.dataset.year : '2022';
+      var genVal = g ? g.dataset.gen : '2';
+      var data = CLAIM_YEAR_DATA[yearVal] || CLAIM_YEAR_DATA['2022'];
+      var factor = CLAIM_GEN_FACTOR[genVal] || 1.0;
+      var missed = Math.max(0, (data.total - data.received) * factor);
+      // 100원 단위로 반올림 (실제 지급 단위 감성)
+      missed = Math.round(missed / 100) * 100;
+
+      if (claimResultTotal) claimResultTotal.textContent = claimFmt(data.total);
+      if (claimResultReceived) claimResultReceived.textContent = claimFmt(data.received);
+      if (claimResultMissed) claimResultMissed.textContent = claimFmt(missed);
+      if (claimResultContext) claimResultContext.textContent = yearVal + '년 · ' + genVal + '세대 실손보험 기준';
+      if (claimResultGenDesc) claimResultGenDesc.textContent = CLAIM_GEN_DESC[genVal] || '';
+    }
+    function claimResultBindSingle(row) {
+      if (!row) return;
+      var chips = row.querySelectorAll('.claim-chip');
+      chips.forEach(function (c) {
+        c.addEventListener('click', function () {
+          chips.forEach(function (o) { o.classList.remove('is-picked'); });
+          c.classList.add('is-picked');
+          claimResultRefresh();
+        });
+      });
+    }
+    claimResultBindSingle(claimResultYearRow);
+    claimResultBindSingle(claimResultGenRow);
+
+    // 연도 칩 — 개별 토글 + '전체' 는 나머지 5개 일괄 on/off
+    // ⚠ 폼 뷰 내로만 스코프 제한 — 결과 뷰의 칩과 충돌 방지
+    var claimFormView = claimFlow.querySelector('[data-claim-view="form"]');
+    var yearChips = claimFormView.querySelectorAll('.claim-chip');
+    var allChip = claimFormView.querySelector('.claim-chip[data-year="all"]');
+    var yearOnly = Array.prototype.filter.call(yearChips, function (c) {
+      return c.dataset.year !== 'all';
+    });
+    function refreshAllChip() {
+      var everyOn = yearOnly.every(function (c) { return c.classList.contains('is-picked'); });
+      if (allChip) allChip.classList.toggle('is-picked', everyOn);
+    }
+    yearChips.forEach(function (c) {
+      c.addEventListener('click', function () {
+        if (c.dataset.year === 'all') {
+          var on = !c.classList.contains('is-picked');
+          yearOnly.forEach(function (o) { o.classList.toggle('is-picked', on); });
+          c.classList.toggle('is-picked', on);
+        } else {
+          c.classList.toggle('is-picked');
+          refreshAllChip();
+        }
+      });
+    });
+
+    // 통신사 — 단일 선택
+    var carrierBtns = claimFlow.querySelectorAll('.claim-carrier');
+    carrierBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        carrierBtns.forEach(function (o) { o.classList.remove('is-picked'); });
+        b.classList.add('is-picked');
+      });
+    });
   }
 
   // Android 하드웨어 백 버튼 — 이전 탭으로. 마지막 탭이면 앱 종료(네이티브에 위임).

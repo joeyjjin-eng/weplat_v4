@@ -1,3 +1,277 @@
 /* 보험 화면 전용 스타일.
    화면 마크업은 시안 그대로라 인라인 스타일입니다.
    반복되는 카드·행·CTA를 여기 클래스로 빼내면서 인라인을 걷어내세요. */
+
+/* ── 놓친 보험금 찾기 (조회 폼 오버레이) ─────────────────
+   톤 통일 — 배경/헤더/아웃라인 모두 저채도, 포인트는 프로젝트 파랑.
+   본문 텍스트 굵기 400(regular), 라벨만 700. */
+.claim-flow{
+  position:absolute;inset:0;z-index:20;
+  display:flex;flex-direction:column;
+  background:#fff;
+}
+.claim-flow[hidden]{display:none}
+
+/* 화이트 헤더 — 그라디언트 대신 은은한 하단 라인 */
+.claim-flow__topbar{
+  flex:none;display:flex;align-items:center;gap:6px;
+  padding:max(env(safe-area-inset-top),22px) 8px 12px;
+  background:#fff;
+  border-bottom:1px solid var(--line);
+}
+.claim-flow__title{flex:1;text-align:center}
+.claim-flow__title strong{
+  font-size:16px;color:var(--ink-900);font-weight:700;letter-spacing:-.02em;
+}
+.claim-icon-btn{
+  width:40px;height:40px;border-radius:12px;flex:none;background:transparent;border:0;
+  display:flex;align-items:center;justify-content:center;color:var(--ink-800);padding:0;
+  transition:background .2s ease;cursor:pointer;
+}
+.claim-icon-btn:active{background:rgba(11,27,58,.06)}
+.claim-icon-btn .ms{font-size:22px}
+
+.claim-flow__body{
+  flex:1;min-height:0;overflow-y:auto;
+  padding:16px 18px 12px;
+  display:flex;flex-direction:column;gap:16px;
+}
+
+/* 카카오 인증 안내 배너 — 저채도 회색 톤 */
+.claim-banner{
+  background:rgba(11,27,58,.04);
+  border:1px solid var(--line-soft);
+  border-radius:12px;padding:12px 14px;
+  display:flex;align-items:center;gap:10px;
+}
+.claim-banner .ms{font-size:20px;color:var(--ink-500);flex:none}
+.claim-banner__icon{width:26px;height:26px;flex:none;display:block;border-radius:6px}
+.claim-banner div{font-size:13.5px;line-height:1.5;color:var(--ink-800);font-weight:400}
+.claim-banner div b{color:var(--ink-900);font-weight:700}
+
+/* 섹션 필드 */
+.claim-field{display:flex;flex-direction:column;gap:8px}
+.claim-field__label{
+  font-size:14px;font-weight:700;color:var(--ink-900);letter-spacing:-.01em;
+}
+.claim-field__label span{
+  font-size:13px;font-weight:400;color:var(--ink-400);margin-left:6px;
+}
+
+/* 입력 — 아웃라인 스타일, 본문 400 */
+.claim-input{
+  background:#fff;border:1px solid var(--line-soft);
+  border-radius:12px;padding:13px 14px;
+  font-size:15px;font-weight:400;letter-spacing:-.015em;color:var(--ink-900);
+  font-family:inherit;outline:none;width:100%;box-sizing:border-box;
+  transition:border-color .15s ease;
+}
+.claim-input:focus{border-color:var(--ink-800)}
+.claim-input::placeholder{color:var(--ink-300);font-weight:400}
+
+/* 주민번호 두 칸 */
+.claim-ssn{display:flex;align-items:center;gap:10px}
+.claim-ssn .claim-input{flex:1;min-width:0}
+.claim-ssn__dash{color:var(--ink-300);font-weight:400;font-size:15px}
+
+/* 연도 칩 — 아웃라인, 선택 시 파랑 아웃라인+텍스트 */
+.claim-chips{display:flex;flex-wrap:wrap;gap:8px}
+.claim-chip{
+  flex:none;padding:8px 14px;border-radius:999px;
+  background:#fff;border:1px solid var(--line-soft);
+  font-size:14px;font-weight:400;color:var(--ink-600);letter-spacing:-.01em;
+  font-family:inherit;cursor:pointer;
+  transition:border-color .15s ease,color .15s ease;
+}
+.claim-chip.is-picked{
+  border-color:var(--blue-500);color:var(--blue-500);font-weight:600;
+}
+
+/* 통신사 3×2 그리드 — 아웃라인, 선택 시 파랑 아웃라인+텍스트 */
+.claim-carriers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.claim-carrier{
+  padding:12px 8px;border-radius:12px;
+  background:#fff;border:1px solid var(--line-soft);
+  font-size:14px;font-weight:400;color:var(--ink-600);letter-spacing:-.01em;
+  font-family:inherit;cursor:pointer;
+  transition:border-color .15s ease,color .15s ease;
+}
+.claim-carrier.is-picked{
+  border-color:var(--blue-500);color:var(--blue-500);font-weight:700;
+}
+
+/* 하단 CTA — 프로젝트 파랑 그라디언트 */
+.claim-flow__footer{
+  flex:none;padding:12px 18px max(env(safe-area-inset-bottom),16px);
+  background:#fff;border-top:1px solid var(--line);
+}
+.claim-submit{
+  width:100%;padding:15px;border-radius:14px;
+  background:var(--grad-cta);color:#fff;
+  font-size:16px;font-weight:700;letter-spacing:-.01em;
+  font-family:inherit;border:0;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 6px 16px rgba(13,118,255,.22);
+  transition:opacity .15s ease;
+}
+.claim-submit:active{opacity:.9}
+
+/* ── 인증 대기 화면 (2번째 뷰) ──────────────────────────
+   요약 카드 + 카카오톡 인증 안내 + 2버튼 푸터.
+   요약과 안내 콘텐츠를 한 덩어리로 세로 중앙 정렬. */
+.claim-verify-body{gap:18px;justify-content:center;padding-top:24px;padding-bottom:24px}
+.claim-verify-body[hidden]{display:none}
+
+.claim-flow__body[data-claim-view="form"][hidden]{display:none}
+
+.claim-summary{
+  align-self:center;max-width:320px;width:100%;
+  display:flex;align-items:center;gap:14px;
+  background:#fff;
+  border:1px solid var(--line-soft);
+  border-radius:16px;
+  padding:14px 16px;
+}
+.claim-summary__avatar{
+  width:44px;height:44px;border-radius:50%;flex:none;
+  background:rgba(13,118,255,.10);color:var(--blue-500);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;letter-spacing:-.02em;
+}
+.claim-summary__body{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+.claim-summary__name{
+  font-size:16px;font-weight:700;color:var(--ink-900);letter-spacing:-.02em;
+}
+.claim-summary__meta{
+  font-size:13px;color:var(--ink-500);letter-spacing:-.01em;font-weight:400;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+
+.claim-verify{
+  padding:8px 24px 0;
+  display:flex;flex-direction:column;align-items:center;
+  gap:12px;text-align:center;
+}
+.claim-verify__icon{
+  width:80px;height:80px;flex:none;border-radius:20px;
+  box-shadow:0 10px 24px rgba(254,229,0,.28);
+}
+.claim-verify__title{
+  font-size:18px;font-weight:700;color:var(--ink-900);letter-spacing:-.02em;
+  margin-top:8px;
+}
+.claim-verify__memo{
+  font-size:14px;color:var(--ink-500);line-height:1.55;font-weight:400;
+}
+
+/* 2버튼 푸터 (이전 / 인증 완료) */
+.claim-actions{display:flex;gap:10px}
+.claim-actions[hidden]{display:none}
+.claim-back-btn{
+  flex:none;padding:15px 22px;border-radius:14px;
+  background:#fff;border:1px solid var(--line-soft);
+  color:var(--ink-800);font-size:15px;font-weight:600;letter-spacing:-.01em;
+  font-family:inherit;cursor:pointer;
+  transition:background .15s ease;
+}
+.claim-back-btn:active{background:rgba(11,27,58,.04)}
+.claim-actions .claim-submit{flex:1}
+
+[data-claim-footer][hidden]{display:none}
+
+/* ── 조회 결과 화면 (3번째 뷰) ──────────────────────────
+   조회 조건 필터 + 결과 타이틀 + BETA + 계산 3카드(의료비 − 실손 = 놓친) + 노트. */
+.claim-result-body{gap:14px}
+.claim-result-body[hidden]{display:none}
+
+/* 조회 조건 카드 — 라벨/칩 인라인, 컴팩트 */
+.claim-filters{
+  background:#fff;border:1px solid var(--line-soft);border-radius:14px;
+  padding:10px 14px;
+  display:flex;flex-direction:column;gap:6px;
+}
+.claim-filter-row{
+  display:flex;align-items:center;flex-wrap:wrap;gap:8px;
+  min-height:32px;
+}
+.claim-filter-row__label{
+  flex:none;display:flex;align-items:center;gap:5px;
+  font-size:13px;font-weight:700;color:var(--ink-900);letter-spacing:-.01em;
+}
+.claim-filter-row__label .ms{font-size:16px;color:var(--ink-500)}
+.claim-filter-chips{display:flex;flex-wrap:wrap;gap:5px}
+.claim-filter-chips .claim-chip{padding:4px 10px;font-size:13px}
+.claim-filter-desc{
+  font-size:13px;color:var(--ink-500);font-weight:400;letter-spacing:-.005em;line-height:1.5;
+  padding:2px 2px 0;
+}
+
+/* 결과 타이틀 */
+.claim-result__title{
+  display:flex;flex-direction:column;gap:4px;padding:6px 4px 0;
+}
+.claim-result__title-main{
+  font-size:18px;font-weight:700;color:var(--ink-900);letter-spacing:-.02em;
+}
+.claim-result__title-sub{
+  font-size:13.5px;color:var(--ink-500);font-weight:400;letter-spacing:-.005em;
+}
+
+/* 계산 3카드 (의료비 − 실손 = 놓친) */
+.claim-calc{
+  display:flex;flex-direction:column;gap:4px;
+}
+.calc-card{
+  background:#EEF3FF;border-radius:14px;
+  padding:16px 18px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.calc-card__label{
+  font-size:14px;color:var(--ink-500);font-weight:500;letter-spacing:-.01em;
+}
+.calc-card__amount{
+  font-size:20px;font-weight:700;color:var(--ink-900);letter-spacing:-.025em;
+}
+.calc-card__amount small{font-size:14px;font-weight:600;margin-left:2px;color:var(--ink-500)}
+.calc-op{
+  align-self:center;color:var(--ink-400);
+  font-size:22px;font-weight:600;line-height:1;padding:2px 0;
+}
+.calc-card--total{
+  background:linear-gradient(135deg,#3D7BFF 0%,#0D76FF 100%);
+  color:#fff;box-shadow:0 8px 20px rgba(13,118,255,.24);
+  padding:20px 18px;
+}
+.calc-card--total .calc-card__label{color:rgba(255,255,255,.90);font-weight:600;font-size:15px}
+.calc-card--total .calc-card__amount{color:#fff;font-size:24px}
+.calc-card--total .calc-card__amount small{color:rgba(255,255,255,.85)}
+
+/* BETA 캐비어 */
+.claim-result__beta{
+  display:flex;align-items:flex-start;gap:10px;
+  background:rgba(11,27,58,.04);
+  border-radius:12px;padding:11px 13px;
+}
+.claim-result__beta .beta-badge{
+  flex:none;padding:3px 8px;border-radius:6px;
+  background:var(--ink-900);color:#fff;
+  font-size:13px;font-weight:800;letter-spacing:.02em;line-height:1.1;
+}
+.claim-result__beta div{
+  font-size:13px;color:var(--ink-800);font-weight:400;line-height:1.5;
+}
+.claim-result__beta div b{color:var(--ink-900);font-weight:700}
+
+/* 노트 (bullet) */
+.claim-result__notes{
+  list-style:none;padding:0;margin:0;
+  display:flex;flex-direction:column;gap:6px;
+}
+.claim-result__notes li{
+  position:relative;padding-left:12px;
+  font-size:13px;color:var(--ink-500);font-weight:400;line-height:1.5;letter-spacing:-.005em;
+}
+.claim-result__notes li::before{
+  content:'';position:absolute;left:4px;top:9px;
+  width:3px;height:3px;border-radius:50%;background:var(--ink-400);
+}
