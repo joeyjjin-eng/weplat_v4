@@ -48,7 +48,7 @@
 
 /* head — stage 안 flex 아이템. 텍스트 중앙 정렬 + 버튼 바로 위. 상단 여백은 stage 의 justify-center 로 뷰포트 비율만큼 자동 확보 */
 .ansim-checkin-head { text-align: center; flex: none; }
-.ansim-checkin-head .date { font-size: 13px; letter-spacing: .02em; color: #8A94A6; font-weight: 700; }
+.ansim-checkin-head .date { font-size: 13px; letter-spacing: .02em; color: #8A94A6; font-weight: 500; }
 .ansim-checkin-head .headline { font-size: 26px; font-weight: 700; color: #101B33; margin-top: 6px; line-height: 1.28; letter-spacing: -.03em; }
 .ansim-checkin-head .headline b { color: #0D76FF; font-weight: 700; }
 
@@ -77,7 +77,7 @@
 .ansim-ok:hover { transform: scale(1.03); box-shadow: 0 26px 60px -14px rgba(120,110,150,.42), inset 0 0 0 1px rgba(255,255,255,.95); }
 .ansim-ok:active { transform: scale(.94); }
 .ansim-ok .big { font-size: 36px; font-weight: 700; color: #101B33; letter-spacing: -.035em; }
-.ansim-ok .sub { font-size: 14px; color: #4B5875; letter-spacing: -.01em; font-weight: 600; }
+.ansim-ok .sub { font-size: 14px; color: #4B5875; letter-spacing: -.01em; font-weight: 500; }
 /* 재알림/워치신호 인터셉트용 컴팩트 사이즈 (레거시, 지금은 안 씀) */
 .ansim-ok--compact { width: 180px; height: 180px; align-self: center; }
 .ansim-ok--compact .big { font-size: 28px; }
@@ -87,7 +87,7 @@
 .ansim-intercept > .orb { z-index: 0; }
 .ansim-intercept__body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; padding: 24px 24px 0; position: relative; z-index: 1; }
 .ansim-intercept__head { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.ansim-intercept__label { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,176,32,.14); border: 1px solid rgba(255,149,0,.45); border-radius: 999px; padding: 8px 16px; color: #C98207; font-size: 14px; font-weight: 700; }
+.ansim-intercept__label { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,176,32,.14); border: 1px solid rgba(255,149,0,.45); border-radius: 999px; padding: 8px 16px; color: #C98207; font-size: 14px; font-weight: 500; }
 .ansim-intercept__label .ms { font-size: 18px; }
 .ansim-intercept__title { font-size: 28px; font-weight: 700; color: #101B33; letter-spacing: -.035em; text-align: center; line-height: 1.28; }
 .ansim-intercept__context { font-size: 15px; color: #4B5875; font-weight: 500; text-align: center; letter-spacing: -.01em; }

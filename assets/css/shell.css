@@ -24,11 +24,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webki
 .carousel-card.is-centered{transform:scale(1);opacity:1}
 
 /* 필터 칩 (카드 네비게이션) */
-.chip{flex:none;background:#fff;border:1px solid rgba(11,27,58,.08);color:var(--ink-500);border-radius:var(--r-pill);padding:9px 18px;font-size:13px;font-weight:600;transition:background .2s ease,color .2s ease,border-color .2s ease}
+.chip{flex:none;background:#fff;border:1px solid rgba(11,27,58,.08);color:var(--ink-500);border-radius:var(--r-pill);padding:9px 18px;font-size:13px;font-weight:500;transition:background .2s ease,color .2s ease,border-color .2s ease}
 .chip.is-active{background:var(--grad-cta);color:#fff;border-color:transparent;font-weight:700}
 
 /* 캐러셀 하단 prev/next 네비 */
-.carousel-nav-btn{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--blue-500);padding:8px 4px}
+.carousel-nav-btn{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--blue-500);padding:8px 4px}
 .carousel-nav-btn[hidden]{display:none}
 
 /* 화면 컨테이너 — 실기기 풀뷰포트, 상단 safe-area 확보(상태바 뒷영역).
@@ -46,7 +46,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webki
 .tabbar{flex:none;height:calc(var(--tabbar-h) + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line);display:flex;align-items:flex-start;padding:0 4px calc(6px + env(safe-area-inset-bottom))}
 .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--ink-400);padding:12px 0 10px}
 .tab__icon{font-size:24px}
-.tab__label{font-size:13px;font-weight:600}
+.tab__label{font-size:13px;font-weight:500}
 
 /* dev 스위처는 안심 탭에서만 노출 (안심 상태 시연용).
    #dev-switcher 인라인 display:flex 이겨야 해서 !important. */
@@ -54,3 +54,70 @@ body:not([data-tab="ansim"]) #dev-switcher{display:none!important}
 .tab.is-active{color:var(--blue-500)}
 .tab.is-active .tab__label{font-weight:700}
 .tab:active{opacity:.7}
+
+/* ================================================================
+   공통 알림 오버레이 (모든 탭 공용)
+   ================================================================ */
+.notif-flow{
+  position:fixed;inset:0;z-index:30;
+  display:flex;flex-direction:column;background:#fff;
+}
+.notif-flow[hidden]{display:none}
+.notif-flow__topbar{
+  flex:none;display:flex;align-items:center;justify-content:space-between;gap:6px;
+  padding:max(env(safe-area-inset-top),22px) 8px 10px 20px;
+  background:#fff;
+}
+.notif-flow__title{
+  font-size:19px;font-weight:700;color:#101B33;letter-spacing:-.025em;
+}
+.notif-tabs{
+  flex:none;display:flex;padding:0 20px;
+  border-bottom:1px solid #E9EDF3;
+}
+.notif-tab{
+  padding:12px 6px;margin-right:20px;
+  background:transparent;border:0;border-bottom:2px solid transparent;
+  font-size:15px;font-weight:500;color:#8A94A6;
+  font-family:inherit;cursor:pointer;
+  transition:color .15s ease,border-color .15s ease;
+}
+.notif-tab.is-active{
+  color:#0D76FF;font-weight:700;border-bottom-color:#0D76FF;
+}
+.notif-flow__body{
+  flex:1;min-height:0;overflow-y:auto;padding:12px 18px 24px;
+}
+.notif-list{display:flex;flex-direction:column;gap:10px}
+.notif-item{
+  background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:14px;
+  padding:14px 16px;display:flex;align-items:center;gap:12px;
+  box-shadow:0 4px 12px rgba(5,27,80,.04);
+  cursor:pointer;transition:background .15s ease;
+}
+.notif-item:active{background:#F4F7FC}
+.notif-item--read{opacity:.6;cursor:default}
+.notif-item__ico{
+  width:38px;height:38px;border-radius:12px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+}
+.notif-item__ico .ms{font-size:20px}
+.notif-item__ico--amber{background:rgba(255,176,32,.20);color:#C98207}
+.notif-item__ico--blue{background:rgba(13,118,255,.12);color:#0D76FF}
+.notif-item__ico--teal{background:rgba(0,201,167,.16);color:#00A98D}
+.notif-item__ico--violet{background:rgba(124,77,255,.14);color:#7C4DFF}
+.notif-item__body{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+.notif-item__title{
+  font-size:15px;font-weight:500;color:#101B33;letter-spacing:-.015em;
+}
+.notif-item__meta{
+  font-size:13px;color:#5C6880;font-weight:400;letter-spacing:-.005em;
+}
+.notif-item__chev{color:#8A94A6;font-size:20px;flex:none}
+.notif-empty{
+  padding:64px 30px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.notif-empty .ms{font-size:40px;color:#C7CFDD;margin-bottom:8px}
+.notif-empty__title{font-size:15px;font-weight:500;color:#4B5875}
+.notif-empty__memo{font-size:13px;color:#8A94A6}

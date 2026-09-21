@@ -3,12 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#FBF6ED">
+<meta name="theme-color" content="#F4F7FC">
 <title>위플랫</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block">
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/shell.css">
+<link rel="stylesheet" href="assets/css/header.css">
 <link rel="stylesheet" href="assets/css/ansim.css">
 <link rel="stylesheet" href="assets/css/benefit.css">
 <link rel="stylesheet" href="assets/css/insurance.css">
@@ -29,8 +30,7 @@
   <div class="ansim-toprow">
     <div class="brand"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><div class="tabname">안심 체크인</div></div>
     <div class="icons">
-      <div data-checkin-btn="notifications" class="bell-wrap"><span class="ms">notifications</span><div data-bell-badge class="bell-badge"></div></div>
-      <span class="ms">account_circle</span>
+      <div data-notif-start class="bell-wrap"><span class="ms">notifications</span><div data-bell-badge class="bell-badge"></div></div>
     </div>
   </div>
   <!-- 초기 뷰: design_handoff_daily_checkin 적용 (3중 오브 + 프로스티드 글래스 원형 버튼 + 페인트 블리드) -->
@@ -58,27 +58,6 @@
     <div class="ansim-checkin-foot">
       <button type="button" data-checkin-btn="help" class="ansim-help"><span class="ms">emergency_home</span>도움이 필요해요</button>
     </div>
-  </div>
-
-  <!-- 알림 함 -->
-  <div data-checkin-view="notifications" hidden class="noscroll" style="flex:1;padding:14px 18px 18px;display:flex;flex-direction:column;gap:12px;overflow-y:auto">
-    <div style="font-size:26px;font-weight:700;color:#101B33;letter-spacing:-.035em;padding:6px 3px">알림</div>
-    <div data-checkin-btn="alert-anomaly" style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;flex:none;box-shadow:0 8px 20px rgba(5,27,80,.06)">
-      <div style="width:40px;height:40px;border-radius:12px;background:rgba(255,176,32,.20);color:#C98207;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:22px">monitor_heart</span></div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:15px;font-weight:700;color:#101B33">평소와 다른 상태가 감지됐어요</div><div style="font-size:13px;color:#5C6880">심박수 이상 · 5분 전</div></div>
-      <span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span>
-    </div>
-    <div data-checkin-btn="alert-missed" style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;flex:none;box-shadow:0 8px 20px rgba(5,27,80,.06)">
-      <div style="width:40px;height:40px;border-radius:12px;background:rgba(13,118,255,.12);color:#0D76FF;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:22px">schedule</span></div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:15px;font-weight:700;color:#101B33">아침 체크인이 지연됐어요</div><div style="font-size:13px;color:#5C6880">재알림 발송 · 오전 9:15</div></div>
-      <span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span>
-    </div>
-    <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;flex:none;opacity:.7">
-      <div style="width:40px;height:40px;border-radius:12px;background:rgba(0,201,167,.16);color:#00A98D;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms is-filled" style="font-size:22px">check_circle</span></div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:15px;font-weight:700;color:#101B33">보호자가 확인했어요</div><div style="font-size:13px;color:#5C6880">어제 저녁 체크인 · 오후 8:12</div></div>
-    </div>
-    <div style="flex:1"></div>
-    <div data-checkin-btn="cancel" style="display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1px solid rgba(11,27,58,.10);border-radius:22px;padding:18px;color:#4B5875;font-size:16px;font-weight:700;cursor:pointer;flex:none">닫기</div>
   </div>
 
   <!-- 재알림 intercept -->
@@ -135,33 +114,33 @@
 <div data-user-view="guardian" hidden style="flex:1;display:flex;flex-direction:column;position:relative;z-index:1">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 21px 0">
     <div style="display:flex;align-items:center;gap:8px"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><div style="font-size:19px;font-weight:700;color:#101B33;letter-spacing:-.025em">안심</div></div>
-    <div style="display:flex;align-items:center;gap:12px;color:#4B5875"><span class="ms" style="font-size:20px">notifications</span><span class="ms" style="font-size:20px">account_circle</span></div>
+    <div style="display:flex;align-items:center;gap:12px;color:#4B5875"><span data-notif-start class="ms" style="font-size:20px;cursor:pointer">notifications</span></div>
   </div>
   <div class="noscroll" style="flex:1;padding:24px 18px 18px;display:flex;flex-direction:column;gap:12px;overflow-y:auto">
     <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:24px;padding:20px;display:flex;align-items:center;gap:16px">
       <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(150deg,#00A98D,#0D76FF);display:flex;align-items:center;justify-content:center;color:#fff;flex:none;box-shadow:0 10px 20px rgba(0,169,141,.28)"><span class="ms is-filled" style="font-size:32px">check_circle</span></div>
       <div style="flex:1;display:flex;flex-direction:column">
-        <div style="font-size:13px;font-weight:700;color:#8A94A6">오늘 아침 체크인</div>
+        <div style="font-size:13px;font-weight:500;color:#8A94A6">오늘 아침 체크인</div>
         <div style="font-size:19px;font-weight:800;color:#0B1B3A;letter-spacing:-.025em;margin-top:2px">괜찮아요</div>
         <div style="font-size:13px;color:#5C6880;margin-top:2px">오전 8:12 · 어머니가 응답</div>
       </div>
-      <div style="background:rgba(0,201,167,.16);color:#00A98D;font-size:13px;font-weight:700;padding:5px 10px;border-radius:999px;flex:none;align-self:flex-start">완료</div>
+      <div style="background:rgba(0,201,167,.16);color:#00A98D;font-size:13px;font-weight:500;padding:5px 10px;border-radius:999px;flex:none;align-self:flex-start">완료</div>
     </div>
     <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;padding:14px 16px;display:flex;color:#101B33">
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span class="ms" style="font-size:20px;color:#DC4E30">favorite</span><div style="font-size:15px;font-weight:700">68</div><div style="font-size:13px;color:#5C6880">심박수</div></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span class="ms" style="font-size:20px;color:#DC4E30">favorite</span><div style="font-size:15px;font-weight:500">68</div><div style="font-size:13px;color:#5C6880">심박수</div></div>
       <div style="width:1px;background:#E9EDF3;margin:4px 0"></div>
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span class="ms" style="font-size:20px;color:#00A98D">directions_walk</span><div style="font-size:15px;font-weight:700">정상</div><div style="font-size:13px;color:#5C6880">활동량</div></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span class="ms" style="font-size:20px;color:#00A98D">directions_walk</span><div style="font-size:15px;font-weight:500">정상</div><div style="font-size:13px;color:#5C6880">활동량</div></div>
       <div style="width:1px;background:#E9EDF3;margin:4px 0"></div>
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span class="ms" style="font-size:20px;color:#0D76FF">schedule</span><div style="font-size:15px;font-weight:700">12분 전</div><div style="font-size:13px;color:#5C6880">움직임</div></div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span class="ms" style="font-size:20px;color:#0D76FF">schedule</span><div style="font-size:15px;font-weight:500">12분 전</div><div style="font-size:13px;color:#5C6880">움직임</div></div>
     </div>
-    <div style="font-size:14px;font-weight:700;color:#54617A;padding:6px 3px 0">최근 알림</div>
+    <div style="font-size:14px;font-weight:500;color:#54617A;padding:6px 3px 0">최근 알림</div>
     <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;padding:12px 16px;display:flex;align-items:center;gap:12px;color:#101B33">
       <div style="width:36px;height:36px;border-radius:12px;background:rgba(0,201,167,.16);color:#00A98D;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms is-filled" style="font-size:20px">check_circle</span></div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:700">아침 체크인 완료</div><div style="font-size:13px;color:#5C6880">오늘 오전 8:12</div></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:500">아침 체크인 완료</div><div style="font-size:13px;color:#5C6880">오늘 오전 8:12</div></div>
     </div>
     <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;padding:12px 16px;display:flex;align-items:center;gap:12px;color:#101B33">
       <div style="width:36px;height:36px;border-radius:12px;background:rgba(0,201,167,.16);color:#00A98D;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms is-filled" style="font-size:20px">check_circle</span></div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:700">저녁 체크인 완료</div><div style="font-size:13px;color:#5C6880">어제 오후 8:03</div></div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:500">저녁 체크인 완료</div><div style="font-size:13px;color:#5C6880">어제 오후 8:03</div></div>
     </div>
     <div style="flex:1"></div>
   </div>
@@ -174,22 +153,22 @@
   </div>
   <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:28px;padding:0">
     <div style="display:flex;flex-direction:column;gap:12px">
-      <div style="font-size:14px;font-weight:700;color:#0D76FF;letter-spacing:.02em">생활 안전 체크인 서비스</div>
+      <div style="font-size:14px;font-weight:500;color:#0D76FF;letter-spacing:.02em">생활 안전 체크인 서비스</div>
       <div style="font-size:38px;font-weight:700;color:#101B33;letter-spacing:-.04em;line-height:1.15">위플랫 체크인<br>시작하기</div>
       <div style="font-size:15px;color:#4B5875;line-height:1.5">하루 세 번 안부를 확인하고<br>이상신호를 자녀에게 자동으로 전달해요</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <div style="display:flex;align-items:center;gap:12px;color:#101B33">
         <div style="width:36px;height:36px;border-radius:12px;background:rgba(13,118,255,.12);color:#0D76FF;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">thumb_up</span></div>
-        <div style="font-size:15px;font-weight:700">하루 세 번 괜찮아요 체크</div>
+        <div style="font-size:15px;font-weight:500">하루 세 번 괜찮아요 체크</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;color:#101B33">
         <div style="width:36px;height:36px;border-radius:12px;background:rgba(124,77,255,.14);color:#7C4DFF;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">watch</span></div>
-        <div style="font-size:15px;font-weight:700">워치로 실시간 이상신호 감지</div>
+        <div style="font-size:15px;font-weight:500">워치로 실시간 이상신호 감지</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;color:#101B33">
         <div style="width:36px;height:36px;border-radius:12px;background:rgba(0,201,167,.16);color:#00A98D;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">notifications_active</span></div>
-        <div style="font-size:15px;font-weight:700">보호자에게 자동 알림</div>
+        <div style="font-size:15px;font-weight:500">보호자에게 자동 알림</div>
       </div>
     </div>
   </div>
@@ -204,11 +183,16 @@
      혜택
      ============================================================ -->
 <main class="screen" data-screen="benefit" hidden style="background:#F4F7FC">
-  <header class="screen-header">
-    <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:6px 21px clamp(12px,1.8vh,18px)"><div style="display:flex;align-items:center;gap:8px"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><div style="font-size:19px;font-weight:700;color:#101B33;letter-spacing:-.025em">혜택</div></div><div style="border:1px solid #C9D6EA;color:#0D76FF;font-size:13px;font-weight:700;padding:6px 13px;border-radius:999px">로그인</div></div>
-    <div style="position:relative;padding:0 18px clamp(8px,1.2vh,12px)">
-      <div style="background:#EAF1FE;border-radius:14px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:13px;font-weight:600;color:#4B5875">이번 달 절감 진단 0 / 2</div><div style="font-size:13px;font-weight:700;color:#0D76FF">로그인하고 저장</div></div>
+  <header class="screen-header app-hero app-hero--benefit">
+    <div class="app-hero__bar">
+      <div class="app-hero__brand"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><strong>혜택</strong></div>
+      <button type="button" data-notif-start class="bell-wrap" aria-label="알림 보기"><span class="ms">notifications</span><span class="bell-badge" aria-hidden="true"></span></button>
     </div>
+    <button type="button" class="app-hero__login" data-login-trigger>
+      <span class="app-hero__avatar"><span class="ms">account_circle</span></span>
+      <span class="app-hero__login-copy"><strong>로그인하고 저장하기</strong></span>
+      <span class="app-hero__login-action" aria-hidden="true"><span class="ms">chevron_right</span></span>
+    </button>
   </header>
   <div data-benefit-home style="flex:1;padding:clamp(2px,0.4vh,5px) 18px 18px;display:flex;flex-direction:column;gap:clamp(2px,0.5vh,6px);overflow:hidden">
     <div class="noscroll" data-chip-nav="benefit" style="display:flex;justify-content:center;gap:8px;flex:none;overflow-x:auto">
@@ -237,7 +221,7 @@
           <div style="font-size:26px;font-weight:700;color:#101B33;letter-spacing:-.035em;line-height:1.3">받을 수 있는 혜택,<br>얼마나 될까요?</div>
           <div style="font-size:14px;color:#4B5875">인터넷·TV·모바일 결합 조건 확인</div>
         </div>
-        <button type="button" data-bundle-start style="background:linear-gradient(100deg,#0D76FF,#5F6BFF);color:#fff;font-size:15px;font-weight:700;border-radius:999px;padding:14px 20px;text-align:center;box-shadow:0 6px 14px rgba(13,118,255,.22);border:0;cursor:pointer">혜택 계산하기 →</button>
+        <button type="button" data-bundle-start style="background:linear-gradient(100deg,#0D76FF,#5F6BFF);color:#fff;font-size:15px;font-weight:500;border-radius:999px;padding:14px 20px;text-align:center;box-shadow:0 6px 14px rgba(13,118,255,.22);border:0;cursor:pointer">혜택 계산하기 →</button>
       </div>
       <div class="carousel-card" data-nav-label="내게 맞는 상품 찾기" style="scroll-snap-align:center;flex:none;width:288px;min-height:320px;background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:24px;padding:26px 24px 22px;display:flex;flex-direction:column;box-shadow:0 14px 32px rgba(5,27,80,.10)">
         <div style="display:flex;align-items:center;justify-content:space-between">
@@ -253,7 +237,7 @@
             <img src="assets/LG.svg" alt="LG U+" style="height:20px;width:auto">
           </div>
         </div>
-        <button type="button" data-plan-start style="background:linear-gradient(100deg,#5F6BFF,#7C4DFF);color:#fff;font-size:15px;font-weight:700;border-radius:999px;padding:14px 20px;text-align:center;box-shadow:0 6px 14px rgba(124,77,255,.22);border:0;cursor:pointer">내게 맞는 상품 찾기 →</button>
+        <button type="button" data-plan-start style="background:linear-gradient(100deg,#5F6BFF,#7C4DFF);color:#fff;font-size:15px;font-weight:500;border-radius:999px;padding:14px 20px;text-align:center;box-shadow:0 6px 14px rgba(124,77,255,.22);border:0;cursor:pointer">내게 맞는 상품 찾기 →</button>
       </div>
     </div>
     <div data-carousel-nav="benefit" style="display:flex;align-items:center;flex:none;padding:0 4px">
@@ -295,28 +279,33 @@
      보험
      ============================================================ -->
 <main class="screen" data-screen="insurance" hidden style="background:#F4F7FC">
-  <header class="screen-header">
-    <div style="position:relative;display:flex;align-items:center;justify-content:space-between;padding:6px 21px 14px"><div style="display:flex;align-items:center;gap:8px"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><div style="font-size:19px;font-weight:700;color:#101B33;letter-spacing:-.025em">보험</div></div><div style="border:1px solid #C9D6EA;color:#0D76FF;font-size:13px;font-weight:700;padding:6px 13px;border-radius:999px">로그인</div></div>
-    <div style="position:relative;padding:0 18px 16px">
-      <div style="background:#EAF1FE;border-radius:14px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between"><div style="font-size:13px;font-weight:600;color:#4B5875">내 보험 점검 0 / 2</div><div style="font-size:13px;font-weight:700;color:#0D76FF">로그인하고 저장</div></div>
+  <header class="screen-header app-hero app-hero--insurance">
+    <div class="app-hero__bar">
+      <div class="app-hero__brand"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><strong>보험</strong></div>
+      <button type="button" data-notif-start class="bell-wrap" aria-label="알림 보기"><span class="ms">notifications</span><span class="bell-badge" aria-hidden="true"></span></button>
     </div>
+    <button type="button" class="app-hero__login" data-login-trigger>
+      <span class="app-hero__avatar"><span class="ms">account_circle</span></span>
+      <span class="app-hero__login-copy"><strong>로그인하고 저장하기</strong></span>
+      <span class="app-hero__login-action" aria-hidden="true"><span class="ms">chevron_right</span></span>
+    </button>
   </header>
   <div class="noscroll" style="flex:1;padding:16px 18px 18px;display:flex;flex-direction:column;gap:12px;overflow-y:auto">
     <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:24px;padding:24px 20px;display:flex;flex-direction:column;gap:14px;flex:none;box-shadow:0 16px 36px rgba(5,27,80,.12)">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between"><div style="font-size:13px;font-weight:700;color:#8A94A6">숨은 보험금</div><div style="width:34px;height:34px;border-radius:12px;background:rgba(124,77,255,.14);color:#7C4DFF;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:20px">search_insights</span></div></div>
-      <div style="display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center"><div style="font-size:27px;font-weight:700;letter-spacing:-.04em;color:#101B33">놓친 보험금 찾기</div><div style="font-size:14px;color:#4B5875;line-height:1.4">청구하지 않은 병원비가<br>얼마나 있는지 확인해 보세요</div><div style="background:#F6F2FF;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700;color:#7C4DFF">소요시간 1분 · 평균 발견 약 78만원</div></div>
-      <div data-claim-start style="background:linear-gradient(100deg,#5F6BFF,#7C4DFF);color:#fff;font-size:16px;font-weight:700;border-radius:999px;padding:15px;text-align:center;box-shadow:0 8px 18px rgba(124,77,255,.28);cursor:pointer">내 보험금 조회하기 →</div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between"><div style="font-size:13px;font-weight:500;color:#8A94A6">숨은 보험금</div><div style="width:34px;height:34px;border-radius:12px;background:rgba(124,77,255,.14);color:#7C4DFF;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:20px">search_insights</span></div></div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center"><div style="font-size:27px;font-weight:700;letter-spacing:-.04em;color:#101B33">놓친 보험금 찾기</div><div style="font-size:14px;color:#4B5875;line-height:1.4">청구하지 않은 병원비가<br>얼마나 있는지 확인해 보세요</div><div style="background:#F6F2FF;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:500;color:#7C4DFF">소요시간 1분 · 평균 발견 약 78만원</div></div>
+      <div data-claim-start data-auth-required style="background:linear-gradient(100deg,#5F6BFF,#7C4DFF);color:#fff;font-size:16px;font-weight:700;border-radius:999px;padding:15px;text-align:center;box-shadow:0 8px 18px rgba(124,77,255,.28);cursor:pointer">내 보험금 조회하기 →</div>
     </div>
-    <div style="font-size:14px;font-weight:700;color:#54617A;flex:none;margin-top:4px">청구·가입</div>
+    <div style="font-size:14px;font-weight:500;color:#54617A;flex:none;margin-top:4px">청구·가입</div>
     <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;overflow:hidden;flex:none">
-      <div data-file-start style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #EEF1F7;cursor:pointer">
+      <div data-file-start data-auth-required style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #EEF1F7;cursor:pointer">
         <div style="width:36px;height:36px;border-radius:12px;background:rgba(13,118,255,.12);color:#0D76FF;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">receipt_long</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:700;letter-spacing:-.02em">보험금 청구</div><div style="font-size:13px;color:#5C6880">안내부터 서류 제출까지</div></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:500;letter-spacing:-.02em">보험금 청구</div><div style="font-size:13px;color:#5C6880">안내부터 서류 제출까지</div></div>
         <span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span>
       </div>
-      <div data-history-start style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer">
+      <div data-history-start data-auth-required style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer">
         <div style="width:36px;height:36px;border-radius:12px;background:rgba(0,201,167,.16);color:#00A98D;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">fact_check</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:700;letter-spacing:-.02em">내 청구 진행 현황</div><div style="font-size:13px;color:#5C6880" data-history-summary>1건 접수 · 3건 완료</div></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:500;letter-spacing:-.02em">내 청구 진행 현황</div><div style="font-size:13px;color:#5C6880" data-history-summary>1건 접수 · 3건 완료</div></div>
         <span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span>
       </div>
     </div>
@@ -325,7 +314,7 @@
         <div style="width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:24px">directions_car</span></div>
         <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:-.02em">다이렉트 자동차보험</div><div style="font-size:13px;color:rgba(255,255,255,.72)">7개사 보험료 비교하고 바로 가입</div></div>
       </div>
-      <div style="background:#fff;color:#3D4A66;font-size:15px;font-weight:700;border-radius:999px;padding:13px 20px;text-align:center">보험료 비교하기</div>
+      <div style="background:#fff;color:#3D4A66;font-size:15px;font-weight:500;border-radius:999px;padding:13px 20px;text-align:center">보험료 비교하기</div>
     </div>
   </div>
 
@@ -850,33 +839,158 @@
   <header class="screen-header">
     <div style="padding:6px 21px 14px;display:flex;align-items:center;justify-content:space-between">
       <img src="assets/weplat_logo.svg" alt="위플랫" class="brand-logo">
-      <div style="display:flex;align-items:center;min-height:28px"><span class="ms" style="font-size:22px;color:#4B5875">notifications</span></div>
+      <div style="display:flex;align-items:center;min-height:28px"><span data-notif-start class="ms" style="font-size:22px;color:#4B5875;cursor:pointer">notifications</span></div>
     </div>
-    <div style="padding:14px 18px 18px">
-      <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 20px rgba(5,27,80,.06)">
+    <div class="more-account-wrap">
+      <button type="button" class="more-account more-account--guest" data-auth-guest data-login-trigger>
+        <span class="more-account__icon"><span class="ms">account_circle</span></span>
+        <span class="more-account__copy"><strong>로그인하고 시작하기</strong><small>결과 저장·보험 청구·내 정보 관리</small></span>
+        <span class="ms more-account__chev">chevron_right</span>
+      </button>
+      <button type="button" class="more-account" data-auth-member data-mypage-open hidden>
         <div style="width:46px;height:46px;border-radius:50%;background:#EAF1FE;color:#0D76FF;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;flex:none">김</div>
         <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:17px;font-weight:700;color:#101B33;letter-spacing:-.025em">김영희님</div><div style="font-size:13px;color:#5C6880">안심 체크인 이용 중 · 보호자 2명</div></div>
         <span class="ms" style="font-size:22px;color:#8A94A6">chevron_right</span>
-      </div>
+      </button>
     </div>
   </header>
-  <div style="flex:1;padding:16px 18px 18px;display:flex;flex-direction:column;gap:10px;overflow:hidden">
-    <div style="font-size:14px;font-weight:700;color:#54617A;flex:none">전체 기능</div>
-    <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:20px;padding:16px 12px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px 6px;flex:none">
-      <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:44px;height:44px;border-radius:15px;background:rgba(13,118,255,.12);color:#0D76FF;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:22px">favorite</span></div><div style="font-size:13px;font-weight:600;text-align:center">안심 체크인</div></div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:44px;height:44px;border-radius:15px;background:rgba(0,201,167,.16);color:#00A98D;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:22px">savings</span></div><div style="font-size:13px;font-weight:600;text-align:center">생활비 절감</div></div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:44px;height:44px;border-radius:15px;background:rgba(255,176,32,.20);color:#C98207;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:22px">router</span></div><div style="font-size:13px;font-weight:600;text-align:center">인터넷·TV</div></div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:44px;height:44px;border-radius:15px;background:rgba(13,118,255,.12);color:#0D76FF;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:22px">smartphone</span></div><div style="font-size:13px;font-weight:600;text-align:center">모바일 혜택</div></div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:44px;height:44px;border-radius:15px;background:rgba(124,77,255,.14);color:#7C4DFF;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:22px">search_insights</span></div><div style="font-size:13px;font-weight:600;text-align:center">미청구보험금</div></div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:44px;height:44px;border-radius:15px;background:rgba(13,118,255,.12);color:#0D76FF;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:22px">receipt_long</span></div><div style="font-size:13px;font-weight:600;text-align:center">보험금 청구</div></div>
-    </div>
-    <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;overflow:hidden;flex:none">
-      <div style="display:flex;align-items:center;gap:11px;padding:14px 16px;border-bottom:1px solid #EEF1F7"><div style="width:32px;height:32px;border-radius:11px;background:rgba(13,118,255,.12);color:#0D76FF;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:19px">chat_bubble</span></div><div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:700;letter-spacing:-.02em">분야별 상담</div><div style="font-size:13px;color:#5C6880">보험·교통사고·통신 담당자 연결</div></div><span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span></div>
-      <div style="display:flex;align-items:center;gap:11px;padding:14px 16px;border-bottom:1px solid #EEF1F7"><div style="width:32px;height:32px;border-radius:11px;background:rgba(11,27,58,.08);color:#0B1B3A;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:19px">person</span></div><div style="flex:1;font-size:14px;font-weight:700;letter-spacing:-.02em">마이페이지</div><span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span></div>
-      <div style="display:flex;align-items:center;gap:11px;padding:14px 16px"><div style="width:32px;height:32px;border-radius:11px;background:rgba(11,27,58,.08);color:#0B1B3A;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:19px">settings</span></div><div style="flex:1;font-size:14px;font-weight:700;letter-spacing:-.02em">알림·설정</div><span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span></div>
-    </div>
+  <div class="noscroll more-body">
+    <section class="more-group">
+      <h2 class="more-group__title">안심</h2>
+      <div class="more-list">
+        <button type="button" class="more-row" data-more-nav="ansim">
+          <span class="more-row__icon more-row__icon--coral"><span class="ms">favorite</span></span>
+          <span class="more-row__copy"><strong>안심 체크인</strong><small>하루 한 번 안부를 확인해요</small></span>
+          <span class="ms more-row__chev">chevron_right</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="more-group">
+      <h2 class="more-group__title">혜택</h2>
+      <div class="more-list">
+        <button type="button" class="more-row" data-more-nav="benefit" data-more-cta="saving">
+          <span class="more-row__icon more-row__icon--teal"><span class="ms">savings</span></span>
+          <span class="more-row__copy"><strong>생활비 절감</strong><small>통신·보험에서 새는 돈 찾기</small></span>
+          <span class="ms more-row__chev">chevron_right</span>
+        </button>
+        <button type="button" class="more-row" data-more-nav="benefit" data-more-cta="bundle">
+          <span class="more-row__icon more-row__icon--amber"><span class="ms">router</span></span>
+          <span class="more-row__copy"><strong>인터넷·TV</strong><small>결합 할인 계산해 보기</small></span>
+          <span class="ms more-row__chev">chevron_right</span>
+        </button>
+        <button type="button" class="more-row" data-more-nav="benefit" data-more-cta="plan">
+          <span class="more-row__icon more-row__icon--blue"><span class="ms">smartphone</span></span>
+          <span class="more-row__copy"><strong>모바일 혜택</strong><small>지금 요금제 점검하기</small></span>
+          <span class="ms more-row__chev">chevron_right</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="more-group">
+      <h2 class="more-group__title">보험</h2>
+      <div class="more-list">
+        <button type="button" class="more-row" data-more-nav="insurance" data-more-cta="claim">
+          <span class="more-row__icon more-row__icon--violet"><span class="ms">search_insights</span></span>
+          <span class="more-row__copy"><strong>놓친 보험금</strong><small>못 받은 보험금 조회하기</small></span>
+          <span class="ms more-row__chev">chevron_right</span>
+        </button>
+        <button type="button" class="more-row" data-more-nav="insurance" data-more-cta="file">
+          <span class="more-row__icon more-row__icon--blue"><span class="ms">receipt_long</span></span>
+          <span class="more-row__copy"><strong>보험금 청구</strong><small>사진으로 간편하게 청구</small></span>
+          <span class="ms more-row__chev">chevron_right</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="more-group">
+      <h2 class="more-group__title">상담·문의</h2>
+      <div class="more-list">
+        <!-- TODO 실제 값으로 교체: 대표번호 / 카카오 채널 주소 / 매장 지역 -->
+        <a class="more-row" href="tel:1588-0000">
+          <span class="more-row__icon more-row__icon--ink"><span class="ms">call</span></span>
+          <span class="more-row__copy"><strong>전화 상담</strong><small>1588-0000 · 평일 09:00 – 18:00</small></span>
+          <span class="ms more-row__chev">chevron_right</span>
+        </a>
+        <a class="more-row" href="https://pf.kakao.com/_weplat" target="_blank" rel="noopener">
+          <span class="more-row__icon more-row__icon--ink"><span class="ms">chat_bubble</span></span>
+          <span class="more-row__copy"><strong>카카오톡 문의</strong><small>24시간 접수</small></span>
+          <span class="ms more-row__chev">chevron_right</span>
+        </a>
+        <a class="more-row" href="https://map.naver.com/p/search/위플랫" target="_blank" rel="noopener">
+          <span class="more-row__icon more-row__icon--ink"><span class="ms">storefront</span></span>
+          <span class="more-row__copy"><strong>가까운 매장 찾기</strong><small>대구 달서구</small></span>
+          <span class="ms more-row__chev">chevron_right</span>
+        </a>
+      </div>
+    </section>
   </div>
 </main>
+
+<!-- 공통 로그인·회원가입 -->
+<section class="auth-flow" data-auth-flow hidden aria-label="로그인과 회원가입">
+  <div class="auth-flow__scrim" data-auth-close></div>
+  <div class="auth-sheet" role="dialog" aria-modal="true">
+    <div class="auth-sheet__handle"></div>
+    <button type="button" class="auth-sheet__close" data-auth-close aria-label="닫기"><span class="ms">close</span></button>
+
+    <div class="auth-view" data-auth-view="login">
+      <div class="auth-head"><span class="auth-head__icon"><span class="ms">lock</span></span><h2>로그인</h2></div>
+      <div class="auth-fields">
+        <label class="auth-field"><span>휴대폰 번호</span><input data-login-phone inputmode="numeric" autocomplete="tel" placeholder="01012345678"></label>
+        <label class="auth-field"><span>비밀번호</span><input data-login-password type="password" autocomplete="current-password" placeholder="비밀번호 입력"></label>
+      </div>
+      <div class="auth-message" data-auth-message="login" hidden></div>
+      <button type="button" class="auth-primary" data-login-submit>로그인</button>
+      <button type="button" class="auth-kakao" data-kakao-login><img src="assets/kakaotalk.svg" alt="">카카오로 간편 로그인</button>
+      <button type="button" class="auth-link" data-auth-go="signup">처음이신가요? <b>회원가입</b></button>
+    </div>
+
+    <div class="auth-view" data-auth-view="signup" hidden>
+      <div class="auth-head"><span class="auth-head__icon"><span class="ms">person_add</span></span><h2>회원가입</h2></div>
+      <div class="auth-fields">
+        <label class="auth-field"><span>이름</span><input data-signup-name autocomplete="name" placeholder="이름 입력"></label>
+        <label class="auth-field"><span>휴대폰 번호</span><span class="auth-field__action"><input data-signup-phone inputmode="numeric" autocomplete="tel" placeholder="01012345678"><button type="button" data-sms-send>인증 요청</button></span></label>
+        <label class="auth-field" data-sms-field hidden><span>인증번호</span><span class="auth-field__action"><input data-sms-code inputmode="numeric" placeholder="6자리 입력"><em data-sms-timer>03:00</em></span></label>
+        <label class="auth-field"><span>비밀번호</span><input data-signup-password type="password" autocomplete="new-password" placeholder="8자 이상 입력"></label>
+      </div>
+      <div class="auth-message" data-auth-message="signup" hidden></div>
+      <label class="auth-consent"><input type="checkbox" data-signup-consent><span class="ms">check_circle</span><b>필수 약관에 모두 동의해요</b></label>
+      <button type="button" class="auth-primary" data-signup-submit>가입 완료</button>
+      <button type="button" class="auth-kakao" data-kakao-login><img src="assets/kakaotalk.svg" alt="">카카오로 간편 가입</button>
+      <button type="button" class="auth-link" data-auth-go="login">이미 계정이 있나요? <b>로그인</b></button>
+    </div>
+  </div>
+</section>
+
+<!-- 마이페이지 -->
+<section class="mypage-flow" data-mypage-flow hidden aria-label="마이페이지">
+  <div class="mypage-topbar"><button type="button" data-mypage-close aria-label="뒤로"><span class="ms">arrow_back</span></button><strong>마이페이지</strong><span></span></div>
+  <div class="mypage-body noscroll">
+    <div class="mypage-profile"><span class="mypage-profile__avatar">김</span><div><strong>김영희님</strong><small>010-1234-5678</small></div><button type="button">내 정보 수정</button></div>
+    <div class="mypage-section"><h3>이용 정보</h3><button type="button"><span class="ms">favorite</span><span>안심 체크인</span><small>이용 중 · 보호자 2명</small><span class="ms">chevron_right</span></button><button type="button"><span class="ms">savings</span><span>저장한 절감 결과</span><small>0건</small><span class="ms">chevron_right</span></button><button type="button"><span class="ms">receipt_long</span><span>보험 청구 내역</span><small>4건</small><span class="ms">chevron_right</span></button></div>
+    <div class="mypage-section"><h3>계정 설정</h3><button type="button"><span class="ms">notifications</span><span>알림 설정</span><span class="ms">chevron_right</span></button><button type="button"><span class="ms">shield</span><span>개인정보 및 약관</span><span class="ms">chevron_right</span></button></div>
+    <button type="button" class="mypage-logout" data-logout>로그아웃</button>
+  </div>
+</section>
+
+<!-- ============================================================
+     공통 알림 오버레이 (모든 탭 공용)
+     ============================================================ -->
+<section data-notif-flow class="notif-flow" hidden aria-label="알림">
+  <div class="notif-flow__topbar">
+    <div class="notif-flow__title">알림</div>
+    <button type="button" data-notif-close class="file-icon-btn" aria-label="닫기"><span class="ms">close</span></button>
+  </div>
+  <div class="notif-tabs" data-notif-tabs>
+    <button type="button" class="notif-tab is-active" data-notif-tab="ansim">안심</button>
+    <button type="button" class="notif-tab" data-notif-tab="benefit">혜택</button>
+    <button type="button" class="notif-tab" data-notif-tab="insurance">보험</button>
+  </div>
+  <div class="notif-flow__body">
+    <div class="notif-list" data-notif-list></div>
+  </div>
+</section>
 
 <!-- ============================================================
      탭바 (공통)

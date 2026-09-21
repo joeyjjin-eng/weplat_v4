@@ -224,8 +224,6 @@
       } else if (action === 'cancel') {
         setCheckinView('default');
         resetHelpBtn();
-      } else if (action === 'notifications') {
-        setCheckinView('notifications');
       } else if (action === 'alert-missed' || action === 'alert-anomaly') {
         setCheckinView(action);
       } else if (action === 'alert-ok') {
@@ -2368,6 +2366,241 @@
       });
     }
   }
+
+  // ─────────────────────────────────────────────────────────────
+  // 공통 알림 오버레이 — 모든 탭 상단 벨 아이콘에서 열림
+  //   내부는 탭 (안심 / 혜택 / 보험) 으로 알림 종류 분리
+  // ─────────────────────────────────────────────────────────────
+  var notifFlow = document.querySelector('[data-notif-flow]');
+  if (notifFlow) {
+    var NOTIF_DATA = {
+      ansim: [
+        { icon:'monitor_heart', title:'평소와 다른 상태가 감지됐어요', meta:'심박수 이상 · 5분 전', color:'amber', action:'alert-anomaly' },
+        { icon:'schedule', title:'아침 체크인이 지연됐어요', meta:'재알림 발송 · 오전 9:15', color:'blue', action:'alert-missed' },
+        { icon:'check_circle', title:'보호자가 확인했어요', meta:'어제 저녁 체크인 · 오후 8:12', color:'teal', read:true }
+      ],
+      benefit: [
+        { icon:'savings', title:'절감 진단 결과가 나왔어요', meta:'월 32,400원 절감 가능', color:'teal' },
+        { icon:'router', title:'새 결합 혜택이 있어요', meta:'인터넷·TV 재약정 안내', color:'amber' }
+      ],
+      insurance: [
+        { icon:'receipt_long', title:'현대해상 청구가 접수됐어요', meta:'2025.09.15', color:'blue' },
+        { icon:'search_insights', title:'놓친 보험금 473,600원', meta:'2022년 2세대 실손 기준', color:'violet' },
+        { icon:'fact_check', title:'서류 보완 요청', meta:'DB손해 · 진단서 필요', color:'amber' }
+      ]
+    };
+    var notifCloseBtn = notifFlow.querySelector('[data-notif-close]');
+    var notifTabs = notifFlow.querySelectorAll('[data-notif-tab]');
+    var notifList = notifFlow.querySelector('[data-notif-list]');
+    var notifCurrent = 'ansim';
+
+    function notifEscape(s) {
+      return String(s).replace(/[&<>"']/g, function (c) {
+        return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+      });
+    }
+    function notifRender() {
+      if (!notifList) return;
+      var items = NOTIF_DATA[notifCurrent] || [];
+      notifList.innerHTML = '';
+      if (items.length === 0) {
+        notifList.innerHTML =
+          '<div class="notif-empty">' +
+            '<span class="ms">notifications_off</span>' +
+            '<div class="notif-empty__title">알림이 없어요</div>' +
+            '<div class="notif-empty__memo">새 알림이 오면 여기에 표시돼요</div>' +
+          '</div>';
+        return;
+      }
+      items.forEach(function (n, i) {
+        var el = document.createElement('div');
+        el.className = 'notif-item' + (n.read ? ' notif-item--read' : '');
+        el.innerHTML =
+          '<div class="notif-item__ico notif-item__ico--' + n.color + '"><span class="ms">' + n.icon + '</span></div>' +
+          '<div class="notif-item__body">' +
+            '<div class="notif-item__title">' + notifEscape(n.title) + '</div>' +
+            '<div class="notif-item__meta">' + notifEscape(n.meta) + '</div>' +
+          '</div>' +
+          (n.read ? '' : '<span class="ms notif-item__chev">chevron_right</span>');
+        if (!n.read) {
+          el.addEventListener('click', function () {
+            // 안심 알림 → 해당 intercept 뷰로 이동
+            if (notifCurrent === 'ansim' && n.action) {
+              notifClose();
+              show('ansim', true);
+              setCheckinView(n.action);
+            } else {
+              notifClose();
+            }
+          });
+        }
+        notifList.appendChild(el);
+      });
+    }
+    function notifSetTab(name) {
+      notifCurrent = name;
+      notifTabs.forEach(function (t) {
+        t.classList.toggle('is-active', t.dataset.notifTab === name);
+      });
+      notifRender();
+    }
+    function notifOpen() {
+      notifSetTab(notifCurrent || 'ansim');
+      notifFlow.hidden = false;
+    }
+    function notifClose() { notifFlow.hidden = true; }
+
+    document.querySelectorAll('[data-notif-start]').forEach(function (btn) {
+      btn.addEventListener('click', notifOpen);
+    });
+    if (notifCloseBtn) notifCloseBtn.addEventListener('click', notifClose);
+    notifTabs.forEach(function (t) {
+      t.addEventListener('click', function () { notifSetTab(t.dataset.notifTab); });
+    });
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // 공통 인증 — 로그인/가입 시트 + 로그인 전후 더보기 + 마이페이지
+  // ─────────────────────────────────────────────────────────────
+  var authFlow = document.querySelector('[data-auth-flow]');
+  var mypageFlow = document.querySelector('[data-mypage-flow]');
+  var pendingAuthAction = null;
+  var smsTimerId = null;
+  var isAuthenticated = false;
+  try { isAuthenticated = localStorage.getItem('weplat-auth') === 'member'; } catch (e) {}
+
+  function authMessage(view, message) {
+    var el = document.querySelector('[data-auth-message="' + view + '"]');
+    if (!el) return;
+    el.textContent = message || '';
+    el.hidden = !message;
+  }
+  function authShowView(name) {
+    document.querySelectorAll('[data-auth-view]').forEach(function (view) {
+      view.hidden = view.dataset.authView !== name;
+    });
+    authMessage('login', '');
+    authMessage('signup', '');
+  }
+  function authOpen(view) {
+    authShowView(view || 'login');
+    if (authFlow) authFlow.hidden = false;
+  }
+  function authClose() {
+    if (authFlow) authFlow.hidden = true;
+    pendingAuthAction = null;
+  }
+  function authRender() {
+    document.querySelectorAll('[data-auth-guest]').forEach(function (el) { el.hidden = isAuthenticated; });
+    document.querySelectorAll('[data-auth-member]').forEach(function (el) { el.hidden = !isAuthenticated; });
+    document.querySelectorAll('.app-hero__login').forEach(function (el) { el.hidden = isAuthenticated; });
+  }
+  function authComplete() {
+    isAuthenticated = true;
+    try { localStorage.setItem('weplat-auth', 'member'); } catch (e) {}
+    if (authFlow) authFlow.hidden = true;
+    authRender();
+    var action = pendingAuthAction;
+    pendingAuthAction = null;
+    if (action) setTimeout(function () { action.click(); }, 80);
+  }
+
+  document.querySelectorAll('[data-login-trigger]').forEach(function (btn) {
+    btn.addEventListener('click', function () { authOpen('login'); });
+  });
+  document.querySelectorAll('[data-auth-close]').forEach(function (btn) {
+    btn.addEventListener('click', authClose);
+  });
+  document.querySelectorAll('[data-auth-go]').forEach(function (btn) {
+    btn.addEventListener('click', function () { authShowView(btn.dataset.authGo); });
+  });
+  document.querySelectorAll('[data-kakao-login]').forEach(function (btn) {
+    btn.addEventListener('click', authComplete);
+  });
+  document.addEventListener('click', function (event) {
+    var target = event.target.closest('[data-auth-required]');
+    if (!target || isAuthenticated) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    pendingAuthAction = target;
+    authOpen('login');
+  }, true);
+
+  // 시연용 — 입력값 검증 없이 누르면 바로 로그인 처리. 실제 인증 붙일 때 되돌릴 것.
+  var loginSubmit = document.querySelector('[data-login-submit]');
+  if (loginSubmit) loginSubmit.addEventListener('click', authComplete);
+
+  var smsSend = document.querySelector('[data-sms-send]');
+  if (smsSend) smsSend.addEventListener('click', function () {
+    var phone = (document.querySelector('[data-signup-phone]').value || '').replace(/\D/g, '');
+    if (phone.length < 10) { authMessage('signup', '휴대폰 번호를 정확히 입력해 주세요.'); return; }
+    authMessage('signup', '');
+    var field = document.querySelector('[data-sms-field]');
+    var timer = document.querySelector('[data-sms-timer]');
+    if (field) field.hidden = false;
+    var left = 180;
+    clearInterval(smsTimerId);
+    smsTimerId = setInterval(function () {
+      left -= 1;
+      if (timer) timer.textContent = String(Math.floor(left / 60)).padStart(2, '0') + ':' + String(left % 60).padStart(2, '0');
+      if (left <= 0) clearInterval(smsTimerId);
+    }, 1000);
+  });
+
+  var signupSubmit = document.querySelector('[data-signup-submit]');
+  if (signupSubmit) signupSubmit.addEventListener('click', function () {
+    var name = (document.querySelector('[data-signup-name]').value || '').trim();
+    var phone = (document.querySelector('[data-signup-phone]').value || '').replace(/\D/g, '');
+    var code = (document.querySelector('[data-sms-code]').value || '').trim();
+    var password = document.querySelector('[data-signup-password]').value || '';
+    var consent = document.querySelector('[data-signup-consent]').checked;
+    if (!name || phone.length < 10 || code.length < 4 || password.length < 8 || !consent) {
+      authMessage('signup', '기본 정보·인증번호·약관 동의를 모두 확인해 주세요.');
+      return;
+    }
+    authComplete();
+  });
+
+  document.querySelectorAll('[data-mypage-open]').forEach(function (btn) {
+    btn.addEventListener('click', function () { if (mypageFlow) mypageFlow.hidden = false; });
+  });
+  var mypageClose = document.querySelector('[data-mypage-close]');
+  if (mypageClose) mypageClose.addEventListener('click', function () { mypageFlow.hidden = true; });
+  var logout = document.querySelector('[data-logout]');
+  if (logout) logout.addEventListener('click', function () {
+    isAuthenticated = false;
+    try { localStorage.removeItem('weplat-auth'); } catch (e) {}
+    if (mypageFlow) mypageFlow.hidden = true;
+    authRender();
+  });
+  authRender();
+
+  // ─────────────────────────────────────────────────────────────
+  // 더보기 탭 — 전체 기능 아이콘 클릭 → 해당 탭 이동 + CTA 자동 트리거
+  // ─────────────────────────────────────────────────────────────
+  document.querySelectorAll('[data-more-nav]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      var target = el.dataset.moreNav;
+      var cta = el.dataset.moreCta;
+      show(target, true);
+      // CTA 별 자동 트리거 (해당 탭의 진입 버튼 클릭)
+      var ctaSelectors = {
+        'saving':  '[data-saving-start]',
+        'bundle':  '[data-bundle-start]',
+        'plan':    '[data-plan-start]',
+        'claim':   '[data-claim-start]',
+        'file':    '[data-file-start]'
+      };
+      var sel = ctaSelectors[cta];
+      if (sel) {
+        setTimeout(function () {
+          var btn = document.querySelector(sel);
+          if (btn) btn.click();
+        }, 120);
+      }
+    });
+  });
 
   // Android 하드웨어 백 버튼 — 이전 탭으로. 마지막 탭이면 앱 종료(네이티브에 위임).
   window.WeplatBridge = {
