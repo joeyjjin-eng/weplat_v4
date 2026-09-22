@@ -33,7 +33,7 @@
 
 .claim-flow__body{
   flex:1;min-height:0;overflow-y:auto;
-  padding:16px 18px 12px;
+  padding:16px 20px 12px;
   display:flex;flex-direction:column;gap:16px;
 }
 
@@ -102,7 +102,7 @@
 
 /* 하단 CTA — 프로젝트 파랑 그라디언트 */
 .claim-flow__footer{
-  flex:none;padding:12px 18px max(env(safe-area-inset-bottom),16px);
+  flex:none;padding:12px 20px max(env(safe-area-inset-bottom),16px);
   background:#fff;border-top:1px solid var(--line);
 }
 .claim-submit{
@@ -795,7 +795,7 @@ select.file-input{
 
 /* 푸터 CTA */
 .file-flow__footer{
-  flex:none;padding:12px 18px max(env(safe-area-inset-bottom),16px);
+  flex:none;padding:12px 20px max(env(safe-area-inset-bottom),16px);
   background:#fff;border-top:1px solid var(--line);
 }
 .file-submit{

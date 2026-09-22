@@ -2567,6 +2567,80 @@
   });
   var mypageClose = document.querySelector('[data-mypage-close]');
   if (mypageClose) mypageClose.addEventListener('click', function () { mypageFlow.hidden = true; });
+
+  // 이용 내역 상세 — 더보기 > 내 이용 내역에서 진입. 기능 진입과 목적지가 다르다.
+  document.querySelectorAll('[data-usage-open]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var flow = document.querySelector('[data-usage-flow="' + btn.dataset.usageOpen + '"]');
+      if (flow) flow.hidden = false;
+    });
+  });
+  document.querySelectorAll('[data-usage-close]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var flow = btn.closest('[data-usage-flow]');
+      if (flow) flow.hidden = true;
+    });
+  });
+
+  // 비밀번호 변경 시트 — 현재/새/새 확인
+  var pwFlow = document.querySelector('[data-pw-flow]');
+  if (pwFlow) {
+    var pwCurrent = pwFlow.querySelector('[data-pw-current]');
+    var pwNew = pwFlow.querySelector('[data-pw-new]');
+    var pwConfirm = pwFlow.querySelector('[data-pw-confirm]');
+    var pwMessage = pwFlow.querySelector('[data-pw-message]');
+    function pwSay(text) {
+      pwMessage.textContent = text || '';
+      pwMessage.hidden = !text;
+    }
+    function pwReset() {
+      pwCurrent.value = pwNew.value = pwConfirm.value = '';
+      pwSay('');
+    }
+    document.querySelectorAll('[data-pw-open]').forEach(function (btn) {
+      btn.addEventListener('click', function () { pwReset(); pwFlow.hidden = false; });
+    });
+    pwFlow.querySelectorAll('[data-pw-close]').forEach(function (btn) {
+      btn.addEventListener('click', function () { pwFlow.hidden = true; });
+    });
+    pwFlow.querySelector('[data-pw-submit]').addEventListener('click', function () {
+      if (!pwCurrent.value) return pwSay('현재 비밀번호를 입력해 주세요');
+      if (pwNew.value.length < 8) return pwSay('새 비밀번호는 8자 이상으로 해주세요');
+      if (pwNew.value === pwCurrent.value) return pwSay('지금 쓰는 비밀번호와 다르게 해주세요');
+      if (pwNew.value !== pwConfirm.value) return pwSay('새 비밀번호가 서로 달라요');
+      // TODO 실제 변경 API 연결
+      pwFlow.hidden = true;
+    });
+  }
+
+  // 체크인 관련 알림 끄기 — 끄면 안부를 놓칠 수 있어서 한 번 되묻는다.
+  var confirmFlow = document.querySelector('[data-confirm-flow]');
+  if (confirmFlow) {
+    var confirmBody = confirmFlow.querySelector('[data-confirm-body]');
+    var pendingToggle = null;
+    function confirmClose() {
+      confirmFlow.hidden = true;
+      pendingToggle = null;
+    }
+    document.querySelectorAll('[data-warn-off]').forEach(function (input) {
+      input.addEventListener('change', function () {
+        if (input.checked) return;              // 켜는 건 묻지 않는다
+        input.checked = true;                   // 확인 전까지는 켜둔 상태 유지
+        pendingToggle = input;
+        confirmBody.textContent = input.dataset.warnDesc
+          || ('‘' + input.dataset.warnOff + '’ 을(를) 끄면 안부 확인 시간을 놓칠 수 있어요. 보호자에게 알림이 가지 않을 수도 있어요.');
+        confirmFlow.hidden = false;
+      });
+    });
+    confirmFlow.querySelectorAll('[data-confirm-cancel]').forEach(function (btn) {
+      btn.addEventListener('click', confirmClose);
+    });
+    confirmFlow.querySelector('[data-confirm-ok]').addEventListener('click', function () {
+      if (pendingToggle) pendingToggle.checked = false;
+      confirmClose();
+    });
+  }
+
   var logout = document.querySelector('[data-logout]');
   if (logout) logout.addEventListener('click', function () {
     isAuthenticated = false;
@@ -2590,7 +2664,8 @@
         'bundle':  '[data-bundle-start]',
         'plan':    '[data-plan-start]',
         'claim':   '[data-claim-start]',
-        'file':    '[data-file-start]'
+        'file':    '[data-file-start]',
+        'history': '[data-history-start]'
       };
       var sel = ctaSelectors[cta];
       if (sel) {

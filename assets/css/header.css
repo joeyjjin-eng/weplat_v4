@@ -1,4 +1,4 @@
-.app-hero{padding:10px 18px 8px;background:transparent}
+.app-hero{padding:10px 22px 8px;background:transparent}
 .app-hero__bar{height:34px;display:flex;align-items:center;justify-content:space-between;padding:0 12px}
 .app-hero__brand{display:flex;align-items:center;gap:8px;min-width:0}
 .app-hero__brand .brand-symbol{height:22px}
@@ -18,7 +18,7 @@
 .app-hero__login-copy strong{font-size:13px;line-height:1.25;font-weight:600;color:#34435f;letter-spacing:-.015em}
 .app-hero__login-action{width:22px;height:28px;flex:none;display:grid;place-items:center;color:#8a94a6}
 .app-hero__login-action .ms{font-size:19px}
-@media (max-width:360px){.app-hero{padding-inline:14px}.app-hero__bar{padding-inline:8px}.app-hero__login-copy strong{font-size:13px}}
+@media (max-width:360px){.app-hero{padding-inline:18px}.app-hero__bar{padding-inline:8px}.app-hero__login-copy strong{font-size:13px}}
 @media (prefers-reduced-motion:reduce){.app-hero__login{transition:none}}
 
 /* 혜택 상단 3단 구조: 로그인 → 카테고리 → 메인 카드 */

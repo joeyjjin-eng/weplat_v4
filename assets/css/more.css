@@ -2,8 +2,8 @@
    화면 마크업은 시안 그대로라 인라인 스타일입니다.
    반복되는 카드·행·CTA를 여기 클래스로 빼내면서 인라인을 걷어내세요. */
 
-.more-account-wrap{padding:14px 18px 18px}
-.more-account{width:100%;min-height:74px;background:#fff;border:0;border-radius:22px;padding:13px 16px;display:flex;align-items:center;gap:12px;text-align:left;box-shadow:0 10px 24px rgba(30,52,94,.07)}
+.more-account-wrap{padding:14px 20px 18px}
+.more-account{width:100%;min-height:74px;background:#fff;border:1px solid rgba(11,27,58,.10);border-radius:22px;padding:13px 16px;display:flex;align-items:center;gap:12px;text-align:left;box-shadow:0 8px 20px rgba(30,52,94,.05)}
 .more-account:active{transform:scale(.99)}
 .more-account__icon{width:46px;height:46px;border-radius:16px;background:#eaf1fe;color:#4a7ed5;display:grid;place-items:center;flex:none}
 .more-account__icon .ms{font-size:26px}
@@ -12,32 +12,24 @@
 .more-account__copy small{font-size:12px;color:#68758d;line-height:1.35}
 .more-account__chev{font-size:21px;color:#8a94a6}
 /* ── 더보기 본문 — 카테고리별 기능 리스트 + 상담·문의 ───────────────
-   3×2 아이콘 그리드를 대체. 시니어 타깃이라 행 하나당 터치 영역을 크게,
-   기능명 옆에 실제로 뭘 하는지 한 줄. */
-.more-body{flex:1;overflow-y:auto;padding:14px 18px 24px;display:flex;flex-direction:column;gap:18px}
-.more-group{display:flex;flex-direction:column;gap:8px}
-.more-group__title{font-size:14px;font-weight:600;letter-spacing:-.015em;color:#54617A;margin:0 0 0 4px}
+   색은 행 아이콘의 도메인 틴트로만 쓴다. 면(배경)은 계정 카드에만.
+   위계: 계정 카드 > 기능 리스트 > 상담·문의. */
+.more-body{flex:none;overflow:visible;padding:12px 22px 28px;display:flex;flex-direction:column;gap:16px}
+.more-group{display:flex;flex-direction:column;gap:2px}
+.more-group__title{font-size:14px;font-weight:500;letter-spacing:-.015em;color:#8A94A6;margin:0}
 .more-list{background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:20px;overflow:hidden}
 
-.more-row{width:100%;min-height:70px;padding:13px 14px 13px 16px;display:flex;align-items:center;gap:13px;
+.more-row{width:100%;min-height:56px;padding:9px 12px 9px 14px;display:flex;align-items:center;gap:11px;
   text-align:left;color:#101B33;background:none;transition:background .15s ease}
 .more-row+.more-row{border-top:1px solid rgba(11,27,58,.06)}
 .more-row:active{background:rgba(11,27,58,.035)}
-.more-row__icon{width:44px;height:44px;border-radius:15px;flex:none;display:grid;place-items:center}
-.more-row__icon .ms{font-size:23px}
+.more-row__icon{width:34px;height:34px;border-radius:11px;flex:none;display:grid;place-items:center}
+.more-row__icon .ms{font-size:20px}
 .more-row__copy{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
-.more-row__copy strong{font-size:16px;font-weight:600;letter-spacing:-.025em;color:#101B33}
+.more-row__copy strong{font-size:15px;font-weight:500;letter-spacing:-.02em;color:#101B33}
 .more-row__copy small{font-size:13px;line-height:1.35;color:#6B7688;letter-spacing:-.01em}
 .more-row__chev{font-size:21px;color:#9AA4B5;flex:none}
 
-/* 카테고리 틴트 — tokens.css 의 통신=amber / 보험=violet / 절감=teal 규칙을 따름.
-   안심은 안심 탭의 웜 코랄을 그대로, 상담은 중립 잉크. */
-.more-row__icon--coral{background:rgba(255,138,101,.16);color:#D9662F}
-.more-row__icon--teal{background:rgba(0,201,167,.16);color:#00A98D}
-.more-row__icon--amber{background:rgba(255,176,32,.20);color:#C98207}
-.more-row__icon--blue{background:rgba(13,118,255,.12);color:#0D76FF}
-.more-row__icon--violet{background:rgba(124,77,255,.14);color:#7C4DFF}
-.more-row__icon--ink{background:rgba(22,32,58,.06);color:#46536F}
 
 
 /* ── 로그인 · 회원가입 시트 ─────────────────────────────────────────
@@ -113,14 +105,14 @@
 
 
 .mypage-flow{position:fixed;inset:0;z-index:10010;display:flex;flex-direction:column;background:#f4f7fc}
-.mypage-topbar{height:64px;padding:max(env(safe-area-inset-top),12px) 18px 8px;display:grid;grid-template-columns:40px 1fr 40px;align-items:center;background:#f4f7fc}
+.mypage-topbar{height:64px;padding:max(env(safe-area-inset-top),12px) 22px 8px;display:grid;grid-template-columns:40px 1fr 40px;align-items:center;background:#f4f7fc}
 .mypage-topbar button{width:40px;height:40px;display:grid;place-items:center;border-radius:12px}
 .mypage-topbar strong{text-align:center;font-size:17px;color:#101b33}
-.mypage-body{flex:1;overflow-y:auto;padding:14px 18px 32px;display:flex;flex-direction:column;gap:14px}
+.mypage-body{flex:1;overflow-y:auto;padding:14px 20px 32px;display:flex;flex-direction:column;gap:14px}
 .mypage-profile{background:#fff;border-radius:22px;padding:18px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 22px rgba(30,52,94,.06)}
 .mypage-profile__avatar{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:#eaf1fe;color:#0d76ff;font-size:18px;font-weight:700}
 .mypage-profile>div{flex:1;display:flex;flex-direction:column;gap:3px}.mypage-profile>div strong{font-size:17px}.mypage-profile>div small{font-size:12px;color:#758198}
-.mypage-profile button{font-size:12px;color:#0d76ff;background:#edf4ff;padding:8px 10px;border-radius:10px}
+.mypage-profile button{font-size:13px;color:#3B465F;background:#F1F4F9;padding:8px 10px;border-radius:10px}
 .mypage-section{background:#fff;border-radius:18px;padding:8px 0;overflow:hidden}
 .mypage-section h3{font-size:12px;color:#7c879b;margin:8px 16px 5px;font-weight:600}
 .mypage-section button{width:100%;min-height:52px;padding:0 16px;display:flex;align-items:center;gap:11px;text-align:left}
@@ -128,3 +120,156 @@
 .mypage-logout{height:46px;color:#68758d;font-size:13px}
 @keyframes auth-rise{from{transform:translateY(34px);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){.auth-sheet{animation:none}.auth-primary,.auth-field input,.auth-sheet__close,.auth-consent .ms{transition:none}}
+
+/* ── 상단 스크롤 고정 없음 ──────────────────────────────────────────
+   로고·로그인 카드(.screen-header)도 본문과 같이 스크롤한다.
+   화면 전체가 스크롤러가 되고 .more-body 는 내부 스크롤을 갖지 않는다. */
+.screen[data-screen="more"]{overflow-y:auto;scrollbar-width:none}
+.screen[data-screen="more"]::-webkit-scrollbar{display:none}
+
+
+/* ── 섹션 대제목 — 계정 카드와 '전체 기능' 리스트를 가른다.
+   그룹 소제목(.more-group__title)보다 한 단 위. */
+.more-section-head{font-size:18px;font-weight:700;letter-spacing:-.03em;color:#101B33;margin:0}
+/* 큰제목 → 부제 20px, 부제 → 내용 11px. 아래로 갈수록 좁아져야 묶임이 읽힌다. */
+.more-section-head+.more-group{margin-top:4px}
+
+/* ── 전체 기능 — 카드도 아이콘도 없이 배경 위에 텍스트만 깐다.
+   계정 카드(면 있음)와 기능 리스트(면 없음)로 두 덩어리가 갈린다.
+   구분선도 두지 않고 여백으로만 끊는다. */
+.more-list--flat{background:transparent;border:0;border-radius:0;overflow:visible}
+.more-list--flat .more-row{padding:9px 0;min-height:52px;gap:11px}
+.more-list--flat .more-row+.more-row{border-top:0}
+.more-list--flat .more-row:active{background:transparent;opacity:.6}
+
+/* ── 상담·문의 — 기능이 아니라 보조 창구다. 기능 목록보다 한 단 아래로 내린다.
+   위에 헤어라인으로 끊고, 글자 크기·무게·색을 모두 낮춘다. */
+.more-group--cs{margin-top:6px;padding-top:16px;border-top:1px solid rgba(11,27,58,.08)}
+.more-group--cs .more-group__title{color:#A6ACB9}
+.more-group--cs .more-row{min-height:44px;padding:7px 0}
+.more-group--cs .more-row__copy strong{font-size:14px;color:#54617A}
+.more-group--cs .more-row__copy small{color:#8A94A6}
+.more-group--cs .more-row__chev{font-size:18px;color:#B6BECB}
+
+/* ── 이용 내역 상세 (안심 체크인) ─────────────────────────────────
+   전체 기능 > 안심 > 구독·이용 내역에서 진입. 서비스 진입과 목적지가 다르다.
+   여백은 글자 22 / 박스 20, 제목→박스 12px 규칙을 따른다. */
+.usage-flow{position:fixed;inset:0;z-index:10010;display:flex;flex-direction:column;background:#fff}
+.usage-flow__topbar{height:64px;flex:none;padding:max(env(safe-area-inset-top),12px) 22px 8px;
+  display:grid;grid-template-columns:40px 1fr 40px;align-items:center;background:#fff}
+.usage-flow__topbar button{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;margin-left:-8px}
+.usage-flow__topbar .ms{font-size:22px;color:#4B5875}
+.usage-flow__topbar strong{text-align:center;font-size:17px;font-weight:700;letter-spacing:-.025em;color:#101B33}
+.usage-flow__body{flex:1;min-height:0;overflow-y:auto;padding:12px 22px 32px;display:flex;flex-direction:column;gap:24px}
+.usage-flow__group{display:flex;flex-direction:column;gap:12px}
+.usage-flow__head{font-size:14px;font-weight:500;letter-spacing:-.015em;color:#8A94A6;margin:0}
+
+.usage-panel{margin:0 -2px;background:#fff;border:1px solid rgba(11,27,58,.10);border-radius:18px;padding:2px 0}
+.usage-panel__row{min-height:50px;padding:11px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.usage-panel__row+.usage-panel__row{border-top:1px solid rgba(11,27,58,.06)}
+.usage-panel__row span{font-size:15px;font-weight:400;letter-spacing:-.02em;color:#54617A}
+.usage-panel__row b{font-size:15px;font-weight:500;letter-spacing:-.02em;color:#101B33}
+/* 사건 기록 행 — 왼쪽은 무슨 일이었는지, 오른쪽은 일시(+ 이상신호는 사유까지) */
+.usage-panel__row--log span{font-size:13px;letter-spacing:0;text-align:right}
+.usage-panel__summary{padding:13px 16px;font-size:15px;font-weight:400;letter-spacing:-.02em;color:#54617A;
+  border-bottom:1px solid rgba(11,27,58,.06)}
+.usage-panel__summary b{font-weight:500;color:#101B33}
+.usage-panel__link{width:100%;min-height:50px;padding:11px 16px;display:flex;align-items:center;justify-content:space-between;
+  font-size:15px;font-weight:500;letter-spacing:-.02em;color:#101B33;border-top:1px solid rgba(11,27,58,.06)}
+.usage-panel__link .ms{font-size:19px;color:#9AA4B5}
+.usage-panel__link:active{background:rgba(11,27,58,.035)}
+
+/* 날짜별 체크인 — 하루 한 줄. 기록이 계속 쌓이는 목록이라 한 줄을 넘기지 않는다.
+   오른쪽 시각은 아침·점심·저녁 순. 이상 상태만 글자색으로 집는다. */
+.log-row{min-height:46px;padding:9px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.log-row+.log-row{border-top:1px solid rgba(11,27,58,.06)}
+.log-row__date{flex:none;font-size:15px;font-weight:500;letter-spacing:-.02em;color:#101B33}
+.log-row__slots{min-width:0;font-size:13px;color:#54617A;text-align:right;white-space:nowrap}
+.log-row__slots em{font-style:normal;font-weight:500}
+.log-row__slots .is-miss{color:#D9662F}
+.log-row__slots .is-wait{color:#8A94A6}
+
+/* 보호자 */
+.guardian-row{min-height:60px;padding:11px 16px;display:flex;align-items:center;gap:11px}
+.guardian-row+.guardian-row{border-top:1px solid rgba(11,27,58,.06)}
+.guardian-row__avatar{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:#EAF1FE;color:#0D76FF;font-size:14px;font-weight:700}
+.guardian-row__copy{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.guardian-row__copy strong{font-size:15px;font-weight:500;letter-spacing:-.02em;color:#101B33}
+.guardian-row__copy small{font-size:13px;color:#8A94A6}
+.guardian-row__state{flex:none;font-size:13px;color:#00A98D}
+
+/* ── 도메인 틴트 ───────────────────────────────────────────────────
+   tokens.css 의 매핑을 그대로: 안심=coral, 절감=teal, 통신=amber,
+   보험=violet, 청구=blue, 상담=중립 잉크. 임의로 바꾸지 않는다. */
+.more-row__icon--coral{background:rgba(255,138,101,.16);color:#D9662F}
+.more-row__icon--teal{background:rgba(0,201,167,.16);color:#00A98D}
+.more-row__icon--amber{background:rgba(255,176,32,.20);color:#C98207}
+.more-row__icon--violet{background:rgba(124,77,255,.14);color:#7C4DFF}
+.more-row__icon--blue{background:rgba(13,118,255,.12);color:#0D76FF}
+.more-row__icon--ink{background:rgba(22,32,58,.06);color:#46536F}
+
+/* 상담·문의 아이콘은 기능 행보다 한 치수 작게 — 색이 아니라 크기로도 내린다. */
+.more-group--cs .more-row__icon{width:30px;height:30px;border-radius:10px}
+.more-group--cs .more-row__icon .ms{font-size:18px}
+
+/* ── 내 정보 수정 — 입력 필드 ─────────────────────────────────── */
+.usage-field{display:flex;flex-direction:column;gap:7px;padding:13px 16px}
+.usage-field+.usage-field{border-top:1px solid rgba(11,27,58,.06)}
+.usage-field>span:first-child{font-size:13px;letter-spacing:0;color:#8A94A6}
+.usage-field input{width:100%;height:50px;border:1px solid rgba(22,32,58,.10);border-radius:13px;background:#fff;
+  padding:0 14px;font:500 15px/1 var(--font);letter-spacing:-.02em;color:#101B33;outline:none;
+  transition:border-color .16s ease,box-shadow .16s ease}
+.usage-field input:focus{border-color:rgba(13,118,255,.45);box-shadow:0 0 0 4px rgba(13,118,255,.08)}
+.usage-field input[readonly]{background:#F5F7FB;color:#54617A}
+.usage-field__action{display:flex;align-items:center;gap:8px}
+.usage-field__action input{flex:1;min-width:0}
+.usage-field__action button{flex:none;height:50px;padding:0 16px;border-radius:13px;background:transparent;
+  border:1px solid rgba(22,32,58,.16);color:#1C2744;font-size:14px;font-weight:500;letter-spacing:-.02em;white-space:nowrap}
+.usage-field__action button:active{background:rgba(22,32,58,.05)}
+
+/* 하단 CTA — 보험·혜택 플로우의 푸터와 같은 규격(좌우 20px, 박스라서) */
+.usage-flow__footer{flex:none;padding:12px 20px max(env(safe-area-inset-bottom),16px);background:#fff}
+.usage-cta{width:100%;height:54px;border-radius:16px;color:#fff;font-size:16px;font-weight:700;letter-spacing:-.02em;
+  background:linear-gradient(100deg,#0D76FF,#5F6BFF);box-shadow:0 12px 26px -12px rgba(13,118,255,.55);
+  transition:transform .16s ease}
+.usage-cta:active{transform:scale(.985)}
+.usage-quit{align-self:center;height:46px;padding:0 12px;font-size:13px;color:#8A94A6}
+
+/* ── 알림 설정 — 토글 ──────────────────────────────────────────
+   토글은 체크박스로만 만든다. 별도 JS 없이 :checked 로 움직인다. */
+.switch-row{min-height:60px;padding:12px 16px;display:flex;align-items:center;gap:14px;cursor:pointer}
+.switch-row+.switch-row{border-top:1px solid rgba(11,27,58,.06)}
+.switch-row__copy{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.switch-row__copy strong{font-size:15px;font-weight:500;letter-spacing:-.02em;color:#101B33}
+.switch-row__copy small{font-size:13px;line-height:1.4;color:#8A94A6}
+.switch-row input{position:absolute;opacity:0;pointer-events:none}
+.switch{flex:none;position:relative;width:48px;height:29px;border-radius:999px;background:#D7DCE5;
+  transition:background .18s ease}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:23px;height:23px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(11,27,58,.25);transition:transform .18s ease}
+.switch-row input:checked+.switch{background:#0D76FF}
+.switch-row input:checked+.switch::after{transform:translateX(19px)}
+.usage-flow__note{margin:0 2px;font-size:13px;line-height:1.45;color:#8A94A6}
+
+@media (prefers-reduced-motion:reduce){.switch,.switch::after,.usage-cta{transition:none}}
+/* 패널의 첫 자식이면 윗선을 지운다 — 패널 테두리와 겹쳐 두 줄로 보인다. */
+.usage-panel__link:first-child{border-top:0}
+
+
+/* ── 끄기 확인 — 체크인 알림을 끌 때만 뜬다. 화면 중앙 고정.
+   기본 동작은 '취소'(유지)이고, '끄기'가 파괴적 선택이라 코랄로 둔다. */
+.confirm-flow{position:fixed;inset:0;z-index:10030;display:flex;align-items:center;justify-content:center;padding:24px}
+.confirm-flow__scrim{position:absolute;inset:0;background:rgba(22,19,26,.46);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.confirm-box{position:relative;width:min(100%,340px);background:#fff;border-radius:22px;padding:26px 22px 16px;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  box-shadow:0 24px 60px -18px rgba(16,20,40,.45)}
+.confirm-box__icon{font-size:28px;color:#D9662F;width:52px;height:52px;border-radius:50%;
+  display:grid;place-items:center;background:rgba(255,138,101,.14);margin-bottom:14px}
+.confirm-box__title{font-size:19px;font-weight:700;letter-spacing:-.025em;color:#101B33}
+.confirm-box__body{margin:9px 0 0;font-size:15px;line-height:1.5;letter-spacing:-.02em;color:#54617A}
+.confirm-box__actions{display:flex;gap:8px;width:100%;margin-top:20px}
+.confirm-btn{flex:1;height:52px;border-radius:15px;font-size:15px;font-weight:700;letter-spacing:-.02em;
+  background:#F1F4F9;color:#3B465F}
+.confirm-btn--go{background:rgba(217,102,47,.10);color:#D9662F}
+.confirm-btn:active{opacity:.75}

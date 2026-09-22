@@ -71,7 +71,7 @@
 /* ── Chat area ───────────────────────────────────────────────── */
 .saving-chat{
   flex:1;min-height:0;overflow-y:auto;
-  padding:22px 18px 24px;
+  padding:22px 20px 24px;
   display:flex;flex-direction:column;gap:16px;
 }
 
@@ -121,7 +121,7 @@
 /* ── Options — 하단 sticky. 짧은 옵션은 가로로 나열, 길면 wrap. */
 .saving-options{
   flex:none;
-  padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+  padding:14px 20px calc(16px + env(safe-area-inset-bottom));
   display:flex;flex-wrap:wrap;gap:8px;
   background:#F4F7FC;
   border-top:1px solid rgba(11,27,58,.06);
@@ -142,7 +142,7 @@
 /* ── 최종 패널: 답변 요약 + 이름/전번 폼 (chat 접고 이 패널이 화면 다 씀) */
 .saving-final{
   flex:1;min-height:0;overflow-y:auto;
-  padding:18px 18px calc(18px + env(safe-area-inset-bottom));
+  padding:18px 20px calc(18px + env(safe-area-inset-bottom));
   display:flex;flex-direction:column;gap:12px;
   animation:sav-rise .4s cubic-bezier(.2,.8,.2,1);
 }
@@ -445,7 +445,7 @@
 
 .plan-flow__body{
   flex:1;min-height:0;overflow-y:auto;
-  padding:20px 18px 16px;
+  padding:20px 20px 16px;
   display:flex;flex-direction:column;
 }
 
@@ -619,7 +619,7 @@
 /* 하단 sticky CTA */
 .plan-flow__footer{
   flex:none;
-  padding:12px 18px calc(14px + env(safe-area-inset-bottom));
+  padding:12px 20px calc(14px + env(safe-area-inset-bottom));
   background:#F4F7FC;border-top:1px solid rgba(11,27,58,.06);
 }
 .plan-submit-btn{

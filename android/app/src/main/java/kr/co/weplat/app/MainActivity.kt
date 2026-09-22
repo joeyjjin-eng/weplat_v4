@@ -1,8 +1,12 @@
 package kr.co.weplat.app
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -37,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             overScrollMode = View.OVER_SCROLL_NEVER
             isVerticalScrollBarEnabled = false
             isHorizontalScrollBarEnabled = false
-            webViewClient = WebViewClient()
+            webViewClient = AppWebViewClient()
             loadUrl("file:///android_asset/www/index.html")
         }
         setContentView(webView)
@@ -60,5 +64,31 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         webView.destroy()
         super.onDestroy()
+    }
+
+    /**
+     * 앱 화면(file://)만 WebView 안에서 열고, 나머지는 기기에 넘긴다.
+     * tel:(전화 상담) · sms: · mailto: 는 WebView 가 해석하지 못해
+     * 기본 WebViewClient 로는 ERR_UNKNOWN_URL_SCHEME 이 뜬다.
+     * 카카오 채널·네이버 지도 같은 외부 http(s) 링크도 외부 브라우저로 보낸다.
+     */
+    private inner class AppWebViewClient : WebViewClient() {
+        override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+            val uri = request.url ?: return false
+            if (uri.scheme == "file") return false          // 앱 화면은 그대로 WebView 에서
+            return openExternally(uri)
+        }
+
+        private fun openExternally(uri: Uri): Boolean {
+            return try {
+                startActivity(Intent(Intent.ACTION_VIEW, uri).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                })
+                true
+            } catch (e: ActivityNotFoundException) {
+                // 전화 앱이 없는 기기(태블릿 등) — WebView 가 에러 페이지를 띄우지 않게 삼킨다
+                true
+            }
+        }
     }
 }
