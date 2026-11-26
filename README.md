@@ -4,7 +4,7 @@
 웹 자산은 루트에, 안드로이드 프로젝트는 `android/`에 있습니다.
 
 ## 폴더 구조
-    index.html                     # SPA 셸 (탭 4개: 안심 / 혜택 / 보험 / 더보기)
+    index.html                     # SPA 셸 (탭 4개: 안심 / 생활 / 챗봇 / 더보기)
     assets/css/tokens.css          # 색·라운드·그림자·타이포 토큰 (전역)
     assets/css/shell.css           # body·screen·tabbar (실기기 풀뷰포트, safe-area 대응)
     assets/css/<screen>.css        # 화면 전용 스타일 (비어 있음 — 인라인 스타일을 여기로 이관)

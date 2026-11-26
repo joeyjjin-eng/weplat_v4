@@ -1,0 +1,16 @@
+.living-insurance{display:flex;flex-direction:column;flex:none;gap:12px;padding:22px 0 8px}
+.living-insurance h2{margin:0;font-size:20px}
+.chat-screen{background:#f4f7fc}
+.chat-thread{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:18px 20px}
+.chat-bubble{align-self:flex-start;flex:none;max-width:min(88%,36rem);margin:0;padding:13px 16px;border-radius:5px 18px 18px;background:white;color:#243451;font-size:15px;line-height:1.6;overflow-wrap:anywhere;box-shadow:0 2px 8px rgba(11,27,58,.05)}
+.chat-bubble.is-user{align-self:flex-end;border-radius:18px 5px 18px 18px;background:#145dd5;color:white}
+.chat-bubble:not(.is-user){position:relative;margin-inline-start:42px;max-width:min(calc(100% - 42px),36rem)}
+.chat-bubble:not(.is-user)::before{content:"";position:absolute;inset-inline-start:-42px;top:0;width:34px;height:34px;background:url("../chat-avatar.svg") center/contain no-repeat}
+.chat-bubble button{display:block;margin-top:10px;padding:7px 12px;background:#edf4ff;color:#124da7;border-radius:10px;font-weight:600}
+.chat-prompts{display:flex;flex-wrap:wrap;gap:6px;padding:8px 16px}
+.chat-prompts button{padding:7px 12px;border-radius:18px;border:1px solid #cdd9ee;color:#345078;background:white;font-size:13px}
+.chat-form{display:flex;align-items:center;gap:8px;margin:2px 16px 12px;background:white;border:1px solid #cdd9ee;border-radius:22px;padding:5px 6px 5px 15px}
+.chat-form:focus-within{border-color:#4179d4}
+.chat-form input{min-width:0;flex:1;border:0;outline:0;font:inherit;background:transparent}
+.chat-form button{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;color:white;background:#145dd5}
+.chat-form button:disabled{background:#c2cede}

@@ -811,3 +811,14 @@ select.file-input{
   background:#C7CFDD;color:#fff;box-shadow:none;cursor:not-allowed;
 }
 .file-submit:active:not(:disabled){opacity:.9}
+.hospital-actions{display:grid;gap:10px;margin:20px 0 8px}
+.hospital-actions h3{margin:0 0 2px;color:#101b33;font-size:18px;letter-spacing:-.025em}
+.hospital-claim,.hospital-history{display:flex;align-items:center;width:100%;text-align:left}
+.hospital-claim{gap:14px;padding:17px 18px;background:#fff;border:1px solid #e2e9f5;border-radius:18px;box-shadow:0 5px 16px rgba(31,64,122,.12)}
+.hospital-claim__icon{display:grid;place-items:center;width:42px;height:42px;border-radius:14px;background:#eaf1ff;color:#176aff}
+.hospital-claim__copy{display:grid;flex:1;gap:3px}
+.hospital-claim small{font-size:13px;color:#54617a}
+.hospital-history{gap:8px;min-height:44px;padding:10px 14px;border-radius:12px;background:transparent;font-size:16px;font-weight:650;color:#243451}
+.hospital-history small{margin-left:auto;text-align:right;font-size:14px;font-weight:600;color:#34435f}
+.hospital-actions button > .ms:last-child{font-size:19px;color:#65748c}
+.hospital-actions button:focus-visible{outline:2px solid #176aff;outline-offset:2px}

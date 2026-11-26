@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="assets/css/ansim.css">
 <link rel="stylesheet" href="assets/css/benefit.css">
 <link rel="stylesheet" href="assets/css/insurance.css">
+<link rel="stylesheet" href="assets/css/chat.css">
 <link rel="stylesheet" href="assets/css/more.css">
 </head>
 <body data-tab="ansim">
@@ -33,6 +34,14 @@
       <div data-notif-start class="bell-wrap"><span class="ms">notifications</span><div data-bell-badge class="bell-badge"></div></div>
     </div>
   </div>
+  <div class="ansim-brief">
+  <section class="fit-card" data-fit-card aria-label="갤럭시 핏 건강 분석"></section>
+  <button type="button" class="visit-shortcut" data-visit-only data-usage-open="visit-schedule" hidden>
+    <svg class="visit-calendar" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4m10-4v4M3 10h18m-14 5h4"/></svg>
+    <span><strong>안부 방문 일정</strong><small data-visit-preview></small></span>
+    <span data-visit-badge aria-label="새 방문 알림">●</span><svg class="visit-chevron" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m6 3 5 5-5 5"/></svg>
+  </button>
+  </div>
   <!-- 초기 뷰: design_handoff_daily_checkin 적용 (3중 오브 + 프로스티드 글래스 원형 버튼 + 페인트 블리드) -->
   <div data-checkin-view="default" class="ansim-checkin-view">
     <!-- 스테이지: 오브 + head(중앙 정렬, 버튼 바로 위) + 메인 버튼(또는 메시지) -->
@@ -46,12 +55,12 @@
       </div>
       <button type="button" data-checkin-btn="ok" class="ansim-ok">
         <span class="big">괜찮아요</span>
-        <span class="sub">눌러서 안부 전하기</span>
+        <span class="sub" data-checkin-ok-sub>눌러서 안부 전하기</span>
       </button>
       <div class="ansim-msg" data-checkin-msg hidden>
-        <div class="eyebrow">전해졌어요</div>
+        <div class="eyebrow" data-checkin-msg-eyebrow>전해졌어요</div>
         <div class="title">오늘 하루도<br>화이팅이에요</div>
-        <div class="body">딸 지현님에게<br>안부가 전달되었습니다</div>
+        <div class="body" data-checkin-msg-body>딸 지현님에게<br>안부가 전달되었습니다</div>
       </div>
     </div>
     <!-- 푸터: 도움 요청 (하단 고정 — idle/sent 상태 무관하게 위치 유지) -->
@@ -70,6 +79,7 @@
         <div class="ansim-intercept__label"><span class="ms">notification_important</span>체크인 재알림</div>
         <div class="ansim-intercept__title">아침 체크인이<br>지연됐어요</div>
         <div class="ansim-intercept__context">알림 오전 8:00 · 재알림 <b>오전 9:15</b></div>
+        <div class="ansim-intercept__guide" data-intercept-missed-guide>계속 응답이 없으면 보호자에게 알림이 가요</div>
       </div>
       <button type="button" data-checkin-btn="alert-ok" class="ansim-cta">괜찮아요</button>
     </div>
@@ -87,7 +97,7 @@
       <div class="ansim-intercept__head">
         <div class="ansim-intercept__label"><span class="ms">monitor_heart</span>워치 이상신호</div>
         <div class="ansim-intercept__title">평소와 다른 상태가<br>감지됐어요</div>
-        <div class="ansim-intercept__context">심박수 <span>68</span> → <b>83 bpm</b></div>
+        <div class="ansim-intercept__guide" data-intercept-anomaly-guide>응답이 없으면 보호자에게 바로 알려드려요</div>
       </div>
       <button type="button" data-checkin-btn="alert-ok" class="ansim-cta">괜찮아요</button>
     </div>
@@ -101,7 +111,7 @@
     <div style="font-size:28px;font-weight:700;color:#101B33;letter-spacing:-.035em;text-align:center">도움을 요청했어요</div>
     <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:28px;padding:48px 20px;display:flex;flex-direction:column;align-items:center;gap:18px;box-shadow:0 14px 32px rgba(5,27,80,.10)">
       <div style="width:124px;height:124px;border-radius:50%;background:linear-gradient(150deg,#FF9500,#FF6B45);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 14px 32px rgba(255,149,0,.34)"><span class="ms is-filled" style="font-size:64px">campaign</span></div>
-      <div style="font-size:15px;color:#4B5875;text-align:center;line-height:1.4">보호자에게 알림이 전송됐어요<br>잠시만 기다려 주세요</div>
+      <div data-help-sent-desc style="font-size:15px;color:#4B5875;text-align:center;line-height:1.4">보호자에게 알림이 전송됐어요<br>잠시만 기다려 주세요</div>
     </div>
     <div style="display:flex;gap:8px">
       <div data-checkin-btn="cancel" style="flex:1;background:#fff;border:1px solid rgba(11,27,58,.10);border-radius:22px;padding:22px;color:#4B5875;font-size:17px;font-weight:700;text-align:center;cursor:pointer">취소</div>
@@ -126,13 +136,7 @@
       </div>
       <div style="background:rgba(0,201,167,.16);color:#00A98D;font-size:13px;font-weight:500;padding:5px 10px;border-radius:999px;flex:none;align-self:flex-start">완료</div>
     </div>
-    <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;padding:14px 16px;display:flex;color:#101B33">
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span class="ms" style="font-size:20px;color:#DC4E30">favorite</span><div style="font-size:15px;font-weight:500">68</div><div style="font-size:13px;color:#5C6880">심박수</div></div>
-      <div style="width:1px;background:#E9EDF3;margin:4px 0"></div>
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span class="ms" style="font-size:20px;color:#00A98D">directions_walk</span><div style="font-size:15px;font-weight:500">정상</div><div style="font-size:13px;color:#5C6880">활동량</div></div>
-      <div style="width:1px;background:#E9EDF3;margin:4px 0"></div>
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><span class="ms" style="font-size:20px;color:#0D76FF">schedule</span><div style="font-size:15px;font-weight:500">12분 전</div><div style="font-size:13px;color:#5C6880">움직임</div></div>
-    </div>
+  <section class="fit-card" data-fit-card aria-label="갤럭시 핏 건강 분석"></section>
     <div style="font-size:14px;font-weight:500;color:#54617A;padding:6px 3px 0">최근 알림</div>
     <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;padding:12px 16px;display:flex;align-items:center;gap:12px;color:#101B33">
       <div style="width:36px;height:36px;border-radius:12px;background:rgba(0,201,167,.16);color:#00A98D;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms is-filled" style="font-size:20px">check_circle</span></div>
@@ -155,7 +159,7 @@
     <div style="display:flex;flex-direction:column;gap:12px">
       <div style="font-size:14px;font-weight:500;color:#0D76FF;letter-spacing:.02em">생활 안전 체크인 서비스</div>
       <div style="font-size:38px;font-weight:700;color:#101B33;letter-spacing:-.04em;line-height:1.15">위플랫 체크인<br>시작하기</div>
-      <div style="font-size:15px;color:#4B5875;line-height:1.5">하루 세 번 안부를 확인하고<br>이상신호를 자녀에게 자동으로 전달해요</div>
+      <div style="font-size:15px;color:#4B5875;line-height:1.5">하루 세 번 안부를 확인하고<br>보호자나 관리자에게 이상신호를 전달해요</div>
     </div>
     <div style="display:flex;flex-direction:column;gap:10px">
       <div style="display:flex;align-items:center;gap:12px;color:#101B33">
@@ -168,7 +172,7 @@
       </div>
       <div style="display:flex;align-items:center;gap:12px;color:#101B33">
         <div style="width:36px;height:36px;border-radius:12px;background:rgba(0,201,167,.16);color:#00A98D;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">notifications_active</span></div>
-        <div style="font-size:15px;font-weight:500">보호자에게 자동 알림</div>
+        <div style="font-size:15px;font-weight:500">보호자 알림 · 1인 관리자 모니터링</div>
       </div>
     </div>
   </div>
@@ -185,7 +189,7 @@
 <main class="screen" data-screen="benefit" hidden style="background:#F4F7FC">
   <header class="screen-header app-hero app-hero--benefit">
     <div class="app-hero__bar">
-      <div class="app-hero__brand"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><strong>혜택</strong></div>
+      <div class="app-hero__brand"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><strong>생활</strong></div>
       <button type="button" data-notif-start class="bell-wrap" aria-label="알림 보기"><span class="ms">notifications</span><span class="bell-badge" aria-hidden="true"></span></button>
     </div>
     <button type="button" class="app-hero__login" data-login-trigger>
@@ -194,11 +198,12 @@
       <span class="app-hero__login-action" aria-hidden="true"><span class="ms">chevron_right</span></span>
     </button>
   </header>
-  <div data-benefit-home style="flex:1;padding:clamp(2px,0.4vh,5px) 20px 18px;display:flex;flex-direction:column;gap:clamp(2px,0.5vh,6px);overflow:hidden">
+  <div data-benefit-home style="flex:1;padding:clamp(2px,0.4vh,5px) 20px 18px;display:flex;flex-direction:column;gap:clamp(2px,0.5vh,6px);overflow-y:auto">
     <div class="noscroll" data-chip-nav="benefit" style="display:flex;justify-content:center;gap:8px;flex:none;overflow-x:auto">
       <button type="button" class="chip is-active" data-target-card="0">절감</button>
       <button type="button" class="chip" data-target-card="1">혜택</button>
       <button type="button" class="chip" data-target-card="2">상품</button>
+      <button type="button" class="chip" data-insurance-jump>보험</button>
     </div>
     <div class="noscroll" data-carousel="benefit" style="margin:0 -20px;padding:14px 20px 28px;display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;flex:none">
       <div class="carousel-card" data-nav-label="생활비 절감하기" style="scroll-snap-align:center;flex:none;width:288px;min-height:320px;background:linear-gradient(158deg,#0D76FF 0%,#3D7BFF 48%,#7C4DFF 100%);border-radius:24px;padding:26px 24px 22px;display:flex;flex-direction:column;box-shadow:0 10px 24px rgba(13,118,255,.16);overflow:hidden">
@@ -248,6 +253,33 @@
         <span data-nav-label></span><span class="ms" style="font-size:18px">arrow_forward</span>
       </button>
     </div>
+    <section class="living-insurance" id="living-insurance" aria-labelledby="insurance-heading">
+      <h2 id="insurance-heading" tabindex="-1">보험</h2>
+    <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:24px;padding:24px 20px;display:flex;flex-direction:column;gap:14px;flex:none;box-shadow:0 16px 36px rgba(5,27,80,.12)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between"><div style="font-size:13px;font-weight:500;color:#8A94A6">숨은 보험금</div><div style="width:34px;height:34px;border-radius:12px;background:rgba(124,77,255,.14);color:#7C4DFF;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:20px">search_insights</span></div></div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center"><div style="font-size:27px;font-weight:700;letter-spacing:-.04em;color:#101B33">놓친 보험금 찾기</div><div style="font-size:14px;color:#4B5875;line-height:1.4">청구하지 않은 병원비가<br>얼마나 있는지 확인해 보세요</div><div style="background:#F6F2FF;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:500;color:#7C4DFF">소요시간 1분 · 평균 발견 약 78만원</div></div>
+      <div data-claim-start data-auth-required style="background:linear-gradient(100deg,#5F6BFF,#7C4DFF);color:#fff;font-size:16px;font-weight:700;border-radius:999px;padding:15px;text-align:center;box-shadow:0 8px 18px rgba(124,77,255,.28);cursor:pointer">내 보험금 조회하기 →</div>
+    </div>
+    <section class="hospital-actions" aria-labelledby="hospital-heading">
+      <h3 id="hospital-heading">병원비 돌려받기</h3>
+      <button type="button" class="hospital-claim" data-file-start data-auth-required>
+        <span class="ms hospital-claim__icon" aria-hidden="true">receipt_long</span>
+        <span class="hospital-claim__copy"><strong>보험금 청구</strong><small>안내부터 서류 제출까지</small></span>
+        <span class="ms" aria-hidden="true">chevron_right</span>
+      </button>
+      <button type="button" class="hospital-history" data-history-start data-auth-required>
+        <span>내 청구 진행 현황</span><small data-history-summary></small>
+        <span class="ms" aria-hidden="true">chevron_right</span>
+      </button>
+    </section>
+    <div style="background:#3D4A66;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:16px;flex:none;box-shadow:0 10px 24px rgba(11,27,58,.14)">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:24px">directions_car</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:-.02em">다이렉트 자동차보험</div><div style="font-size:13px;color:rgba(255,255,255,.72)">7개사 보험료 비교하고 바로 가입</div></div>
+      </div>
+      <div style="background:#fff;color:#3D4A66;font-size:15px;font-weight:500;border-radius:999px;padding:13px 20px;text-align:center">보험료 비교하기</div>
+    </div>
+  </section>
   </div>
   <section data-saving-flow class="saving-flow" hidden aria-label="생활비 절감 진단">
     <div class="saving-flow__topbar">
@@ -273,51 +305,6 @@
     <div class="plan-flow__body noscroll" data-plan-body></div>
     <div class="plan-flow__footer" data-plan-footer></div>
   </section>
-</main>
-
-<!-- ============================================================
-     보험
-     ============================================================ -->
-<main class="screen" data-screen="insurance" hidden style="background:#F4F7FC">
-  <header class="screen-header app-hero app-hero--insurance">
-    <div class="app-hero__bar">
-      <div class="app-hero__brand"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><strong>보험</strong></div>
-      <button type="button" data-notif-start class="bell-wrap" aria-label="알림 보기"><span class="ms">notifications</span><span class="bell-badge" aria-hidden="true"></span></button>
-    </div>
-    <button type="button" class="app-hero__login" data-login-trigger>
-      <span class="app-hero__avatar"><span class="ms">account_circle</span></span>
-      <span class="app-hero__login-copy"><strong>로그인하고 저장하기</strong></span>
-      <span class="app-hero__login-action" aria-hidden="true"><span class="ms">chevron_right</span></span>
-    </button>
-  </header>
-  <div class="noscroll" style="flex:1;padding:16px 20px 18px;display:flex;flex-direction:column;gap:12px;overflow-y:auto">
-    <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:24px;padding:24px 20px;display:flex;flex-direction:column;gap:14px;flex:none;box-shadow:0 16px 36px rgba(5,27,80,.12)">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between"><div style="font-size:13px;font-weight:500;color:#8A94A6">숨은 보험금</div><div style="width:34px;height:34px;border-radius:12px;background:rgba(124,77,255,.14);color:#7C4DFF;display:flex;align-items:center;justify-content:center"><span class="ms" style="font-size:20px">search_insights</span></div></div>
-      <div style="display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center"><div style="font-size:27px;font-weight:700;letter-spacing:-.04em;color:#101B33">놓친 보험금 찾기</div><div style="font-size:14px;color:#4B5875;line-height:1.4">청구하지 않은 병원비가<br>얼마나 있는지 확인해 보세요</div><div style="background:#F6F2FF;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:500;color:#7C4DFF">소요시간 1분 · 평균 발견 약 78만원</div></div>
-      <div data-claim-start data-auth-required style="background:linear-gradient(100deg,#5F6BFF,#7C4DFF);color:#fff;font-size:16px;font-weight:700;border-radius:999px;padding:15px;text-align:center;box-shadow:0 8px 18px rgba(124,77,255,.28);cursor:pointer">내 보험금 조회하기 →</div>
-    </div>
-    <div style="font-size:14px;font-weight:500;color:#54617A;flex:none;margin-top:4px">청구·가입</div>
-    <div style="background:#fff;border:1px solid rgba(11,27,58,.08);border-radius:18px;overflow:hidden;flex:none">
-      <div data-file-start data-auth-required style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #EEF1F7;cursor:pointer">
-        <div style="width:36px;height:36px;border-radius:12px;background:rgba(13,118,255,.12);color:#0D76FF;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">receipt_long</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:500;letter-spacing:-.02em">보험금 청구</div><div style="font-size:13px;color:#5C6880">안내부터 서류 제출까지</div></div>
-        <span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span>
-      </div>
-      <div data-history-start data-auth-required style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer">
-        <div style="width:36px;height:36px;border-radius:12px;background:rgba(0,201,167,.16);color:#00A98D;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:20px">fact_check</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:15px;font-weight:500;letter-spacing:-.02em">내 청구 진행 현황</div><div style="font-size:13px;color:#5C6880" data-history-summary>1건 접수 · 3건 완료</div></div>
-        <span class="ms" style="font-size:20px;color:#6B7688">chevron_right</span>
-      </div>
-    </div>
-    <div style="background:#3D4A66;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:16px;flex:none;box-shadow:0 10px 24px rgba(11,27,58,.14)">
-      <div style="display:flex;align-items:center;gap:14px">
-        <div style="width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;justify-content:center;flex:none"><span class="ms" style="font-size:24px">directions_car</span></div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:-.02em">다이렉트 자동차보험</div><div style="font-size:13px;color:rgba(255,255,255,.72)">7개사 보험료 비교하고 바로 가입</div></div>
-      </div>
-      <div style="background:#fff;color:#3D4A66;font-size:15px;font-weight:500;border-radius:999px;padding:13px 20px;text-align:center">보험료 비교하기</div>
-    </div>
-  </div>
-
   <section data-claim-flow class="claim-flow" hidden aria-label="놓친 보험금 찾기">
     <div class="claim-flow__topbar">
       <button type="button" data-claim-back class="claim-icon-btn" aria-label="이전으로"><span class="ms">arrow_back</span></button>
@@ -832,6 +819,18 @@
   </section>
 </main>
 
+<main class="screen chat-screen" data-screen="chat" hidden>
+  <header class="screen-header app-hero"><div class="app-hero__bar">
+    <div class="app-hero__brand"><img src="assets/weplat_symbol.svg" alt="위플랫" class="brand-symbol"><strong>챗봇</strong></div>
+  </div></header>
+  <div class="chat-thread" role="log" aria-label="위플랫 챗봇 대화" aria-live="polite">
+    <p class="chat-bubble">안녕하세요! 보험 약관이나 가입한 보장에서 어떤 점이 궁금하세요? 보험금 청구, 생활비 절약, 통신 혜택도 물어보세요.</p>
+  </div>
+  <div class="chat-prompts" aria-label="추천 질문"></div>
+  <form class="chat-form"><input aria-label="질문" placeholder="궁금한 내용을 물어보세요" maxlength="500" autocomplete="off"><button type="submit" aria-label="질문 보내기" disabled><span class="ms">arrow_upward</span></button></form>
+</main>
+
+
 <!-- ============================================================
      더보기
      ============================================================ -->
@@ -849,7 +848,7 @@
       </button>
       <button type="button" class="more-account" data-auth-member data-mypage-open hidden>
         <div style="width:46px;height:46px;border-radius:50%;background:#EAF1FE;color:#0D76FF;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;flex:none">김</div>
-        <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:17px;font-weight:700;color:#101B33;letter-spacing:-.025em">김영희님</div><div style="font-size:13px;color:#5C6880">안심 체크인 이용 중 · 보호자 2명</div></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:3px"><div style="font-size:17px;font-weight:700;color:#101B33;letter-spacing:-.025em">김영희님</div><div style="font-size:13px;color:#5C6880" data-ansim-member-sub>안심 체크인 이용 중 · 보호자 2명</div></div>
         <span class="ms" style="font-size:22px;color:#8A94A6">chevron_right</span>
       </button>
     </div>
@@ -898,12 +897,12 @@
     <section class="more-group">
       <h2 class="more-group__title">보험</h2>
       <div class="more-list more-list--flat">
-        <button type="button" class="more-row" data-more-nav="insurance" data-more-cta="claim">
+        <button type="button" class="more-row" data-more-nav="benefit" data-more-cta="claim">
           <span class="more-row__icon more-row__icon--violet"><span class="ms">search_insights</span></span>
           <span class="more-row__copy"><strong>놓친 보험금</strong></span>
           <span class="ms more-row__chev">chevron_right</span>
         </button>
-        <button type="button" class="more-row" data-more-nav="insurance" data-more-cta="file">
+        <button type="button" class="more-row" data-more-nav="benefit" data-more-cta="file">
           <span class="more-row__icon more-row__icon--blue"><span class="ms">receipt_long</span></span>
           <span class="more-row__copy"><strong>보험금 청구</strong></span>
           <span class="ms more-row__chev">chevron_right</span>
@@ -972,6 +971,27 @@
 </section>
 
 <!-- 마이페이지 -->
+<section class="usage-flow" data-usage-flow="visit-schedule" aria-label="안부 방문 일정" hidden>
+  <div class="usage-flow__topbar"><button type="button" data-usage-close aria-label="뒤로"><span class="ms">arrow_back</span></button><strong>안부 방문 일정</strong><span></span></div>
+  <div class="visit-scroll">
+    <p class="visit-plan"><span class="ms">event_repeat</span>정기 안부 방문 · 주 1회 구독 중</p>
+    <section class="visit-card" aria-labelledby="visit-next-heading">
+      <h2 id="visit-next-heading">다가오는 방문</h2>
+      <strong data-visit-date></strong>
+      <p data-visit-partner></p>
+      <span class="visit-status" data-visit-status></span>
+    </section>
+    <h2>방문 일정</h2>
+    <ul class="visit-list" data-visit-schedule></ul>
+    <div class="visit-section-title"><h2>최근 방문 기록</h2><button type="button" data-usage-open="visits">전체 보기</button></div>
+    <ul class="visit-list" data-visit-recent></ul>
+  </div>
+</section>
+
+<section class="usage-flow" data-usage-flow="visits" hidden aria-label="안부 방문 기록">
+  <div class="usage-flow__topbar"><button type="button" data-usage-close aria-label="뒤로"><span class="ms">arrow_back</span></button><strong>안부 방문 기록</strong><span></span></div>
+  <div class="usage-flow__body"><p class="visit-plan">정기 안부 방문 · 주 1회 구독 중</p><ul class="visit-list" data-visit-history></ul></div>
+</section>
 <section class="mypage-flow" data-mypage-flow hidden aria-label="마이페이지">
   <div class="mypage-topbar"><button type="button" data-mypage-close aria-label="뒤로"><span class="ms">arrow_back</span></button><strong>마이페이지</strong><span></span></div>
   <div class="mypage-body noscroll">
@@ -1076,7 +1096,7 @@
       <div class="usage-panel">
         <label class="switch-row">
           <span class="switch-row__copy"><strong>이상신호·도움 요청</strong><small>워치가 낙상·심박 이상을 감지했을 때</small></span>
-          <input type="checkbox" checked data-warn-off="이상신호·도움 요청"
+          <input type="checkbox" checked data-warn-anomaly data-warn-off="이상신호·도움 요청"
                  data-warn-desc="낙상이나 심박 이상을 감지해도 알림이 오지 않아요. 도움이 필요한 순간을 놓칠 수 있어요."><span class="switch"></span>
         </label>
         <label class="switch-row">
@@ -1182,20 +1202,31 @@
     </section>
 
     <section class="usage-flow__group">
-      <h3 class="usage-flow__head">보호자</h3>
+      <h3 class="usage-flow__head" data-usage-guardian-head>보호자</h3>
       <div class="usage-panel">
-        <div class="guardian-row">
-          <span class="guardian-row__avatar">민</span>
-          <span class="guardian-row__copy"><strong>김민수</strong><small>아들 · 010-2345-6789</small></span>
-          <span class="guardian-row__state">알림 받는 중</span>
+        <div data-usage-guardian-list>
+          <div class="guardian-row">
+            <span class="guardian-row__avatar">민</span>
+            <span class="guardian-row__copy"><strong>김민수</strong><small>아들 · 010-2345-6789</small></span>
+            <span class="guardian-row__state">알림 받는 중</span>
+          </div>
+          <div class="guardian-row">
+            <span class="guardian-row__avatar">지</span>
+            <span class="guardian-row__copy"><strong>박지영</strong><small>딸 · 010-3456-7890</small></span>
+            <span class="guardian-row__state">알림 받는 중</span>
+          </div>
+          <button type="button" class="usage-panel__link">보호자 추가·수정<span class="ms">chevron_right</span></button>
         </div>
-        <div class="guardian-row">
-          <span class="guardian-row__avatar">지</span>
-          <span class="guardian-row__copy"><strong>박지영</strong><small>딸 · 010-3456-7890</small></span>
-          <span class="guardian-row__state">알림 받는 중</span>
+        <div data-usage-solo-monitor hidden>
+          <div class="guardian-row">
+            <span class="guardian-row__avatar guardian-row__avatar--tile"><span class="ms" style="font-size:19px">support_agent</span></span>
+            <span class="guardian-row__copy"><strong>위플랫 관리자</strong><small>등록된 보호자 없음</small></span>
+            <span class="guardian-row__state">모니터링 중</span>
+          </div>
+          <button type="button" class="usage-panel__link">보호자 등록하기<span class="ms">chevron_right</span></button>
         </div>
-        <button type="button" class="usage-panel__link">보호자 추가·수정<span class="ms">chevron_right</span></button>
       </div>
+      <p class="usage-flow__note" data-usage-solo-note hidden>체크인 미응답이나 이상신호가 감지되면 앱 관리자가 확인 연락을 드려요.</p>
     </section>
 
     <section class="usage-flow__group">
@@ -1234,8 +1265,8 @@
      ============================================================ -->
 <nav class="tabbar">
   <button type="button" class="tab is-active" data-target="ansim"><span class="ms tab__icon">favorite</span><span class="tab__label">안심</span></button>
-  <button type="button" class="tab" data-target="benefit"><span class="ms tab__icon">savings</span><span class="tab__label">혜택</span></button>
-  <button type="button" class="tab" data-target="insurance"><span class="ms tab__icon">shield</span><span class="tab__label">보험</span></button>
+  <button type="button" class="tab" data-target="benefit"><span class="ms tab__icon">savings</span><span class="tab__label">생활</span></button>
+  <button type="button" class="tab" data-target="chat"><span class="ms tab__icon">forum</span><span class="tab__label">챗봇</span></button>
   <button type="button" class="tab" data-target="more"><span class="ms tab__icon">grid_view</span><span class="tab__label">더보기</span></button>
 </nav>
 
@@ -1250,8 +1281,16 @@
       <span style="opacity:.7;width:36px">사용자</span>
       <select data-dev-user style="background:#222;color:#fff;border:1px solid #444;padding:3px 6px;border-radius:5px;font-size:11px;cursor:pointer">
         <option value="protected">대상자</option>
+        <option value="solo">1인 대상자</option>
+        <option value="visit">안부 방문 구독자</option>
         <option value="guardian">보호자</option>
         <option value="unregistered">미가입자</option>
+      </select>
+    </div>
+    <div data-visit-only hidden style="display:flex;align-items:center;gap:6px">
+      <span style="opacity:.7;width:36px">방문</span>
+      <select data-dev-visit aria-label="방문 상태 시연">
+        <option value="scheduled">방문 예정</option><option value="travel">파트너 이동 중</option><option value="arrived">방문 중</option><option value="complete">안부 확인 완료</option><option value="missed">부재로 미방문</option>
       </select>
     </div>
     <div style="display:flex;align-items:center;gap:6px">
@@ -1261,6 +1300,7 @@
         <option value="ok">응답완료</option>
         <option value="alert-missed">미응답</option>
         <option value="alert-anomaly">워치신호</option>
+        <option value="help">도움요청</option>
       </select>
     </div>
     <div style="display:flex;align-items:center;gap:6px">
@@ -1273,6 +1313,9 @@
     </div>
   </div>
 </div>
+<script src="assets/js/chat.js"></script>
+<script src="assets/js/visits.js"></script>
+<script src="assets/js/fit-summary.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>

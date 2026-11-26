@@ -2,7 +2,7 @@
 (function () {
   'use strict';
 
-  var TABS = ['ansim', 'benefit', 'insurance', 'more'];
+  var TABS = ['ansim', 'benefit', 'chat', 'more'];
   var screens = {};
   var tabs = {};
   var history = ['ansim'];
@@ -117,14 +117,51 @@
   requestAnimationFrame(updateCarousels);
 
   // 안심 탭 체크인 (design_handoff_daily_checkin)
-  //   - 괜찮아요 클릭: 헤드라인 스왑 + 메시지 라이즈인 + 페인트 블리드 워시 + 스트릭 +1
+  //   - 보호자 있는 대상자(protected) vs 보호자 없는 1인 대상자(solo, 앱 관리자 모니터링) 지원
+  //   - 괜찮아요 클릭: 헤드라인 스왑 + 메시지 라이즈인 + 페인트 블리드 워시
   //   - 도움이 필요해요 클릭: 같은 자리에서 arm(2단 확인) → 5초 안 재클릭시 도움 뷰로 전환
-  //   - 다시 보내기: idle 상태로 복귀 (블리드 숨김)
   var checkinViews = document.querySelectorAll('[data-checkin-view]');
   var helpBtn = document.querySelector('[data-checkin-view="default"] [data-checkin-btn="help"]');
   var checkedIn = false;
   var helpConfirming = false;
   var helpTimer = null;
+  var currentRole = 'protected';
+
+  var ANSIM_ROLE_COPY = {
+    protected: {
+      okSub: '눌러서 안부 전하기',
+      msgEyebrow: '전해졌어요',
+      msgBody: '딸 지현님에게<br>안부가 전달되었습니다',
+      helpArm: '한번 더 누르면 보호자에게 도움을 요청합니다',
+      helpSentDesc: '보호자에게 알림이 전송됐어요<br>잠시만 기다려 주세요',
+      missedGuide: '계속 응답이 없으면 보호자에게 알림이 가요',
+      anomalyGuide: '응답이 없으면 보호자에게 바로 알려드려요',
+      memberSub: '안심 체크인 이용 중 · 보호자 2명',
+      usageGuardianHead: '보호자',
+      warnAnomaly: '낙상이나 심박 이상을 감지해도 알림이 오지 않아요. 도움이 필요한 순간을 놓칠 수 있어요.',
+      warnCheckinSuffix: '보호자에게 알림이 가지 않을 수도 있어요.'
+    },
+    solo: {
+      okSub: '눌러서 안부 기록하기',
+      msgEyebrow: '기록됐어요',
+      msgBody: '오늘 안부가 기록됐어요<br>관리자가 안전을 살펴드려요',
+      helpArm: '한번 더 누르면 관리자에게 도움을 요청합니다',
+      helpSentDesc: '관리자에게 긴급 알림이 전송됐어요<br>확인 후 바로 연락드릴게요',
+      missedGuide: '계속 응답이 없으면 관리자가 확인 연락을 드려요',
+      anomalyGuide: '응답이 없으면 관리자가 바로 확인 연락을 드려요',
+      memberSub: '안심 체크인 이용 중 · 관리자 모니터링',
+      usageGuardianHead: '보호자·모니터링',
+      warnAnomaly: '낙상이나 심박 이상을 감지해도 알림이 오지 않아요. 관리자가 위급 상황을 확인하기까지 시간이 걸릴 수 있어요.',
+      warnCheckinSuffix: '미응답으로 분류되어 관리자가 확인 연락을 드릴 수 있어요.'
+    }
+  };
+
+  function isSubjectRole(role) {
+    return role === 'protected' || role === 'solo' || role === 'visit';
+  }
+  function getAnsimCopy() {
+    return currentRole === 'solo' ? ANSIM_ROLE_COPY.solo : ANSIM_ROLE_COPY.protected;
+  }
 
   // 시간대별 질문·답변 세트. dev 스위처로 전환하거나 실제 배포 시 서버 시간 기반으로 선택.
   var TIME_CONTENT = {
@@ -133,6 +170,7 @@
     evening: { question: '오늘 하루<br>어떠셨어요?',   answer: '잘 지냈어요' }
   };
   var currentTime = 'morning';
+  var currentCheckinView = 'default';
 
   function setTimeOfDay(time) {
     if (!TIME_CONTENT[time]) return;
@@ -153,12 +191,14 @@
   }
 
   function setCheckinView(view) {
+    currentCheckinView = view;
+    fitSummary.preview(view === 'alert-anomaly');
     checkinViews.forEach(function (v) {
       v.hidden = v.getAttribute('data-checkin-view') !== view;
     });
-    // 블리드는 default 뷰 + sent 상태일 때만 노출. 다른 뷰 열면 감춰서 웜 워시가 새어나가지 않게.
+    // 블리드는 대상자 뷰 + default 뷰 + sent 상태일 때만 노출. 다른 뷰 열면 감춰서 웜 워시가 새어나가지 않게.
     var bleed = document.querySelector('[data-checkin-bleed]');
-    if (bleed) bleed.hidden = !(view === 'default' && checkedIn);
+    if (bleed) bleed.hidden = !(isSubjectRole(currentRole) && view === 'default' && checkedIn);
   }
   function setCheckedIn(done) {
     checkedIn = done;
@@ -174,7 +214,7 @@
       if (head) head.hidden = true;
       if (mainScreen) mainScreen.classList.add('is-sent');
       // 페인트 블리드 리플레이 (매번 처음부터)
-      if (bleed) {
+      if (bleed && isSubjectRole(currentRole) && currentCheckinView === 'default') {
         bleed.hidden = true;
         void bleed.offsetWidth;
         bleed.hidden = false;
@@ -209,39 +249,109 @@
     helpConfirming = true;
     if (!helpBtn) return;
     helpBtn.classList.add('is-armed');
-    helpBtn.innerHTML = '<span class="ms">emergency_home</span>한번 더 누르면 보호자에게 도움을 요청합니다';
+    helpBtn.innerHTML = '<span class="ms">emergency_home</span>' + getAnsimCopy().helpArm;
+    if (helpTimer) clearTimeout(helpTimer);
     helpTimer = setTimeout(resetHelpBtn, 5000);
   }
-
-  document.querySelectorAll('[data-checkin-btn]').forEach(function (el) {
-    el.addEventListener('click', function () {
-      var action = el.getAttribute('data-checkin-btn');
-      if (action === 'ok') {
-        setCheckedIn(true);
-      } else if (action === 'help') {
-        if (helpConfirming) { resetHelpBtn(); setCheckinView('help'); }
-        else armHelpBtn();
-      } else if (action === 'cancel') {
-        setCheckinView('default');
-        resetHelpBtn();
-      } else if (action === 'alert-missed' || action === 'alert-anomaly') {
-        setCheckinView(action);
-      } else if (action === 'alert-ok') {
-        // 알림 응답: 괜찮아요 → default 뷰의 완료 상태로 복귀
-        setCheckinView('default');
-        setCheckedIn(true);
-      } else if (action === 'alert-help') {
-        // 알림 응답: 도움이 필요해요 → 바로 도움 요청 뷰 (이미 알림에 반응 중이라 2단 확인 생략)
-        setCheckinView('help');
-      }
-    });
-  });
 
   // dev 스위처 — 안심 탭 시연용 사용자·화면·시간대 전환
   var userViews = document.querySelectorAll('[data-user-view]');
   var devUser = document.querySelector('[data-dev-user]');
   var devView = document.querySelector('[data-dev-view]');
   var devTime = document.querySelector('[data-dev-time]');
+
+  function syncDevViewSelect() {
+    if (!devView) return;
+    if (currentCheckinView === 'default') {
+      devView.value = checkedIn ? 'ok' : 'alarm-pending';
+    } else {
+      devView.value = currentCheckinView;
+    }
+  }
+
+  function applyAnsimRole(role) {
+    currentRole = role;
+    document.body.setAttribute('data-ansim-role', role);
+    var viewKey = isSubjectRole(role) ? 'protected' : role;
+    userViews.forEach(function (v) {
+      v.hidden = v.getAttribute('data-user-view') !== viewKey;
+    });
+    var isVisit = role === 'visit';
+    document.querySelectorAll('[data-visit-only]').forEach(function (el) { el.hidden = !isVisit; });
+    if (isVisit) visitSubscription.render();
+
+    var copy = getAnsimCopy();
+    var okSub = document.querySelector('[data-checkin-ok-sub]');
+    var msgEyebrow = document.querySelector('[data-checkin-msg-eyebrow]');
+    var msgBody = document.querySelector('[data-checkin-msg-body]');
+    var helpSentDesc = document.querySelector('[data-help-sent-desc]');
+    var missedGuide = document.querySelector('[data-intercept-missed-guide]');
+    var anomalyGuide = document.querySelector('[data-intercept-anomaly-guide]');
+    var memberSub = document.querySelector('[data-ansim-member-sub]');
+    var guardianHead = document.querySelector('[data-usage-guardian-head]');
+    var guardianList = document.querySelector('[data-usage-guardian-list]');
+    var soloMonitor = document.querySelector('[data-usage-solo-monitor]');
+    var soloNote = document.querySelector('[data-usage-solo-note]');
+    var warnAnomalyInput = document.querySelector('[data-warn-anomaly]');
+
+    if (okSub) okSub.textContent = copy.okSub;
+    if (msgEyebrow) msgEyebrow.textContent = copy.msgEyebrow;
+    if (msgBody) msgBody.innerHTML = copy.msgBody;
+    if (helpSentDesc) helpSentDesc.innerHTML = copy.helpSentDesc;
+    if (missedGuide) missedGuide.textContent = copy.missedGuide;
+    if (anomalyGuide) anomalyGuide.textContent = copy.anomalyGuide;
+    if (helpConfirming && helpBtn) {
+      helpBtn.innerHTML = '<span class="ms">emergency_home</span>' + copy.helpArm;
+    }
+    if (memberSub) {
+      memberSub.textContent = (role === 'guardian') ? '안심 케어 보호자 · 대상자 1명' : copy.memberSub;
+      if (isVisit) memberSub.textContent = '안심 체크인 · 주 1회 안부 방문 구독 중';
+    }
+    var isSolo = (role === 'solo');
+    if (guardianHead) guardianHead.textContent = copy.usageGuardianHead;
+    if (guardianList) guardianList.hidden = isSolo;
+    if (soloMonitor) soloMonitor.hidden = !isSolo;
+    if (soloNote) soloNote.hidden = !isSolo;
+    if (warnAnomalyInput) warnAnomalyInput.dataset.warnDesc = copy.warnAnomaly;
+  }
+
+  document.querySelectorAll('[data-checkin-btn]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      var bellBadge = document.querySelector('[data-bell-badge]');
+      var action = el.getAttribute('data-checkin-btn');
+      if (action === 'ok') {
+        setCheckedIn(true);
+        if (bellBadge) bellBadge.hidden = true;
+        syncDevViewSelect();
+      } else if (action === 'help') {
+        if (helpConfirming) {
+          resetHelpBtn();
+          setCheckinView('help');
+          syncDevViewSelect();
+        } else {
+          armHelpBtn();
+        }
+      } else if (action === 'cancel') {
+        setCheckinView('default');
+        resetHelpBtn();
+        syncDevViewSelect();
+      } else if (action === 'alert-missed' || action === 'alert-anomaly') {
+        setCheckinView(action);
+        syncDevViewSelect();
+      } else if (action === 'alert-ok') {
+        // 알림 응답: 괜찮아요 → default 뷰의 완료 상태로 복귀
+        setCheckinView('default');
+        setCheckedIn(true);
+        if (bellBadge) bellBadge.hidden = true;
+        syncDevViewSelect();
+      } else if (action === 'alert-help') {
+        // 알림 응답: 도움이 필요해요 → 바로 도움 요청 뷰 (이미 알림에 반응 중이라 2단 확인 생략)
+        setCheckinView('help');
+        syncDevViewSelect();
+      }
+    });
+  });
+
   // 스위처 토글 (최소화/확장)
   var devToggle = document.querySelector('[data-dev-toggle]');
   var devBody = document.querySelector('[data-dev-body]');
@@ -254,29 +364,35 @@
   if (devTime) devTime.addEventListener('change', function () {
     setTimeOfDay(devTime.value);
   });
-  // 초기 시간대 적용 (스위처 기본값과 동기화)
+  // 초기 시간대·역할 적용 (스위처 기본값과 동기화)
   setTimeOfDay(devTime ? devTime.value : 'morning');
-  function setUserView(name) {
-    userViews.forEach(function (v) {
-      v.hidden = v.getAttribute('data-user-view') !== name;
-    });
-  }
+  try { if (localStorage.getItem('weplat-visit-preview') === 'on') devUser.value = 'visit'; } catch (_) {}
+  applyAnsimRole(devUser ? devUser.value : 'protected');
+
   if (devUser) devUser.addEventListener('change', function () {
-    setUserView(devUser.value);
-    // 사용자 뷰 전환 시 블리드는 무조건 리셋 (보호자/미가입자 뷰에 웜 워시 새어나가지 않게)
+    var prevRole = currentRole;
+    var nextRole = devUser.value;
+    try { localStorage.setItem('weplat-visit-preview', nextRole === 'visit' ? 'on' : 'off'); } catch (_) {}
+    applyAnsimRole(nextRole);
+
     var bleed = document.querySelector('[data-checkin-bleed]');
-    if (bleed) bleed.hidden = true;
-    // 대상자로 돌아올 때는 안심 탭도 기본 화면으로 복귀
-    if (devUser.value === 'protected') {
-      setCheckinView('default');
-      if (devView) devView.value = 'default';
+    if (!isSubjectRole(nextRole)) {
+      // 보호자/미가입자 뷰 전환 시 웜 워시 숨김
+      if (bleed) bleed.hidden = true;
+    } else if (!isSubjectRole(prevRole)) {
+      // 보호자/미가입자 → 대상자(또는 1인 대상자) 복귀 시 현재 체크인 뷰·블리드 복원
+      setCheckinView(currentCheckinView);
+      syncDevViewSelect();
+    } else {
+      // 대상자 ↔ 1인 대상자 전환 시 현재 상태 그대로 유지하여 바로 비교 가능하게
+      if (bleed) bleed.hidden = !(currentCheckinView === 'default' && checkedIn);
     }
   });
   if (devView) devView.addEventListener('change', function () {
-    // 대상자 뷰가 아닌 상태에서 상태 선택하면 자동으로 대상자로 전환
-    if (devUser && devUser.value !== 'protected') {
-      devUser.value = 'protected';
-      setUserView('protected');
+    // 보호자/미가입자 상태에서 상태 선택하면 대상자로 전환 (1인 대상자일 때는 1인 대상자 유지)
+    if (!isSubjectRole(currentRole)) {
+      applyAnsimRole('protected');
+      if (devUser) devUser.value = 'protected';
     }
     resetHelpBtn();
     var bellBadge = document.querySelector('[data-bell-badge]');
@@ -298,6 +414,10 @@
     } else if (val === 'alert-anomaly') {
       // 워치신호: 이상신호 intercept + 벨 dot
       setCheckinView('alert-anomaly');
+      if (bellBadge) bellBadge.hidden = false;
+    } else if (val === 'help') {
+      // 도움요청: 긴급 도움 요청 완료 화면
+      setCheckinView('help');
       if (bellBadge) bellBadge.hidden = false;
     }
   });
@@ -2373,12 +2493,23 @@
   // ─────────────────────────────────────────────────────────────
   var notifFlow = document.querySelector('[data-notif-flow]');
   if (notifFlow) {
-    var NOTIF_DATA = {
-      ansim: [
+    var NOTIF_ANSIM_BY_ROLE = {
+      protected: [
         { icon:'monitor_heart', title:'평소와 다른 상태가 감지됐어요', meta:'심박수 이상 · 5분 전', color:'amber', action:'alert-anomaly' },
         { icon:'schedule', title:'아침 체크인이 지연됐어요', meta:'재알림 발송 · 오전 9:15', color:'blue', action:'alert-missed' },
         { icon:'check_circle', title:'보호자가 확인했어요', meta:'어제 저녁 체크인 · 오후 8:12', color:'teal', read:true }
       ],
+      solo: [
+        { icon:'monitor_heart', title:'평소와 다른 상태가 감지됐어요', meta:'심박수 이상 · 미응답 시 관리자 확인 연락', color:'amber', action:'alert-anomaly' },
+        { icon:'schedule', title:'아침 체크인이 지연됐어요', meta:'재알림 · 미응답 시 관리자가 연락드려요', color:'blue', action:'alert-missed' },
+        { icon:'check_circle', title:'저녁 안부가 정상 기록됐어요', meta:'관리자 모니터링 확인 · 어제 오후 8:12', color:'teal', read:true }
+      ],
+      guardian: [
+        { icon:'check_circle', title:'어머니가 아침 체크인을 완료했어요', meta:'좋아요 응답 · 오늘 오전 8:12', color:'teal', read:true },
+        { icon:'check_circle', title:'어머니가 저녁 체크인을 완료했어요', meta:'잘 지냈어요 응답 · 어제 오후 8:03', color:'teal', read:true }
+      ]
+    };
+    var NOTIF_DATA = {
       benefit: [
         { icon:'savings', title:'절감 진단 결과가 나왔어요', meta:'월 32,400원 절감 가능', color:'teal' },
         { icon:'router', title:'새 결합 혜택이 있어요', meta:'인터넷·TV 재약정 안내', color:'amber' }
@@ -2399,9 +2530,16 @@
         return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
       });
     }
+    function notifGetItems(tabName) {
+      if (tabName === 'ansim') {
+        if (currentRole === 'visit') return NOTIF_ANSIM_BY_ROLE.protected.concat(visitSubscription.notifications());
+        return NOTIF_ANSIM_BY_ROLE[currentRole] || NOTIF_ANSIM_BY_ROLE.protected;
+      }
+      return NOTIF_DATA[tabName] || [];
+    }
     function notifRender() {
       if (!notifList) return;
-      var items = NOTIF_DATA[notifCurrent] || [];
+      var items = notifGetItems(notifCurrent);
       notifList.innerHTML = '';
       if (items.length === 0) {
         notifList.innerHTML =
@@ -2413,7 +2551,8 @@
         return;
       }
       items.forEach(function (n, i) {
-        var el = document.createElement('div');
+        var el = document.createElement(n.visitEvent ? 'button' : 'div');
+        if (n.visitEvent) el.type = 'button';
         el.className = 'notif-item' + (n.read ? ' notif-item--read' : '');
         el.innerHTML =
           '<div class="notif-item__ico notif-item__ico--' + n.color + '"><span class="ms">' + n.icon + '</span></div>' +
@@ -2422,13 +2561,26 @@
             '<div class="notif-item__meta">' + notifEscape(n.meta) + '</div>' +
           '</div>' +
           (n.read ? '' : '<span class="ms notif-item__chev">chevron_right</span>');
-        if (!n.read) {
+        if (n.visitEvent) {
           el.addEventListener('click', function () {
-            // 안심 알림 → 해당 intercept 뷰로 이동
+            visitSubscription.markRead(n.visitEvent);
+            notifClose();
+            show('ansim');
+            document.querySelector('[data-usage-flow="visits"]').hidden = false;
+            document.getElementById('visit-' + n.visitEvent.slot + '-' + n.visitEvent.status).focus();
+          });
+        } else if (!n.read) {
+          el.addEventListener('click', function () {
+            // 안심 알림 → 해당 intercept 뷰로 이동 (1인 대상자면 1인 대상자 유지)
             if (notifCurrent === 'ansim' && n.action) {
               notifClose();
               show('ansim', true);
+              if (!isSubjectRole(currentRole)) {
+                applyAnsimRole('protected');
+                if (devUser) devUser.value = 'protected';
+              }
               setCheckinView(n.action);
+              syncDevViewSelect();
             } else {
               notifClose();
             }
@@ -2444,8 +2596,8 @@
       });
       notifRender();
     }
-    function notifOpen() {
-      notifSetTab(notifCurrent || 'ansim');
+    function notifOpen(event) {
+      notifSetTab(event.currentTarget.closest('[data-screen="ansim"]') ? 'ansim' : notifCurrent || 'ansim');
       notifFlow.hidden = false;
     }
     function notifClose() { notifFlow.hidden = true; }
@@ -2628,7 +2780,7 @@
         input.checked = true;                   // 확인 전까지는 켜둔 상태 유지
         pendingToggle = input;
         confirmBody.textContent = input.dataset.warnDesc
-          || ('‘' + input.dataset.warnOff + '’ 을(를) 끄면 안부 확인 시간을 놓칠 수 있어요. 보호자에게 알림이 가지 않을 수도 있어요.');
+          || ('‘' + input.dataset.warnOff + '’ 을(를) 끄면 안부 확인 시간을 놓칠 수 있어요. ' + getAnsimCopy().warnCheckinSuffix);
         confirmFlow.hidden = false;
       });
     });
@@ -2653,33 +2805,41 @@
   // ─────────────────────────────────────────────────────────────
   // 더보기 탭 — 전체 기능 아이콘 클릭 → 해당 탭 이동 + CTA 자동 트리거
   // ─────────────────────────────────────────────────────────────
-  document.querySelectorAll('[data-more-nav]').forEach(function (el) {
-    el.addEventListener('click', function () {
-      var target = el.dataset.moreNav;
-      var cta = el.dataset.moreCta;
-      show(target, true);
-      // CTA 별 자동 트리거 (해당 탭의 진입 버튼 클릭)
-      var ctaSelectors = {
-        'saving':  '[data-saving-start]',
-        'bundle':  '[data-bundle-start]',
-        'plan':    '[data-plan-start]',
-        'claim':   '[data-claim-start]',
-        'file':    '[data-file-start]',
-        'history': '[data-history-start]'
-      };
-      var sel = ctaSelectors[cta];
-      if (sel) {
-        setTimeout(function () {
-          var btn = document.querySelector(sel);
-          if (btn) btn.click();
-        }, 120);
-      }
-    });
+  document.querySelector('[data-insurance-jump]').addEventListener('click', function () {
+    document.getElementById('insurance-heading').focus();
+    document.getElementById('living-insurance').scrollIntoView({ block: 'start' });
+  });
+
+  document.addEventListener('click', function (event) {
+    var link = event.target.closest('[data-more-nav], [data-chat-service]');
+    if (!link) return;
+    show(link.dataset.moreNav || 'benefit');
+    var service = link.dataset.moreCta || link.dataset.chatService;
+    if (['saving', 'bundle', 'plan', 'claim', 'file', 'history'].indexOf(service) >= 0) {
+      document.querySelector('[data-' + service + '-start]').click();
+    }
   });
 
   // Android 하드웨어 백 버튼 — 이전 탭으로. 마지막 탭이면 앱 종료(네이티브에 위임).
   window.WeplatBridge = {
+    // 현재 대상자의 승인된 Fit 데이터. at은 Unix 밀리초, activity는 resting/active.
+    // {current: {at, bpm, activity}, history: [{at, bpm, activity}, ...]}
+    updateFitHealth: fitSummary.update,
     onBackPressed: function () {
+      var visitHistory = document.querySelector('[data-usage-flow="visits"]');
+      if (!visitHistory.hidden) {
+        visitHistory.hidden = true;
+        return true;
+      }
+      var visitSchedule = document.querySelector('[data-usage-flow="visit-schedule"]');
+      if (!visitSchedule.hidden) {
+        visitSchedule.hidden = true;
+        return true;
+      }
+      if (currentRole === 'visit' && !notifFlow.hidden) {
+        notifFlow.hidden = true;
+        return true;
+      }
       if (history.length > 1) {
         history.pop();
         show(history[history.length - 1], false);
