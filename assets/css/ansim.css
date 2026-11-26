@@ -167,7 +167,7 @@
 @media (prefers-reduced-transparency:reduce){
   .fit-tile,.visit-shortcut{background:var(--surface);border-color:var(--line);-webkit-backdrop-filter:none;backdrop-filter:none}
 }
-.visit-shortcut{display:flex;align-items:center;gap:10px;padding:12px 14px;width:100%;margin-top:10px;text-align:left;border-radius:var(--r-md);color:var(--ink-800)}
+.visit-shortcut{display:flex;align-items:center;gap:10px;padding:12px 14px;width:100%;margin-top:8px;text-align:left;border-radius:var(--r-md);color:var(--ink-800)}
 .visit-calendar{flex:none;color:var(--blue-ink)}
 .visit-chevron{flex:none;color:var(--ink-400)}
 .visit-shortcut:active{background:var(--bg-screen)}
