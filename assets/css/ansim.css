@@ -195,18 +195,19 @@
 button.notif-item{text-align:left;width:100%}
 .fit-card{flex:none;color:var(--ink-900)}
 .fit-card h2{margin:0;font-size:12px;font-weight:500;color:#425987}
-.fit-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.fit-tip{display:flex;align-items:flex-start;gap:10px;margin-top:8px;padding:10px 13px;border-radius:var(--r-sm);background:rgba(234,239,250,.78)}
+.fit-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.fit-tip{display:flex;align-items:flex-start;gap:6px;margin-top:8px;padding:12px 16px;border-radius:var(--r-sm);background:rgba(234,239,250,.78)}
 .fit-tip > svg{flex:none;width:17px;height:17px;margin-top:1px;fill:#657eaf}
-.fit-tip p{margin:2px 0 0;font-size:14px;letter-spacing:-.02em;color:var(--ink-800);line-height:var(--lh-body)}
+.fit-tip p{margin:1px 0 0;font-size:14px;letter-spacing:-.02em;color:var(--ink-800);line-height:var(--lh-body)}
 .fit-tile{padding:11px 14px;border-radius:var(--r-md)}
 .fit-label{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:13px;color:var(--ink-600)}
 .fit-label svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
 .fit-pulse svg{color:#ca5b75}
 .fit-compare svg{color:#4178cd}
-.fit-value,.fit-tile p{margin:5px 0 0;line-height:var(--lh-body);font-variant-numeric:tabular-nums}
-.fit-value strong,.fit-tile p{font-size:19px;font-weight:700;letter-spacing:-.025em}
-.fit-unit{font-size:13px;color:var(--ink-600)}
+.fit-value,.fit-tile p{margin:2px 0 0;line-height:var(--lh-body);font-variant-numeric:tabular-nums}
+.fit-value,.fit-tile p,.fit-value strong,.fit-compare strong{font-size:15px;font-weight:500;letter-spacing:-.02em;color:var(--ink-900)}
+.fit-value strong,.fit-compare strong{font-size:16px}
+.fit-unit,.fit-compare .has-number{font-size:13px;font-weight:400;letter-spacing:0;color:var(--ink-600)}
 [data-user-view="protected"],[data-user-view="guardian"]{min-height:0}
 [data-user-view="protected"]{overflow-y:auto}
 [data-user-view="protected"] .ansim-stage{min-height:320px;gap:18px}

@@ -32,6 +32,7 @@ var fitSummary = (function () {
   function render(current, history) {
     var value = '측정 대기';
     var note = '측정 대기';
+    var difference = 0;
     var tip = '';
     var samples = [];
     if (valid(current)) {
@@ -43,7 +44,8 @@ var fitSummary = (function () {
       if (usual === null) note = '기록 수집 중';
       else {
         var delta = bpm - usual;
-        note = delta === 0 ? '같아요' : '분당 ' + Math.abs(delta) + '회 ' + (delta > 0 ? '높아요' : '낮아요');
+        difference = Math.abs(delta);
+        note = delta === 0 ? '같아요' : '회 ' + (delta > 0 ? '높아요' : '낮아요');
         var context = current.activity === 'resting' ? '휴식 중 심박수가 ' : '활동 중 심박수가 ';
         if (delta === 0) tip = context + '평소 같은 시간대와 비슷해요.';
         else {
@@ -56,7 +58,14 @@ var fitSummary = (function () {
     cards.forEach(function (card) {
       card.querySelector('.fit-unit').hidden = !valid(current);
       card.querySelector('strong').textContent = value;
-      card.querySelector('.fit-compare p').textContent = note;
+      var comparison = card.querySelector('.fit-compare p');
+      comparison.textContent = note;
+      if (difference) {
+        var number = document.createElement('strong');
+        number.textContent = difference;
+        comparison.prepend('분당 ', number);
+      }
+      comparison.classList.toggle('has-number', difference > 0);
       card.querySelector('.fit-tip p').textContent = tip;
       card.querySelector('.fit-tip').hidden = !tip;
     });
